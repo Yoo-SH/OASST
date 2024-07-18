@@ -12,7 +12,8 @@ from lxml import etree
 logging.basicConfig(filename='parsing_link_test.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-# 상위 하위 계층을 구분하기 위한 클래스를 찾아야함.
+#user의 정보를 뽑아와서 mesaage_id , user_id를 할당해야함.
+
 
 # 각 column_filed 번호에 대응하는 값
 column_filed = {
@@ -48,9 +49,13 @@ parsing_classkey_comment_child = {
     'naver_cafe': 'reply'
 }
 
-#각 파일에 대응되는 parent comment 파싱 키 클래스 , 클래스 상위 계층은 reply, comment, reply_to 순으로, reply_to는 부모 id만을 지정하는 text class임..
+#각 파일에 대응되는 parent comment 파싱 키 클래스 , 클래스 상위 계층은 reply, comment, reply_to 순으로, reply_to는 부모 id만을 지정하는 text class임. .
 parsing_classkey_comment_parent = {
     'nvaer_cafe': 'reply_to'
+}
+
+parsing_classkey_userid ={
+    'naver_cafe' : 'nick_name'
 }
 
 
@@ -192,7 +197,7 @@ def main():
     # 추출할 태그 및 클래스 지정
     html_tag_to_extract = 'comment_html'
     title_tag_to_extract = 'title'
-    class_names_to_extract = ['reply', 'comment_content', 'reply_to' ]
+    class_names_to_extract = ['nick_name']
 
     # 텍스트 추출
     extracted_texts = extract_texts_from_xml(root, html_tag_to_extract, class_names_to_extract, title_tag_to_extract)
