@@ -1,6 +1,7 @@
 import pandas as pd
 from bs4 import BeautifulSoup
 import logging
+import uuid
 import os
 import argparse
 import platform
@@ -11,6 +12,43 @@ from lxml import etree
 logging.basicConfig(filename='parsing_link_test.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
+
+#각 cloumn_filed 번호에 대응하는 값.
+column_filed = {
+    1 : 'message_id' , # string
+    2 : 'parent_id', #  string 
+    3 : 'user_id', # string
+    4 : 'creadte_date', # string
+    5 : 'text', # string
+    6 : 'role', # string
+    7 : 'lang', # string
+    8 : 'review_count', # int 
+    9 :  'review_result', # bool
+    10 : 'deleted', #bool
+    11 : 'rank', # int
+    12 : 'synthetic', # bool
+    13 : 'model_name', # string
+    14 : 'detoxify', # dict
+    15 : 'message_tree_id', # string
+    16 :  'tree_state',# string
+    17 :  'emojis', # sequence
+    18 : 'lavels' # sequence
+}
+
+
+# 각 파일에 대응하는 comment 파싱 키 클래스
+parsing_classKey_comment = {
+    'naver_blog': 'u_cbox_contents',
+    'naver_cafe': 'txt',
+    'naver_kin': 'answerDetail'
+}
+
+# 각 파일에 대응하는 secretComment 파싱 키 클래스
+parsing_classKey_secretComment = {
+    'naver_blog': 'u_cbox_delete_contents',
+    'naver_cafe': uuid.uuid1(),
+    'naver_kin': uuid.uuid1()
+}
 
 
 def extract_range_texts_in_item(item, start_tag, end_tag):
@@ -73,19 +111,23 @@ def main():
     root = tree.getroot()
 
     
-# 추출할 태그
-tag_to_extract = 'comment_html'
+    # 추출할 태그
+    tag_to_extract = 'comment_html'
 
-# 텍스트 추출
-extracted_texts = extract_texts_from_items(root, tag_to_extract)
+    # 텍스트 추출
+    extracted_texts = extract_texts_from_items(root, tag_to_extract)
 
-# 결과 출력
-print(f"Extracted texts from <{tag_to_extract}>:")
-for text in extracted_texts:
-    print('comment_html:',text)     
+    # 결과 출력
+    print(f"Extracted texts from <{tag_to_extract}>:")
+    for text in extracted_texts:
+        print('comment_html:',text)     
 
 
 
-    
+
+
+
+
+
 if __name__ == "__main__":
     main()
