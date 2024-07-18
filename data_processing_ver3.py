@@ -7,15 +7,18 @@ root = tree.getroot()
 # 특정 범위의 요소 추출
 def extract_range_texts_in_item(item, start_tag, end_tag):
     texts = []
-    start_found = False
+    stack = [item] #tag node들을 명시적으로 관리하기 위해 stack과 반복문을 이용하여 추출.
+    start_found = False 
 
-    for node in item.iter():
+    while stack:
+        node = stack.pop()
         if node.tag == start_tag:
             start_found = True
         if start_found and node.text:
             texts.append(node.text.strip())
         if node.tag == end_tag:
             break
+        stack.extend(reversed(node)) 
 
     return texts
 
