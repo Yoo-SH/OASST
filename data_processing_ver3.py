@@ -43,6 +43,11 @@ parsing_classKey_comment = {
     'naver_kin': 'answerDetail'
 }
 
+#각 파일에 대응하는 child commnet 파싱 키 클래스
+parsing_classkey_comment_child ={
+    'naver_cafe' : 'reply'
+}
+
 # 각 파일에 대응하는 secretComment 파싱 키 클래스
 parsing_classKey_secretComment = {
     'naver_blog': 'u_cbox_delete_contents',
@@ -146,7 +151,7 @@ def main():
 
     # 추출할 태그 및 클래스 지정
     html_tag_to_extract = 'comment_html'
-    class_to_extract = 'comment_content'
+    class_to_extract = 'reply'
     title_tag_to_extract = 'title'
 
     # 텍스트 추출
