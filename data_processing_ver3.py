@@ -43,9 +43,9 @@ parsing_classKey_comment = {
     'naver_kin': 'answerDetail'
 }
 
-#각 파일에 대응하는 child commnet 파싱 키 클래스
-parsing_classkey_comment_child ={
-    'naver_cafe' : 'reply'
+# 각 파일에 대응하는 child comment 파싱 키 클래스
+parsing_classkey_comment_child = {
+    'naver_cafe': 'reply'
 }
 
 # 각 파일에 대응하는 secretComment 파싱 키 클래스
@@ -101,32 +101,27 @@ def extract_texts_from_items(root, tag):
             
     return texts
 
-
-
 # 특정 클래스의 텍스트 추출 함수
-def extract_texts_from_html(html_content, class_name):
+def extract_texts_from_html(html_content, parent_class, child_class):
     soup = BeautifulSoup(html_content, 'html.parser')
-    texts = [element.get_text(strip=True) for element in soup.find_all(class_=class_name)]
+    selector = f'.{parent_class} .{child_class}'
+    texts = [element.get_text(strip=True) for element in soup.select(selector)]
     return texts
 
-
 # XML에서 HTML 콘텐츠 추출 및 특정 클래스의 텍스트 추출
-def extract_texts_from_xml(root, html_tag, class_name, title_tag):
+def extract_texts_from_xml(root, html_tag, parent_class, child_class, title_tag):
     all_texts = []
     
     for item in root.findall('.//item'):
         title = item.find(title_tag).text if item.find(title_tag) is not None else 'No Title'
         html_content = item.find(html_tag).text if item.find(html_tag) is not None else ''
         if html_content:
-            texts = extract_texts_from_html(html_content, class_name)
+            texts = extract_texts_from_html(html_content, parent_class, child_class)
             all_texts.append((title, texts))
         else:
             all_texts.append((title, ['None']))
     
     return all_texts
-
-
-
 
 def main():
     # XML 파일 경로 설정
@@ -151,11 +146,12 @@ def main():
 
     # 추출할 태그 및 클래스 지정
     html_tag_to_extract = 'comment_html'
-    class_to_extract = 'reply'
     title_tag_to_extract = 'title'
+    parent_class_to_extract = 'reply'
+    child_class_to_extract = 'comment_content'
 
     # 텍스트 추출
-    extracted_texts = extract_texts_from_xml(root, html_tag_to_extract, class_to_extract, title_tag_to_extract)
+    extracted_texts = extract_texts_from_xml(root, html_tag_to_extract, parent_class_to_extract, child_class_to_extract, title_tag_to_extract)
 
     # 결과 출력
     print(f"Extracted texts from <{html_tag_to_extract}>:")
