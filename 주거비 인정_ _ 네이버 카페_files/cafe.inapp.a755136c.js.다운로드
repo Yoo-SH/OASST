@@ -1,0 +1,70 @@
+/**
+ * vue 인스턴스 초기화 전 앱에서 호출하는 경우 크래시 발생.
+ * 과거 해당 함수를 호출해서 현재 폰트 크기를 앱스킴으로 받았던것 같으나, 현재는 vue 인스턴스가 초기화되면 자동으로 실행된다.
+ * @TODO: 추후 앱에서 호출하지 않도록 변경 필요
+ */
+var getCurrentFontRatio = function() {};
+
+/**
+ * 모바일 앱과 웹 간의 데이터 전송을 수행하는 interface를 제공한다.
+ * @author min
+ */
+var cafe = cafe || {};
+cafe.Inapp = (function() {
+	var aParams = [];
+	var bIphone = false;
+
+	var createProperties = function(htParam){
+		bIphone = htParam.bIphone;
+		$H(htParam).forEach(function(value, key, object) {
+			aParams.push(key + ":" + value);
+		});
+	};
+
+	return {
+		setProperties : function(htParam) {
+			createProperties(htParam);
+		},
+
+		getProperties : function() {
+			return aParams.toString();
+		},
+
+		getPropertiesAndroid : function() {
+			if (!!window.androidcafe && !!window.androidcafe.getProperties) {
+				return window.androidcafe.getProperties(aParams.toString());
+			}
+		},
+
+		invokeUri : function(sUrl) {
+			/*
+			 * cafe-app ver2.0.0 아이폰 앱 출시 후 Uri 형식으로 제공되지 않는 문제가 발생.
+			 * 예를 들어, appurl://ARTICLE_PREV?/app/ArticleRead.nhn? 과 같이 ?가 중복 존재하여
+			 * Uri.parse를 이용하기 번거로운 경우가 있어 appurl://ARTICLE_PREV/app/ArticleRead.nhn? 과 같이 ?를 하나로 줄인다.
+			 *
+			 */
+			if (bIphone) {
+				document.location.href = sUrl;
+			} else {
+				window.androidcafe.invokeUri(sUrl.replace('?/', "/"));
+			}
+		},
+
+		toggleNotice : function() {
+			if (window.oArticleList === undefined) {
+				return;
+			}
+			$Element('noticeList').toggle("block");
+		},
+		/*
+		 * 단순하게 웹처럼 location을 이동시킴. invokeUri와 달리 엡서 단순 URL hooking 방식 사용
+		 */
+		moveUrl : function(sUrl){
+			document.location.href = sUrl;
+		},
+
+		isIphone : function() {
+			return bIphone;
+		}
+	};
+})();
