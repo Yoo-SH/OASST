@@ -12,9 +12,6 @@ from lxml import etree
 logging.basicConfig(filename='parsing_link_test.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-#user의 정보를 뽑아와서 mesaage_id , user_id를 할당해야함.
-
-
 # 각 column_filed 번호에 대응하는 값
 column_filed = {
     1: 'message_id',  # string
@@ -49,17 +46,14 @@ parsing_classkey_comment_child = {
     'naver_cafe': 'reply'
 }
 
-#각 파일에 대응되는 parent comment 파싱 키 클래스 , 클래스 상위 계층은 reply, comment, reply_to 순으로, reply_to는 부모 id만을 지정하는 text class임. .
-parsing_classkey_comment_parent = {
-    'nvaer_cafe': 'reply_to'
+# 각 파일에 대응되는 parent comment 파싱 키 클래스
+parsing_classkey_nickName_parent = {
+    'naver_cafe': 'reply_to'
 }
 
-parsing_classkey_userid ={
-    'naver_cafe' : 'nick_name'
+parsing_classkey_userid = {
+    'naver_cafe': 'nick_name'
 }
-
-
-
 
 # 각 파일에 대응하는 secretComment 파싱 키 클래스
 parsing_classKey_secretComment = {
@@ -128,30 +122,29 @@ def extract_texts_from_items(root, tag):
             
     return texts
 
-def extract_texts_from_html(html_content, class_names):
+def extract_texts_from_html(html_content, selector):
     """
     HTML 콘텐츠에서 특정 클래스 이름들을 만족하는 텍스트 추출
 
     Args:
         html_content (str): HTML 문자열
-        class_names (list): 클래스 이름들의 리스트
+        selector (str): CSS 셀렉터 문자열
 
     Returns:
         list: 추출된 텍스트 리스트
     """
     soup = BeautifulSoup(html_content, 'html.parser')
-    selector = generate_css_selector(class_names)
     texts = [element.get_text(strip=True) for element in soup.select(selector)]
     return texts
 
-def extract_texts_from_xml(root, html_tag, class_names, title_tag):
+def extract_texts_from_xml(root, html_tag, selector, title_tag):
     """
     XML에서 HTML 콘텐츠 추출 및 특정 클래스의 텍스트 추출
 
     Args:
         root (_type_): XML 루트 요소
         html_tag (str): HTML 태그 이름
-        class_names (list): 클래스 이름들의 리스트
+        selector (str): CSS 셀렉터 문자열
         title_tag (str): 제목 태그 이름
 
     Returns:
@@ -163,7 +156,7 @@ def extract_texts_from_xml(root, html_tag, class_names, title_tag):
         title = item.find(title_tag).text if item.find(title_tag) is not None else 'No Title'
         html_content = item.find(html_tag).text if item.find(html_tag) is not None else ''
         if html_content:
-            texts = extract_texts_from_html(html_content, class_names)
+            texts = extract_texts_from_html(html_content, selector)
             all_texts.append((title, texts))
         else:
             all_texts.append((title, ['None']))
@@ -197,10 +190,13 @@ def main():
     # 추출할 태그 및 클래스 지정
     html_tag_to_extract = 'comment_html'
     title_tag_to_extract = 'title'
-    class_names_to_extract = ['nick_name']
+    class_names_to_extract = ['reply', 'comment_content' ]
+
+    # 셀렉터 생성
+    selector = generate_css_selector(class_names_to_extract)
 
     # 텍스트 추출
-    extracted_texts = extract_texts_from_xml(root, html_tag_to_extract, class_names_to_extract, title_tag_to_extract)
+    extracted_texts = extract_texts_from_xml(root, html_tag_to_extract, selector, title_tag_to_extract)
 
     # 결과 출력
     print(f"Extracted texts from <{html_tag_to_extract}>:")
