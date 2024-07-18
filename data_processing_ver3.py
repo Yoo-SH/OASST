@@ -48,6 +48,14 @@ parsing_classkey_comment_child = {
     'naver_cafe': 'reply'
 }
 
+#각 파일에 대응되는 parent comment 파싱 키 클래스 , 클래스 상위 계층은 reply, comment, reply_to 순으로, reply_to는 부모 id만을 지정하는 text class임..
+parsing_classkey_comment_parent = {
+    'nvaer_cafe': 'reply_to'
+}
+
+
+
+
 # 각 파일에 대응하는 secretComment 파싱 키 클래스
 parsing_classKey_secretComment = {
     'naver_blog': 'u_cbox_delete_contents',
@@ -55,16 +63,29 @@ parsing_classKey_secretComment = {
     'naver_kin': uuid.uuid4()
 }
 
-def extract_range_texts_in_item(item, start_tag, end_tag):
-    """ 특정 범위의 요소 추출
+def generate_css_selector(classes):
+    """
+    주어진 클래스 리스트를 만족하는 CSS 셀렉터를 생성합니다.
 
     Args:
-        item (_type_): _description_
-        start_tag (_type_): _description_
-        end_tag (_type_): _description_
+        classes (list): 클래스 이름들의 리스트
 
     Returns:
-        _type_: _description_
+        str: CSS 셀렉터 문자열
+    """
+    return ' '.join([f'.{cls}' for cls in classes])
+
+def extract_range_texts_in_item(item, start_tag, end_tag):
+    """
+    특정 범위의 요소 추출
+
+    Args:
+        item (_type_): XML 요소
+        start_tag (str): 시작 태그 이름
+        end_tag (str): 종료 태그 이름
+
+    Returns:
+        list: 추출된 텍스트 리스트
     """
     texts = []
     stack = [item]  # tag node들을 명시적으로 관리하기 위해 stack과 반복문을 이용하여 추출.
@@ -83,14 +104,15 @@ def extract_range_texts_in_item(item, start_tag, end_tag):
     return texts
 
 def extract_texts_from_items(root, tag):
-    """특정 태그의 텍스트 추출
+    """
+    특정 태그의 텍스트 추출
 
     Args:
-        root (_type_): _description_
-        tag (_type_): _description_
+        root (_type_): XML 루트 요소
+        tag (str): 추출할 태그 이름
 
     Returns:
-        _type_: _description_
+        list: 추출된 텍스트 리스트
     """
     texts = []
     
@@ -101,22 +123,42 @@ def extract_texts_from_items(root, tag):
             
     return texts
 
-# 특정 클래스의 텍스트 추출 함수
-def extract_texts_from_html(html_content, parent_class, child_class):
+def extract_texts_from_html(html_content, class_names):
+    """
+    HTML 콘텐츠에서 특정 클래스 이름들을 만족하는 텍스트 추출
+
+    Args:
+        html_content (str): HTML 문자열
+        class_names (list): 클래스 이름들의 리스트
+
+    Returns:
+        list: 추출된 텍스트 리스트
+    """
     soup = BeautifulSoup(html_content, 'html.parser')
-    selector = f'.{parent_class} .{child_class}'
+    selector = generate_css_selector(class_names)
     texts = [element.get_text(strip=True) for element in soup.select(selector)]
     return texts
 
-# XML에서 HTML 콘텐츠 추출 및 특정 클래스의 텍스트 추출
-def extract_texts_from_xml(root, html_tag, parent_class, child_class, title_tag):
+def extract_texts_from_xml(root, html_tag, class_names, title_tag):
+    """
+    XML에서 HTML 콘텐츠 추출 및 특정 클래스의 텍스트 추출
+
+    Args:
+        root (_type_): XML 루트 요소
+        html_tag (str): HTML 태그 이름
+        class_names (list): 클래스 이름들의 리스트
+        title_tag (str): 제목 태그 이름
+
+    Returns:
+        list: 추출된 텍스트와 제목의 튜플 리스트
+    """
     all_texts = []
     
     for item in root.findall('.//item'):
         title = item.find(title_tag).text if item.find(title_tag) is not None else 'No Title'
         html_content = item.find(html_tag).text if item.find(html_tag) is not None else ''
         if html_content:
-            texts = extract_texts_from_html(html_content, parent_class, child_class)
+            texts = extract_texts_from_html(html_content, class_names)
             all_texts.append((title, texts))
         else:
             all_texts.append((title, ['None']))
@@ -124,6 +166,9 @@ def extract_texts_from_xml(root, html_tag, parent_class, child_class, title_tag)
     return all_texts
 
 def main():
+    """
+    메인 함수로, XML 파일을 파싱하고 특정 클래스의 텍스트를 추출하여 출력합니다.
+    """
     # XML 파일 경로 설정
     xml_file_path = 'xml/sample.xml'
     
@@ -147,11 +192,10 @@ def main():
     # 추출할 태그 및 클래스 지정
     html_tag_to_extract = 'comment_html'
     title_tag_to_extract = 'title'
-    parent_class_to_extract = 'reply'
-    child_class_to_extract = 'comment_content'
+    class_names_to_extract = ['reply', 'comment_content', 'reply_to' ]
 
     # 텍스트 추출
-    extracted_texts = extract_texts_from_xml(root, html_tag_to_extract, parent_class_to_extract, child_class_to_extract, title_tag_to_extract)
+    extracted_texts = extract_texts_from_xml(root, html_tag_to_extract, class_names_to_extract, title_tag_to_extract)
 
     # 결과 출력
     print(f"Extracted texts from <{html_tag_to_extract}>:")
