@@ -39,7 +39,7 @@ column_filed = {
 # 각 파일에 대응하는 comment 파싱 키 클래스
 parsing_classKey_comment = {
     'naver_blog': 'u_cbox_contents',
-    'naver_cafe': 'txt',
+    'naver_cafe': 'comment_content',
     'naver_kin': 'answerDetail'
 }
 
