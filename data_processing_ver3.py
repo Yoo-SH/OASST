@@ -74,7 +74,8 @@ def generate_css_selector(classes):
     """
     return ', '.join([f'.{cls}' for cls in classes])
 
-def extract_texts_from_html(html_content, selectors):
+
+def extract_texts_from_html(html_content, html_selectors):
     """
     HTML 콘텐츠에서 특정 클래스 이름들을 만족하는 텍스트 추출
 
@@ -87,60 +88,68 @@ def extract_texts_from_html(html_content, selectors):
     """
     soup = BeautifulSoup(html_content, 'html.parser')
     result = {}
-    for selector in selectors:
+    for selector in html_selectors:
         elements = soup.select(selector)
         result[selector] = [element.get_text(strip=True) for element in elements]
     return result
 
-def extract_texts_from_xml_item(item, html_tag, selectors, title_tag):
+
+def extract_texts_from_xml_tag(tag, tags_to_extract, html_selectors):
     """
     XML 아이템에서 HTML 콘텐츠 추출 및 특정 클래스의 텍스트 추출
 
     Args:
-        item (_type_): XML 아이템 요소
-        html_tag (str): HTML 태그 이름
-        selectors (list): CSS 셀렉터 문자열들의 리스트
-        title_tag (str): 제목 태그 이름
+        tag (_type_): XML 태그 요소
+        tags_to_extract (list): 첫 번째 요소는 HTML 태그 이름, 나머지는 추출할 태그 이름들의 리스트
+        html_selectors (list): CSS 셀렉터 문자열들의 리스트
 
     Returns:
         dict: 추출된 텍스트와 제목의 딕셔너리
     """
-    title = item.find(title_tag).text if item.find(title_tag) is not None else 'No Title'
-    html_content = item.find(html_tag).text if item.find(html_tag) is not None else ''
-    if html_content:
-        texts = extract_texts_from_html(html_content, selectors)
-        return {'title': title, 'texts': texts}
-    else:
-        return {'title': title, 'texts': {'None': ['None']}}
+    html_tag = tags_to_extract[0]
+    desired_tags = tags_to_extract[1:]
 
-def extract_texts_from_xml(root, html_tag, selectors, title_tag):
+    texts = {}
+    for desired_tag in desired_tags:
+        texts[desired_tag] = tag.find(desired_tag).text if tag.find(desired_tag) is not None else 'No Content'
+
+    html_content = tag.find(html_tag).text if tag.find(html_tag) is not None else ''
+    if html_content:
+        html_texts = extract_texts_from_html(html_content, html_selectors)
+        texts['html_texts'] = html_texts
+    else:
+        texts['html_texts'] = {'None': ['None']}
+    
+    return texts
+
+
+def extract_texts_from_xml(root, tags_to_extract, html_selectors):
     """
     XML에서 HTML 콘텐츠 추출 및 특정 클래스의 텍스트 추출
 
     Args:
         root (_type_): XML 루트 요소
-        html_tag (str): HTML 태그 이름
-        selectors (list): CSS 셀렉터 문자열들의 리스트
-        title_tag (str): 제목 태그 이름
+        tags_to_extract (list): 첫 번째 요소는 HTML 태그 이름, 나머지는 추출할 태그 이름들의 리스트
+        html_selectors (list): CSS 셀렉터 문자열들의 리스트
 
     Returns:
         list: 추출된 텍스트와 제목의 딕셔너리 리스트
     """
     all_texts = []
-    for item in root.findall('.//item'):
-        extracted_texts = extract_texts_from_xml_item(item, html_tag, selectors, title_tag)
+    for tag in root.findall('.//item'):
+        extracted_texts = extract_texts_from_xml_tag(tag, tags_to_extract, html_selectors)
         all_texts.append(extracted_texts)
     return all_texts
 
-def parse_xml_file(xml_file_path, html_tag, selectors, title_tag):
+
+def parse_xml_file(xml_file_path, tags_to_extract, html_selectors):
     """
     XML 파일을 파싱하고 특정 클래스의 텍스트를 추출
 
     Args:
         xml_file_path (str): XML 파일 경로
-        html_tag (str): HTML 태그 이름
-        selectors (list): CSS 셀렉터 문자열들의 리스트
-        title_tag (str): 제목 태그 이름
+        tags_to_extract (list): 첫 번째 요소는 HTML 태그 이름, 나머지는 추출할 태그 이름들의 리스트
+        html_selectors (list): CSS 셀렉터 문자열들의 리스트
 
     Returns:
         list: 추출된 텍스트와 제목의 딕셔너리 리스트
@@ -154,12 +163,11 @@ def parse_xml_file(xml_file_path, html_tag, selectors, title_tag):
         return []
 
     # 텍스트 추출
-    return extract_texts_from_xml(root, html_tag, selectors, title_tag)
+    return extract_texts_from_xml(root, tags_to_extract, html_selectors)
+
 
 def main():
-    """
-    메인 함수로, XML 파일을 파싱하고 특정 클래스의 텍스트를 추출하여 출력합니다.
-    """
+    
     # XML 파일 경로 설정
     xml_file_path = 'xml/sample.xml'
     
@@ -167,29 +175,34 @@ def main():
     if not os.path.isabs(xml_file_path):
         xml_file_path = os.path.abspath(xml_file_path)
 
+
     # XML 파일 존재 여부 확인
     if not os.path.exists(xml_file_path):
         logging.error(f"File not found: {xml_file_path}")
         return
 
+
     # 추출할 태그 및 클래스 지정
-    html_tag_to_extract = 'comment_html'
-    title_tag_to_extract = 'title'
+    tags_to_extract = ['comment_html', 'title', 'registered_date']
     class_names_to_extract = ['comment_content', 'nick_name', 'reply']
 
     # 셀렉터 생성
-    selectors = [f'.{cls}' for cls in class_names_to_extract]
+    html_selectors = [f'.{cls}' for cls in class_names_to_extract]
 
     # 텍스트 추출
-    extracted_texts = parse_xml_file(xml_file_path, html_tag_to_extract, selectors, title_tag_to_extract)
+    extracted_texts = parse_xml_file(xml_file_path, tags_to_extract, html_selectors)
 
     # 결과 출력
-    print(f"Extracted texts from <{html_tag_to_extract}>:")
+    print(f"Extracted texts from <{tags_to_extract[0]}>:")
     for item in extracted_texts:
-        print(f"Title: {item['title']}")
-        for selector, texts in item['texts'].items():
-            for text in texts:
-                print(f"{selector}: {text}")
+        for tag, text in item.items():
+            if tag == 'html_texts':
+                for selector, texts in text.items():
+                    for text in texts:
+                        print(f"{selector}: {text}")
+            else:
+                print(f"{tag}: {text}")
+
 
 if __name__ == "__main__":
     main()
