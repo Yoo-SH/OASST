@@ -3,9 +3,7 @@ from bs4 import BeautifulSoup
 import logging
 import uuid
 import os
-import argparse
 import platform
-import requests
 from lxml import etree
 
 # Set up logging
@@ -194,18 +192,32 @@ def main():
 
     # 엑셀 파일로 저장할 데이터 프레임 생성
     data = []
-    for tag in extracted_texts:
-        for class_name, texts in tag['html_texts'].items():
-            for text in texts:
-                row = {
-                    'message_id': str(uuid.uuid4()) if class_name == '.comment_content' else '',
-                    'user_id': str(uuid.uuid4() ) if class_name== '.nick_name' else '',
-                    'text': text if class_name == '.comment_content' else '',
-                    'title': tag['title'],
-                    'registered_date': tag['registered_date']
-                }
-                data.append(row)
-    
+    for item in extracted_texts:
+        html_texts = item['html_texts']
+        message_id = ''
+        user_id = ''
+        text = ''
+
+        # comment_content와 nick_name 값을 추출
+        if '.comment_content' in html_texts:
+            for text_value in html_texts['.comment_content']:
+                message_id = str(uuid.uuid4())  # 각 댓글에 고유 UUID 생성
+                text = text_value
+
+        if '.nick_name' in html_texts:
+            user_id = html_texts['.nick_name'][0] if html_texts['.nick_name'] else ''
+
+        # 유효한 데이터가 있을 때만 추가
+        if message_id and text and user_id:
+            row = {
+                'message_id': message_id,
+                'user_id': user_id,
+                'text': text,
+                'title': item['title'],
+                'registered_date': item['registered_date']
+            }
+            data.append(row)
+
     df = pd.DataFrame(data, columns=[column_filed[i] for i in [1, 3, 5, 4, 2]])
     df.to_excel('extracted_texts.xlsx', index=False)
     print("Data has been written to extracted_texts.xlsx")
