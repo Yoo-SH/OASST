@@ -81,7 +81,7 @@ def extract_texts_from_html(html_content, html_selectors):
 
     Args:
         html_content (str): HTML 문자열
-        selectors (list): CSS 셀렉터 문자열들의 리스트
+        html_selectors (list): CSS 셀렉터 문자열들의 리스트
 
     Returns:
         dict: 각 셀렉터별로 추출된 텍스트 리스트를 포함하는 딕셔너리
@@ -192,16 +192,23 @@ def main():
     # 텍스트 추출
     extracted_texts = parse_xml_file(xml_file_path, tags_to_extract, html_selectors)
 
-    # 결과 출력
-    print(f"Extracted texts from <{tags_to_extract[0]}>:")
-    for item in extracted_texts:
-        for tag, text in item.items():
-            if tag == 'html_texts':
-                for selector, texts in text.items():
-                    for text in texts:
-                        print(f"{selector}: {text}")
-            else:
-                print(f"{tag}: {text}")
+    # 엑셀 파일로 저장할 데이터 프레임 생성
+    data = []
+    for tag in extracted_texts:
+        for class_name, texts in tag['html_texts'].items():
+            for text in texts:
+                row = {
+                    'message_id': str(uuid.uuid4()) if class_name == '.comment_content' else '',
+                    'user_id': str(uuid.uuid4() ) if class_name== '.nick_name' else '',
+                    'text': text if class_name == '.comment_content' else '',
+                    'title': tag['title'],
+                    'registered_date': tag['registered_date']
+                }
+                data.append(row)
+    
+    df = pd.DataFrame(data, columns=[column_filed[i] for i in [1, 3, 5, 4, 2]])
+    df.to_excel('extracted_texts.xlsx', index=False)
+    print("Data has been written to extracted_texts.xlsx")
 
 
 if __name__ == "__main__":
