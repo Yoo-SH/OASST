@@ -62,18 +62,6 @@ parsing_classKey_secretComment = {
     'naver_kin': uuid.uuid4()
 }
 
-def generate_css_selector(classes):
-    """
-    주어진 클래스 리스트를 만족하는 CSS 셀렉터를 생성합니다.
-
-    Args:
-        classes (list): 클래스 이름들의 리스트
-
-    Returns:
-        str: CSS 셀렉터 문자열
-    """
-    return ', '.join([f'.{cls}' for cls in classes])
-
 
 def extract_texts_from_html(html_content, html_selectors):
     """
@@ -96,7 +84,7 @@ def extract_texts_from_html(html_content, html_selectors):
 
 def extract_texts_from_xml_tag(tag, tags_to_extract, html_selectors):
     """
-    XML 아이템에서 HTML 콘텐츠 추출 및 특정 클래스의 텍스트 추출
+    XML 태그에서 HTML 콘텐츠 추출 및 특정 클래스의 텍스트 추출
 
     Args:
         tag (_type_): XML 태그 요소
@@ -191,6 +179,8 @@ def main():
 
     # 텍스트 추출
     extracted_texts = parse_xml_file(xml_file_path, tags_to_extract, html_selectors)
+
+
 
     # 엑셀 파일로 저장할 데이터 프레임 생성
     data = []
