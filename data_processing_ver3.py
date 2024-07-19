@@ -105,6 +105,9 @@ def extract_texts_from_xml_tag(tag, tags_to_extract, html_selectors):
     if html_content:
         html_texts = extract_texts_from_html(html_content, html_selectors)
         texts['html_texts'] = html_texts
+    else if html_content == '':
+        div = soup.find('div', {'d'})
+        texts['html_texts'] = {}
     else:
         texts['html_texts'] = {'None': ['None']}
     
