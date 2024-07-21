@@ -113,6 +113,7 @@ def extract_class_and_text_from_xml_tag(tag, tags_to_extract, html_selectors):
     desired_tags = tags_to_extract[1:]
 
     texts = {}
+    
     for desired_tag in desired_tags:
         texts[desired_tag] = tag.find(desired_tag).text if tag.find(desired_tag) is not None else 'No Content'
 
