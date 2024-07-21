@@ -12,7 +12,6 @@ from lxml import etree
 logging.basicConfig(filename='parsing_link_test.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-
 # 각 column_filed 번호에 대응하는 값
 column_filed = {
     1: 'message_id',  # string
@@ -47,7 +46,6 @@ parsing_classkey_comment_child = {
     'naver_cafe': 'reply'
 }
 
-
 # 각 파일에 대응되는 user_id 파싱 키 클래스
 parsing_classkey_userid = {
     'naver_cafe': 'nick_name'
@@ -62,8 +60,6 @@ parsing_classKey_secretComment = {
     'naver_blog': 'u_cbox_delete_contents',
     'naver_cafe': uuid.uuid4(),
     'naver_kin': uuid.uuid4()
-
-
 }
 
 def extract_texts_from_html(html_content, html_selectors):
@@ -94,8 +90,6 @@ def extract_texts_from_html(html_content, html_selectors):
                     texts.append(element.get_text(strip=True))
             result[selector] = texts
     return result
-
-
 
 def extract_class_and_text_from_xml_tag(tag, tags_to_extract, html_selectors):
     """
@@ -167,8 +161,6 @@ def parse_xml_file(xml_file_path, tags_to_extract, html_selectors):
     # 텍스트 추출
     return extract_texts_from_xml(root, tags_to_extract, html_selectors)
 
- 
-
 def main():
     # XML 파일 경로 설정
     xml_file_path = 'xml/sample.xml'
@@ -184,10 +176,11 @@ def main():
 
     # 추출할 태그 및 클래스 지정
     tags_to_extract = ['comment_html', 'title', 'registered_date', 'detail_content']
-    class_names_to_extract = [ None, 'comment_content', 'end_user_nick', 'nick_name']
+    class_names_to_extract = [None, 'comment_content', 'end_user_nick', 'nick_name']
 
-    # 셀렉터 생성
-    html_selectors = [f'.{cls}' for cls in class_names_to_extract]
+    # 구체적인 CSS 선택자 생성
+    html_selectors = [f'li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply)', 
+                      f'li[data-v-49558ed9][data-v-7db6cb9f].reply']
 
     # 텍스트 추출
     extracted_texts = parse_xml_file(xml_file_path, tags_to_extract, html_selectors)
@@ -210,7 +203,5 @@ def main():
         
         print("-" * 40)
         
-    
-
 if __name__ == "__main__":
     main()
