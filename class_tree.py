@@ -98,9 +98,13 @@ def main():
         return
 
     tags_to_extract = ['comment_html']
-    class_names_to_extract = ['content', 'comment_content', 'end_user_nick', 'nick_name', 'date font_l']
-
-    html_selectors = [f'li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply)', f'li[data-v-49558ed9][data-v-7db6cb9f].reply']
+    html_selectors = ['li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply)', 
+                      'li[data-v-49558ed9][data-v-7db6cb9f].reply', 
+                      '.content', 
+                      '.comment_content', 
+                      '.end_user_nick', 
+                      '.nick_name', 
+                      '.date.font_l']
 
     extracted_texts = parse_and_extract_from_xml(xml_file_path, tags_to_extract, html_selectors)
 
