@@ -100,9 +100,9 @@ def main():
     tags_to_extract = ['comment_html']
     html_selectors = ['li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply)', 
                       'li[data-v-49558ed9][data-v-7db6cb9f].reply', 
-                      '.content', 
+                      '.se-fs- se-ff-', 
                       '.comment_content', 
-                      '.end_user_nick', 
+                      '.info_wrap', 
                       '.nick_name', 
                       '.date.font_l']
 
