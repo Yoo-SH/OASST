@@ -210,7 +210,7 @@ def print_comment_tree(tree):
     """
     logging.info("댓글 트리 출력 중")
     for root, levels in tree.items():
-        print(f"루트 노드: {root} (UUID: {levels['uuid']}), 날짜 {levels['registered_date']}")
+        print(f"레벨 1 본글: {root} (UUID: {levels['uuid']}), 날짜 {levels['registered_date']}")
         for level_2_uuid, level_2_data in levels['Level_2'].items():
             print(f"  레벨 2 댓글: {level_2_data['comment']} (UUID: {level_2_uuid}, 날짜: {level_2_data['date']})")
             for level_3_uuid, level_3_data in levels['Level_3'][level_2_uuid].items():
@@ -218,7 +218,7 @@ def print_comment_tree(tree):
 
 
 def main():
-    xml_file_path = 'xml/sample_mini.xml'
+    xml_file_path = 'xml/sample.xml'
 
     if not os.path.isabs(xml_file_path):
         xml_file_path = os.path.abspath(xml_file_path)
