@@ -63,13 +63,13 @@ def extract_texts_from_html(html_content, html_selectors):
             result[selector] = texts
     return result
 
+
+
 def extract_class_and_text_from_xml_tag(tag, tags_to_extract, html_selectors):
     html_tag = tags_to_extract[0]
-    desired_tags = tags_to_extract[1:]
 
     texts = {}
-    for desired_tag in desired_tags:
-        texts[desired_tag] = tag.find(desired_tag).text if tag.find(desired_tag) is not None else 'No Content'
+
 
     html_content = tag.find(html_tag).text if tag.find(html_tag) is not None else ''
     texts['html_texts'] = extract_texts_from_html(html_content, html_selectors) if html_content else {'None': ['None']}
@@ -98,13 +98,12 @@ def main():
         return
 
     tags_to_extract = ['comment_html']
-    html_selectors = ['li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply)', 
+    html_selectors = ['.ellip', '.se-text-paragraph se-text-paragraph-align-left', '.date.font_l', 'li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply)',
                       'li[data-v-49558ed9][data-v-7db6cb9f].reply', 
-                      '.se-fs- se-ff-', 
                       '.comment_content', 
-                      '.info_wrap', 
                       '.nick_name', 
-                      '.date.font_l']
+                      '.date'
+                      ]
 
     extracted_texts = parse_and_extract_from_xml(xml_file_path, tags_to_extract, html_selectors)
 
