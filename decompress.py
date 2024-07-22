@@ -80,6 +80,9 @@ def extract_contents(html_content, class_name):
         logging.exception("Traceback:")  # Log the full stack trace
         return []
 
+
+
+
 #commentN'의 갯수+1 행을 복제하면서 첫 번째 행은 detail_content를 유지하고 나머지는 comment_texts 텍스트를 채우는 함수
 def expand_rows(row):
     
@@ -154,6 +157,7 @@ def process_excel_file(input_path, file_name, output_path, output_file_name=None
     new_df.to_excel(output_file_path, index=False, columns=['사용여부', 'channel', 'category', 'title', 'detail_content', '종류', 'registered_date', 'site_name', 'board_name'])
 
     print(f"New Excel file saved to {output_file_path}")
+
 
 def main():
     parser = argparse.ArgumentParser(description='Process Excel file.')
