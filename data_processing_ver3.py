@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import logging
 import uuid
 import os
+import class_tree
 import argparse
 import platform
 import requests
