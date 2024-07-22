@@ -54,7 +54,20 @@ def format_date(date_str):
         formatted_date = dt.strftime("Formatted Date: %Y-%m-%dT%H:%M:%S.%f+09:00") #한국 표준시 UTC+09:00
         return formatted_date
     except ValueError:
-        return "Invalid Date Format"
+        try: 
+            dt = datetime.strptime(date_str, "%y.%m.%d") #네이버카페에서 수집되는 registered_data 형식
+            formatted_date = dt.strftime("Formatted Date: %Y-%m-%dT00:00:00.000000+09:00") #한국 표준시 UTC+09:00
+            return formatted_date
+        except ValueError:
+            try:
+                dt = datetime.now()
+                formatted_date = dt.strftime("Formatted Date: %Y-%m-%dT%H:%M:%S.%f+09:00") #한국 표준시 UTC+09:00
+                return formatted_date
+            except ValueError:
+                return "Invalid Date Format"
+
+
+
 
 def build_comment_tree(extracted_texts):
     # 트리 구조를 초기화합니다.
@@ -69,6 +82,8 @@ def build_comment_tree(extracted_texts):
 
         if not root.strip():
             continue
+
+
 
         # 'ul[data-v-7db6cb9f].comment_list .comment_content'의 댓글을 추출합니다.
         all_comments = item['html_texts'].get("ul[data-v-7db6cb9f].comment_list .comment_content", [])
@@ -97,20 +112,16 @@ def build_comment_tree(extracted_texts):
             if level_2_index < len(level_2_comments) and comment == level_2_comments[level_2_index]:
                 # 현재 댓글이 레벨 2 댓글이면 현재 레벨 2 댓글을 설정합니다.
                 current_level_2_comment = comment
+                tree[root]['Level_2'].append((comment, formatted_date))
                 level_2_index += 1
             elif level_3_index < len(level_3_comments) and comment == level_3_comments[level_3_index]:
                 # 현재 댓글이 레벨 3 댓글이면 현재 레벨 2 댓글에 추가합니다.
                 if current_level_2_comment:
                     tree[root]['Level_3'][current_level_2_comment].append((comment, formatted_date))
                 level_3_index += 1
-
-        # 레벨 2 댓글을 트리에 추가합니다.
-        for comment in level_2_comments:
-            comment_date = comment_dates[date_index] if date_index < len(comment_dates) else 'No Date'
-            formatted_date = format_date(comment_date)
-            date_index += 1
-            tree[root]['Level_2'].append((comment, formatted_date))
         
+
+
         # 루트 노드의 등록 날짜를 트리에 추가합니다.
         tree[root]['registered_date'] = format_date(registered_date)
 
@@ -124,7 +135,6 @@ def print_comment_tree(tree):
             if level_2_comment in levels['Level_3']:
                 for level_3_comment, level_3_date in levels['Level_3'][level_2_comment]:
                     print(f"    Level 3: {level_3_comment} ({level_3_date})")
-
 
 def main():
     xml_file_path = 'xml/sample_mini.xml'
@@ -147,10 +157,8 @@ def main():
     extracted_texts = parse_and_extract_from_xml(xml_file_path, tags_to_extract, html_selectors)
     logging.info(f"Extracted texts: {extracted_texts}")
 
-    
     tree = build_comment_tree(extracted_texts)
     print_comment_tree(tree)
 
-     
 if __name__ == "__main__":
     main()
