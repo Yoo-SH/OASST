@@ -16,6 +16,7 @@ import logging
 logging.basicConfig(filename='parsing_link_test.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
+
 # 각 column_filed 번호에 대응하는 값
 column_filed = {
     1: 'message_id',  # string
@@ -39,6 +40,10 @@ column_filed = {
 }
 
 
+# 필요한 열만 선택하여 엑셀 파일 column에 할당..
+columns_to_extract = [column_filed[1], column_filed[2], column_filed[3], column_filed[4], column_filed[5], column_filed[6], column_filed[7], column_filed[8], column_filed[9], column_filed[10], column_filed[11], column_filed[12], column_filed[13], column_filed[14], column_filed[15], column_filed[16], column_filed[17], column_filed[18]]
+
+
 # 각 파일에 대응하는 comment 파싱 키 클래스, 전체 comment를 파싱하는 class key , level2, level3의 comment를 parsing함 (with css selector)
 parsing_classKey_comment = {
     'naver_blog': 'u_cbox_contents',
@@ -56,8 +61,9 @@ parsing_classkey_comment_level_3 = {
     'naver_cafe': 'li[data-v-49558ed9][data-v-7db6cb9f].reply .comment_content'
 }
 
-parsing_classkey_userid = {
-    'naver_cafe': 'nick_name'
+#각 파일에 대응하는 child comment 등록일 파싱키 클래스
+parsing_classkey_comment_data = { 
+    'naver_cafe': '.date'
 }
 
 # 각 파일에 대응하는 secretComment 파싱 키 클래스
@@ -66,6 +72,16 @@ parsing_classKey_secretComment = {
     'naver_cafe': uuid.uuid4(),
     'naver_kin': uuid.uuid4()
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -86,6 +102,7 @@ def main():
         return
 
 
+
     # 추출할 태그 및 클래스 지정
     tags_to_extract = ['comment_html', 'title', 'registered_date', 'detail_content']
     html_selectors = [
@@ -94,6 +111,7 @@ def main():
         'li[data-v-49558ed9][data-v-7db6cb9f].reply .comment_content',
         '.date'  # 날짜 선택자를 추가합니다.
     ]
+
 
 
     extracted_texts = parse_and_extract_from_xml(xml_file_path, tags_to_extract, html_selectors)
