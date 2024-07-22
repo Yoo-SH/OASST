@@ -3,13 +3,15 @@ from bs4 import BeautifulSoup
 import logging
 import uuid
 import os
-from class_tree import *
-from class_parsing import *
 import argparse
 import platform
 import requests
 from lxml import etree
 import logging
+
+from class_tree import *
+from class_parsing_and_extract import *
+from xml_to_oasst_with_excel import *
 
 
 # Set up logging
@@ -88,6 +90,10 @@ parsing_classKey_secretComment = {
 
 def main():
     
+
+
+
+
     # XML 파일 경로 설정
     xml_file_path = 'xml/sample.xml'
     
@@ -123,24 +129,8 @@ def main():
     
 
 
-    """ # 엑셀 파일로 저장할 데이터 프레임 생성
-    data = []
-    for tag in extracted_texts:
-        for class_name, texts in tag['html_texts'].items():
-            for text in texts:
-                row = {
-                    'message_id': str(uuid.uuid4()) if class_name == '.comment_content' else '',
-                    'user_id': str(uuid.uuid4() ) if class_name== '.nick_name' else '',
-                    'text': text if class_name == '.comment_content' else '',
-                    'title': tag['title'],
-                    'registered_date': tag['registered_date']
-                }
-                data.append(row)
     
-    df = pd.DataFrame(data, columns=[column_filed[i] for i in [1, 3, 5, 4, 2]])
-    df.to_excel('extracted_texts.xlsx', index=False)
-    print("Data has been written to extracted_texts.xlsx")
- """
+    
 
 if __name__ == "__main__":
     main()
