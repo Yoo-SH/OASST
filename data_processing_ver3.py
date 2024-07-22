@@ -3,11 +3,14 @@ from bs4 import BeautifulSoup
 import logging
 import uuid
 import os
-import class_tree
+from class_tree import *
+from class_parsing import *
 import argparse
 import platform
 import requests
 from lxml import etree
+import logging
+
 
 # Set up logging
 logging.basicConfig(filename='parsing_link_test.log', level=logging.INFO,
@@ -35,21 +38,22 @@ column_filed = {
     18: 'lavels'  # sequence
 }
 
-# 각 파일에 대응하는 comment 파싱 키 클래스
+
+# 각 파일에 대응하는 comment 파싱 키 클래스, 전체 comment를 파싱하는 class key , level2, level3의 comment를 parsing함 (with css selector)
 parsing_classKey_comment = {
     'naver_blog': 'u_cbox_contents',
-    'naver_cafe': 'comment_content',
+    'naver_cafe': 'ul[data-v-7db6cb9f].comment_list .comment_content',
     'naver_kin': 'answerDetail'
 }
 
-# 각 파일에 대응하는 child comment 파싱 키 클래스
-parsing_classkey_comment_child = {
-    'naver_cafe': 'reply'
+# 각 파일에 대응하는 child comment 파싱 키 클래스 , 전체 comment 중, level2 계층의 comment를 parsing함 (with css selector)
+parsing_classkey_comment_level_2 = {
+    'naver_cafe': 'li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply) .comment_content' 
 }
 
-# 각 파일에 대응되는 parent comment 파싱 키 클래스
-parsing_classkey_nickName_parent = {
-    'naver_cafe': 'reply_to'
+# 각 파일에 대응하는 child comment 파싱 키 클래스 , 전체 comment 중, level3 계층의 comment를 parsing함 (with css selector)
+parsing_classkey_comment_level_3 = {
+    'naver_cafe': 'li[data-v-49558ed9][data-v-7db6cb9f].reply .comment_content'
 }
 
 parsing_classkey_userid = {
@@ -64,98 +68,6 @@ parsing_classKey_secretComment = {
 }
 
 
-def extract_texts_from_html(html_content, html_selectors):
-    """
-    HTML 콘텐츠에서 특정 클래스 이름들을 만족하는 텍스트 추출
-
-    Args:
-        html_content (str): HTML 문자열
-        html_selectors (list): CSS 셀렉터 문자열들의 리스트
-
-    Returns:
-        dict: 각 셀렉터별로 추출된 텍스트 리스트를 포함하는 딕셔너리
-    """
-    soup = BeautifulSoup(html_content, 'html.parser')
-    result = {}
-    for selector in html_selectors:
-        elements = soup.select(selector)
-        result[selector] = [element.get_text(strip=True) for element in elements]
-    return result
-
-
-def extract_texts_from_xml_tag(tag, tags_to_extract, html_selectors):
-    """
-    XML 태그에서 HTML 콘텐츠 추출 및 특정 클래스의 텍스트 추출
-
-    Args:
-        tag (_type_): XML 태그 요소
-        tags_to_extract (list): 첫 번째 요소는 HTML 태그 이름, 나머지는 추출할 태그 이름들의 리스트
-        html_selectors (list): CSS 셀렉터 문자열들의 리스트
-
-    Returns:
-        dict: 추출된 텍스트와 제목의 딕셔너리
-    """
-    html_tag = tags_to_extract[0]
-    desired_tags = tags_to_extract[1:]
-
-    texts = {}
-    for desired_tag in desired_tags:
-        texts[desired_tag] = tag.find(desired_tag).text if tag.find(desired_tag) is not None else 'No Content'
-
-    html_content = tag.find(html_tag).text if tag.find(html_tag) is not None else ''
-    if html_content:
-        html_texts = extract_texts_from_html(html_content, html_selectors)
-        texts['html_texts'] = html_texts
-    else if html_content == '':
-        div = soup.find('div', {'d'})
-        texts['html_texts'] = {}
-    else:
-        texts['html_texts'] = {'None': ['None']}
-    
-    return texts
-
-
-def extract_texts_from_xml(root, tags_to_extract, html_selectors):
-    """
-    XML에서 HTML 콘텐츠 추출 및 특정 클래스의 텍스트 추출
-
-    Args:
-        root (_type_): XML 루트 요소
-        tags_to_extract (list): 첫 번째 요소는 HTML 태그 이름, 나머지는 추출할 태그 이름들의 리스트
-        html_selectors (list): CSS 셀렉터 문자열들의 리스트
-
-    Returns:
-        list: 추출된 텍스트와 제목의 딕셔너리 리스트
-    """
-    all_texts = []
-    for tag in root.findall('.//item'):
-        extracted_texts = extract_texts_from_xml_tag(tag, tags_to_extract, html_selectors)
-        all_texts.append(extracted_texts)
-    return all_texts
-
-
-def parse_xml_file(xml_file_path, tags_to_extract, html_selectors):
-    """
-    XML 파일을 파싱하고 특정 클래스의 텍스트를 추출
-
-    Args:
-        xml_file_path (str): XML 파일 경로
-        tags_to_extract (list): 첫 번째 요소는 HTML 태그 이름, 나머지는 추출할 태그 이름들의 리스트
-        html_selectors (list): CSS 셀렉터 문자열들의 리스트
-
-    Returns:
-        list: 추출된 텍스트와 제목의 딕셔너리 리스트
-    """
-    # XML 파일 파싱
-    try:
-        tree = etree.parse(xml_file_path)
-        root = tree.getroot()
-    except Exception as e:
-        logging.error(f"Error parsing XML file: {e}")
-        return []
-
-    # 텍스트 추출
-    return extract_texts_from_xml(root, tags_to_extract, html_selectors)
 
 
 def main():
@@ -175,18 +87,25 @@ def main():
 
 
     # 추출할 태그 및 클래스 지정
-    tags_to_extract = ['comment_html', 'title', 'registered_date']
-    class_names_to_extract = ['comment_content', 'nick_name', 'reply']
-
-    # 셀렉터 생성
-    html_selectors = [f'.{cls}' for cls in class_names_to_extract]
-
-    # 텍스트 추출
-    extracted_texts = parse_xml_file(xml_file_path, tags_to_extract, html_selectors)
-
+    tags_to_extract = ['comment_html', 'title', 'registered_date', 'detail_content']
+    html_selectors = [
+        'ul[data-v-7db6cb9f].comment_list .comment_content',
+        'li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply) .comment_content',
+        'li[data-v-49558ed9][data-v-7db6cb9f].reply .comment_content',
+        '.date'  # 날짜 선택자를 추가합니다.
+    ]
 
 
-    # 엑셀 파일로 저장할 데이터 프레임 생성
+    extracted_texts = parse_and_extract_from_xml(xml_file_path, tags_to_extract, html_selectors)
+    logging.info(f"Extracted texts: {extracted_texts}")
+
+    tree = build_comment_tree(extracted_texts)
+    print_comment_tree(tree)
+
+    
+
+
+    """ # 엑셀 파일로 저장할 데이터 프레임 생성
     data = []
     for tag in extracted_texts:
         for class_name, texts in tag['html_texts'].items():
@@ -203,7 +122,7 @@ def main():
     df = pd.DataFrame(data, columns=[column_filed[i] for i in [1, 3, 5, 4, 2]])
     df.to_excel('extracted_texts.xlsx', index=False)
     print("Data has been written to extracted_texts.xlsx")
-
+ """
 
 if __name__ == "__main__":
     main()
