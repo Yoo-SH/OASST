@@ -46,7 +46,7 @@ column_filed = {
 # 각 파일에 대응하는 comment 파싱 키 클래스, 전체 comment를 파싱하는 class key , level2, level3의 comment를 parsing함 (with css selector)
 parsing_classKey_comment_child = {
     'naver_cafe': 'ul[data-v-7db6cb9f].comment_list .comment_content',
-    'naver_blog': '.u_cbox_contents'
+    'naver_blog': '.u_cbox_text_wrap'
     
     
 }
@@ -94,7 +94,7 @@ def save_to_excel(rows, output_file):
 def main():
     
     # XML 파일 경로 설정
-    xml_file_path = 'xml/blog_대댓글_test.xml'
+    xml_file_path = 'xml/sample_blog.xml'
     
     # XML 파일 경로가 절대 경로인지 확인하고, 절대 경로로 변환
     if not os.path.isabs(xml_file_path):
