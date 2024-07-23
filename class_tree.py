@@ -145,32 +145,34 @@ def print_comment_tree(tree):
     
     
  
-def get_rows_from_tree(tree):
+def get_rows_from_tree(tree,column_filed):
     rows = []
 
     for root, levels in tree.items():
         root_uuid = levels['uuid']
         root_date = levels['date']
         rows.append({
-            'message_id': root_uuid,
-            'parent_id': 'null',
-            'user_id': '미정',
-            'title': root.split('.')[0],
-            'text': root,
-            'created_date': root_date,
-            'role': 'prompter',
-            'lang': 'ko',
-            'review_count': 0,
-            'review_result': 'null',
-            'deleted': 'false',
-            'rank': 'null',
-            'synthetic': 'false',
-            'model_name': 'null',
-            'detoxify': '{ "toxicity": 0.0, "severe_toxicity": 0.0, "obscene": 0.0, "identity_attack": 0.0, "insult": 0.0, "threat": 0.0, "sexual_explicit": 0.0 }',
-            'message_tree_id': root_uuid,
-            'emojis': '{ "name": [ "_skip_labeling" ], "count": [ 2 ] }',
-            'lavels': '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }',
-            '사용여부': 'None'
+            column_filed[1] : root_uuid,
+            column_filed[2] : 'null',
+            column_filed[3] : uuid.uuid4(),
+            column_filed[4] : root_date,
+            column_filed[5] : root.split('.')[0], 
+            column_filed[6] : root,
+            column_filed[7] : 'None',
+            column_filed[8] : 'prompter',
+            column_filed[9] : 'ko',
+            column_filed[10] : 0,
+            column_filed[11] : 'null',
+            column_filed[12] : 'false',
+            column_filed[13] : 'null',
+            column_filed[14] : 'false',
+            column_filed[15] : 'null',
+            column_filed[16] : '{ "toxicity": 0.0, "severe_toxicity": 0.0, "obscene": 0.0, "identity_attack": 0.0, "insult": 0.0, "threat": 0.0, "sexual_explicit": 0.0 }',
+            column_filed[17] : root_uuid,
+            column_filed[18] : "ready_for_export",
+            column_filed[19] : '{ "name": [ "_skip_labeling" ], "count": [ 2 ] }',
+            column_filed[20] : '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }'
+
         })
         
         for level_2_uuid, level_2_data in levels['Level_2'].items():
@@ -179,50 +181,53 @@ def get_rows_from_tree(tree):
                 break
             level_2_date = level_2_data['date']
             rows.append({
-                'message_id': level_2_uuid,
-                'parent_id': root_uuid,
-                'user_id': '미정',
-                'title': 'null',
-                'text': level_2_comment,
-                'created_date': level_2_date,
-                'role': 'assistant',
-                'lang': 'ko',
-                'review_count': 0,
-                'review_result': 'null',
-                'deleted': 'false',
-                'rank': 'null',
-                'synthetic': 'false',
-                'model_name': 'null',
-                'detoxify': '{ "toxicity": 0.0, "severe_toxicity": 0.0, "obscene": 0.0, "identity_attack": 0.0, "insult": 0.0, "threat": 0.0, "sexual_explicit": 0.0 }',
-                'message_tree_id': root_uuid,
-                'emojis': '{ "name": [ "_skip_labeling" ], "count": [ 2 ] }',
-                'lavels': '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }',
-                '사용여부': 'None'
+                column_filed[1] : level_2_uuid,
+                column_filed[2] : root_uuid,
+                column_filed[3] : uuid.uuid4(),
+                column_filed[4] : level_2_date,
+                column_filed[5] : 'null',
+                column_filed[6] : level_2_comment,
+                column_filed[7] : 'None',
+                column_filed[8] : 'assistant',
+                column_filed[9] : 'ko',
+                column_filed[10] : 0,
+                column_filed[11] : 'null',
+                column_filed[12] : 'false',
+                column_filed[13] : 'null',
+                column_filed[14] : 'false',
+                column_filed[15] : 'null',
+                column_filed[16] : '{ "toxicity": 0.0, "severe_toxicity": 0.0, "obscene": 0.0, "identity_attack": 0.0, "insult": 0.0, "threat": 0.0, "sexual_explicit": 0.0 }',
+                column_filed[17] : root_uuid,
+                column_filed[18] : "ready_for_export",
+                column_filed[19] : '{ "name": [ "_skip_labeling" ], "count": [ 2 ] }',
+                column_filed[20] : '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }'
+                
             })
             
             for level_3_uuid, level_3_data in levels['Level_3'][level_2_uuid].items():
                 level_3_comment = level_3_data['comment']
                 level_3_date = level_3_data['date']
                 rows.append({
-                    'message_id': level_3_uuid,
-                    'parent_id': level_2_uuid,
-                    'user_id': '미정',
-                    'title': 'null',
-                    'text': level_3_comment,
-                    'created_date': level_3_date,
-                    'role': 'assistant',
-                    'lang': 'ko',
-                    'review_count': 0,
-                    'review_result': 'null',
-                    'deleted': 'false',
-                    'rank': 'null',
-                    'synthetic': 'false',
-                    'model_name': 'null',
-                    'detoxify': '{ "toxicity": 0.0, "severe_toxicity": 0.0, "obscene": 0.0, "identity_attack": 0.0, "insult": 0.0, "threat": 0.0, "sexual_explicit": 0.0 }',
-                    'message_tree_id': root_uuid,
-                    'emojis': '{ "name": [ "_skip_labeling" ], "count": [ 2 ] }',
-                    'lavels': '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }',
-                    '사용여부': 'None'
+                column_filed[1] : level_3_uuid,
+                column_filed[2] : level_2_uuid,
+                column_filed[3] : uuid.uuid4(),
+                column_filed[4] : level_3_date,
+                column_filed[5] : 'null',
+                column_filed[6] : level_3_comment,
+                column_filed[7] : 'None',
+                column_filed[8] : 'assistant',
+                column_filed[9] : 'ko',
+                column_filed[10] : 0,
+                column_filed[11] : 'null',
+                column_filed[12] : 'false',
+                column_filed[13] : 'null',
+                column_filed[14] : 'false',
+                column_filed[15] : 'null',
+                column_filed[16] : '{ "toxicity": 0.0, "severe_toxicity": 0.0, "obscene": 0.0, "identity_attack": 0.0, "insult": 0.0, "threat": 0.0, "sexual_explicit": 0.0 }',
+                column_filed[17] : root_uuid,
+                column_filed[18] : "ready_for_export",
+                column_filed[19] : '{ "name": [ "_skip_labeling" ], "count": [ 2 ] }',
+                column_filed[20] : '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }'
                 })
 
     return rows

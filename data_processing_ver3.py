@@ -18,62 +18,62 @@ from xml_to_oasst_with_excel import *
 logging.basicConfig(filename='parsing_link_test.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-
 # 각 column_filed 번호에 대응하는 값
 column_filed = {
     1: 'message_id',  # string
     2: 'parent_id',  # string 
     3: 'user_id',  # string
-    4: 'creadte_date',  # string
-    5: 'text',  # string
-    6: 'role',  # string
-    7: 'lang',  # string
-    8: 'review_count',  # int 
-    9: 'review_result',  # bool
-    10: 'deleted',  # bool
-    11: 'rank',  # int
-    12: 'synthetic',  # bool
-    13: 'model_name',  # string
-    14: 'detoxify',  # dict
-    15: 'message_tree_id',  # string
-    16: 'tree_state',  # string
-    17: 'emojis',  # sequence
-    18: 'lavels'  # sequence
+    4: 'creadte_date', #string
+    5: 'title', #stirng
+    6: 'text',  # string
+    7: '사용여부',  # string
+    8: 'role',  # string
+    9: 'lang',  # string
+    10: 'review_count',  # int 
+    11: 'review_result',  # bool
+    12: 'deleted',  # bool
+    13: 'rank',  # int
+    14: 'synthetic',  # bool
+    15: 'model_name',  # string
+    16: 'detoxify',  # dict
+    17: 'message_tree_id',  # string
+    18: 'tree_state',  # string
+    19: 'emojis',  # sequence
+    20: 'lavels'  # sequence
 }
 
 
-# 필요한 열만 선택하여 엑셀 파일 column에 할당..
-columns_to_extract = [column_filed[1], column_filed[2], column_filed[3], column_filed[4], column_filed[5], column_filed[6], column_filed[7], column_filed[8], column_filed[9], column_filed[10], column_filed[11], column_filed[12], column_filed[13], column_filed[14], column_filed[15], column_filed[16], column_filed[17], column_filed[18]]
-
-
 # 각 파일에 대응하는 comment 파싱 키 클래스, 전체 comment를 파싱하는 class key , level2, level3의 comment를 parsing함 (with css selector)
-parsing_classKey_comment = {
-    'naver_blog': 'u_cbox_contents',
+parsing_classKey_comment_level_1 = {
     'naver_cafe': 'ul[data-v-7db6cb9f].comment_list .comment_content',
+    'naver_blog': 'u_cbox_contents',
     'naver_kin': 'answerDetail'
 }
 
 # 각 파일에 대응하는 child comment 파싱 키 클래스 , 전체 comment 중, level2 계층의 comment를 parsing함 (with css selector)
-parsing_classkey_comment_level_2 = {
+parsing_classKey_comment_level_2 = {
     'naver_cafe': 'li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply) .comment_content' 
 }
 
 # 각 파일에 대응하는 child comment 파싱 키 클래스 , 전체 comment 중, level3 계층의 comment를 parsing함 (with css selector)
-parsing_classkey_comment_level_3 = {
+parsing_classKey_comment_level_3 = {
     'naver_cafe': 'li[data-v-49558ed9][data-v-7db6cb9f].reply .comment_content'
 }
 
 #각 파일에 대응하는 child comment 등록일 파싱키 클래스
-parsing_classkey_comment_data = { 
+parsing_classKey_comment_data = { 
     'naver_cafe': '.date'
 }
 
 # 각 파일에 대응하는 secretComment 파싱 키 클래스
 parsing_classKey_secretComment = {
-    'naver_blog': 'u_cbox_delete_contents',
     'naver_cafe': uuid.uuid4(),
+    'naver_blog': 'u_cbox_delete_contents',
     'naver_kin': uuid.uuid4()
 }
+
+
+
 
 
 def save_to_excel(rows, output_file):
@@ -107,10 +107,10 @@ def main():
     # 추출할 태그 및 클래스 지정
     tags_to_extract = ['comment_html', 'title', 'registered_date', 'detail_content']
     html_selectors = [
-        'ul[data-v-7db6cb9f].comment_list .comment_content',
-        'li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply) .comment_content',
-        'li[data-v-49558ed9][data-v-7db6cb9f].reply .comment_content',
-        '.date'  # 날짜 선택자를 추가합니다.
+        parsing_classKey_comment_level_1['naver_cafe'],
+        parsing_classKey_comment_level_2['naver_cafe'],
+        parsing_classKey_comment_level_3['naver_cafe'],
+        parsing_classKey_comment_data['naver_cafe']  # 날짜 선택자를 추가합니다.
     ]
 
 
@@ -120,7 +120,7 @@ def main():
 
     tree = build_comment_tree(extracted_texts)
     #print_comment_tree(tree)
-    rows = get_rows_from_tree(tree)
+    rows = get_rows_from_tree(tree,column_filed)
     
     # 데이터가 제대로 구성되었는지 확인
     if not rows:
