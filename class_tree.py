@@ -42,6 +42,10 @@ def format_uuid():
 def build_comment_tree(extracted_texts):
     """
     추출된 텍스트 데이터를 기반으로 댓글의 계층 구조를 구축합니다.
+    댓글이 pasing된 순서대로 1계층 2계층 댓글과 3계층 댓글을 구축합니다.
+    1계층은 원글, 2계층은 댓글, 3계층은 대댓글을 의미. 
+    2계층 댓글을 index를 추적하면서 3계층의 부모로 할당.
+
 
     Args:
         extracted_texts (list of dict): XML 항목에서 추출된 데이터의 리스트입니다.
@@ -57,6 +61,7 @@ def build_comment_tree(extracted_texts):
         'registered_date': None,
         'uuid': None
     })
+
 
     for item in extracted_texts:
         # 제목이나 상세 내용이 누락된 경우 기본값을 빈 문자열로 설정합니다.
@@ -89,7 +94,7 @@ def build_comment_tree(extracted_texts):
 
         # 루트 노드에 UUID를 추가합니다.
         tree[root]['uuid'] = format_uuid()
-        tree[root]['registered_date'] = format_date(registered_date)
+        tree[root]['datre'] = format_date(registered_date)
         
         # 'ul[data-v-7db6cb9f].comment_list .comment_content'의 댓글을 순회합니다.
         for comment in all_comments:
@@ -118,3 +123,56 @@ def build_comment_tree(extracted_texts):
 
     logging.info("댓글 트리 구축 완료")
     return tree
+
+
+
+
+def print_comment_tree(tree):
+    """
+    댓글 트리 구조를 출력합니다.
+
+    Args:
+        tree (defaultdict): 댓글의 계층 구조를 나타내는 중첩된 딕셔너리입니다.
+    """
+    logging.info("댓글 트리 출력 중")
+    for root, levels in tree.items():
+        print(f"레벨 1 본글: {root} (UUID: {levels['uuid']}), 날짜 {levels['registered_date']}")
+        for level_2_uuid, level_2_data in levels['Level_2'].items():
+            print(f"  레벨 2 댓글: {level_2_data['comment']} (UUID: {level_2_uuid}, 날짜: {level_2_data['date']})")
+            for level_3_uuid, level_3_data in levels['Level_3'][level_2_uuid].items():
+                print(f"    레벨 3 댓글: {level_3_data['comment']} (UUID: {level_3_uuid}, 날짜: {level_3_data['date']})")
+ 
+    
+    
+def get_rows_from_tree(tree):
+    rows = []
+
+    for root, levels in tree.items():
+        root_uuid = levels['uuid']
+        root_date = levels['registered_date']
+        rows.append({
+            'message_id': root_uuid,
+            'text': root,
+            'created_date': root_date
+        })
+        
+        for level_2_uuid, level_2_data in levels['Level_2'].items():
+            level_2_comment = level_2_data['comment']
+            level_2_date = level_2_data['date']
+            rows.append({
+                'message_id': level_2_uuid,
+                'text': level_2_comment,
+                'created_date': level_2_date
+            })
+            
+            for level_3_uuid, level_3_data in levels['Level_3'][level_2_uuid].items():
+                level_3_comment = level_3_data['comment']
+                level_3_date = level_3_data['date']
+                rows.append({
+                    'message_id': level_3_uuid,
+                    'text': level_3_comment,
+                    'created_date': level_3_date
+                })
+
+    return rows
+    
