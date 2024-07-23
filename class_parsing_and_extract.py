@@ -59,6 +59,7 @@ def extract_class_and_text_from_xml_tag(tag, tags_to_extract, html_selectors):
     return texts
 
 
+
 def parse_and_extract_from_xml(xml_file_path, tags_to_extract, html_selectors):
     """
     XML 파일을 파싱하고, 제공된 태그와 HTML 선택자를 기반으로 정보를 추출합니다.
@@ -83,23 +84,6 @@ def parse_and_extract_from_xml(xml_file_path, tags_to_extract, html_selectors):
     logging.info(f"추출 완료. 추출된 항목 수: {len(all_texts)}")
     return all_texts
 
-
-def print_comment_tree(tree):
-    """
-    댓글 트리 구조를 출력합니다.
-
-    Args:
-        tree (defaultdict): 댓글의 계층 구조를 나타내는 중첩된 딕셔너리입니다.
-    """
-    logging.info("댓글 트리 출력 중")
-    for root, levels in tree.items():
-        print(f"레벨 1 본글: {root} (UUID: {levels['uuid']}), 날짜 {levels['registered_date']}")
-        for level_2_uuid, level_2_data in levels['Level_2'].items():
-            print(f"  레벨 2 댓글: {level_2_data['comment']} (UUID: {level_2_uuid}, 날짜: {level_2_data['date']})")
-            for level_3_uuid, level_3_data in levels['Level_3'][level_2_uuid].items():
-                print(f"    레벨 3 댓글: {level_3_data['comment']} (UUID: {level_3_uuid}, 날짜: {level_3_data['date']})")
- 
-    
     
 
     

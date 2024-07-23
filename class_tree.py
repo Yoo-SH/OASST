@@ -68,7 +68,7 @@ def build_comment_tree(extracted_texts):
         title = item.get('title', '')
         detail_content = item.get('detail_content', '')
         registered_date = item.get('registered_date', 'No Date')
-        root = str(title) + '\n' + str(detail_content)
+        root = str(title) + '.' + str(detail_content)
 
         if not root.strip():
             logging.debug(f"빈 루트 노드 건너뜁니다")
@@ -94,7 +94,7 @@ def build_comment_tree(extracted_texts):
 
         # 루트 노드에 UUID를 추가합니다.
         tree[root]['uuid'] = format_uuid()
-        tree[root]['datre'] = format_date(registered_date)
+        tree[root]['date'] = format_date(registered_date)
         
         # 'ul[data-v-7db6cb9f].comment_list .comment_content'의 댓글을 순회합니다.
         for comment in all_comments:
@@ -136,7 +136,7 @@ def print_comment_tree(tree):
     """
     logging.info("댓글 트리 출력 중")
     for root, levels in tree.items():
-        print(f"레벨 1 본글: {root} (UUID: {levels['uuid']}), 날짜 {levels['registered_date']}")
+        print(f"레벨 1 본글: {root} (UUID: {levels['uuid']}), 날짜 {levels['date']}")
         for level_2_uuid, level_2_data in levels['Level_2'].items():
             print(f"  레벨 2 댓글: {level_2_data['comment']} (UUID: {level_2_uuid}, 날짜: {level_2_data['date']})")
             for level_3_uuid, level_3_data in levels['Level_3'][level_2_uuid].items():
@@ -144,25 +144,60 @@ def print_comment_tree(tree):
  
     
     
+ 
 def get_rows_from_tree(tree):
     rows = []
 
     for root, levels in tree.items():
         root_uuid = levels['uuid']
-        root_date = levels['registered_date']
+        root_date = levels['date']
         rows.append({
             'message_id': root_uuid,
+            'parent_id': 'null',
+            'user_id': '미정',
+            'title': root.split('.')[0],
             'text': root,
-            'created_date': root_date
+            'created_date': root_date,
+            'role': 'prompter',
+            'lang': 'ko',
+            'review_count': 0,
+            'review_result': 'null',
+            'deleted': 'false',
+            'rank': 'null',
+            'synthetic': 'false',
+            'model_name': 'null',
+            'detoxify': '{ "toxicity": 0.0, "severe_toxicity": 0.0, "obscene": 0.0, "identity_attack": 0.0, "insult": 0.0, "threat": 0.0, "sexual_explicit": 0.0 }',
+            'message_tree_id': root_uuid,
+            'emojis': '{ "name": [ "_skip_labeling" ], "count": [ 2 ] }',
+            'lavels': '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }',
+            '사용여부': 'None'
         })
         
         for level_2_uuid, level_2_data in levels['Level_2'].items():
             level_2_comment = level_2_data['comment']
+            if level_2_comment == 'None':
+                break
             level_2_date = level_2_data['date']
             rows.append({
                 'message_id': level_2_uuid,
+                'parent_id': root_uuid,
+                'user_id': '미정',
+                'title': 'null',
                 'text': level_2_comment,
-                'created_date': level_2_date
+                'created_date': level_2_date,
+                'role': 'assistant',
+                'lang': 'ko',
+                'review_count': 0,
+                'review_result': 'null',
+                'deleted': 'false',
+                'rank': 'null',
+                'synthetic': 'false',
+                'model_name': 'null',
+                'detoxify': '{ "toxicity": 0.0, "severe_toxicity": 0.0, "obscene": 0.0, "identity_attack": 0.0, "insult": 0.0, "threat": 0.0, "sexual_explicit": 0.0 }',
+                'message_tree_id': root_uuid,
+                'emojis': '{ "name": [ "_skip_labeling" ], "count": [ 2 ] }',
+                'lavels': '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }',
+                '사용여부': 'None'
             })
             
             for level_3_uuid, level_3_data in levels['Level_3'][level_2_uuid].items():
@@ -170,9 +205,24 @@ def get_rows_from_tree(tree):
                 level_3_date = level_3_data['date']
                 rows.append({
                     'message_id': level_3_uuid,
+                    'parent_id': level_2_uuid,
+                    'user_id': '미정',
+                    'title': 'null',
                     'text': level_3_comment,
-                    'created_date': level_3_date
+                    'created_date': level_3_date,
+                    'role': 'assistant',
+                    'lang': 'ko',
+                    'review_count': 0,
+                    'review_result': 'null',
+                    'deleted': 'false',
+                    'rank': 'null',
+                    'synthetic': 'false',
+                    'model_name': 'null',
+                    'detoxify': '{ "toxicity": 0.0, "severe_toxicity": 0.0, "obscene": 0.0, "identity_attack": 0.0, "insult": 0.0, "threat": 0.0, "sexual_explicit": 0.0 }',
+                    'message_tree_id': root_uuid,
+                    'emojis': '{ "name": [ "_skip_labeling" ], "count": [ 2 ] }',
+                    'lavels': '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }',
+                    '사용여부': 'None'
                 })
 
     return rows
-    
