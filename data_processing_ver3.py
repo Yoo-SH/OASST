@@ -44,25 +44,30 @@ column_filed = {
 
 
 # 각 파일에 대응하는 comment 파싱 키 클래스, 전체 comment를 파싱하는 class key , level2, level3의 comment를 parsing함 (with css selector)
-parsing_classKey_comment_level_1 = {
+parsing_classKey_comment_child = {
     'naver_cafe': 'ul[data-v-7db6cb9f].comment_list .comment_content',
-    'naver_blog': 'u_cbox_contents',
-    'naver_kin': 'answerDetail'
+    'naver_blog': '.u_cbox_contents'
+    
+    
 }
 
 # 각 파일에 대응하는 child comment 파싱 키 클래스 , 전체 comment 중, level2 계층의 comment를 parsing함 (with css selector)
 parsing_classKey_comment_level_2 = {
-    'naver_cafe': 'li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply) .comment_content' 
+    'naver_cafe': 'li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply) .comment_content',
+    'naver_blog': '.u_cbox_contents:not(.u_cbox_ico_reply .u_cbox_contents)', 
+    'naver_kin': 'answerDetail'
 }
 
 # 각 파일에 대응하는 child comment 파싱 키 클래스 , 전체 comment 중, level3 계층의 comment를 parsing함 (with css selector)
 parsing_classKey_comment_level_3 = {
-    'naver_cafe': 'li[data-v-49558ed9][data-v-7db6cb9f].reply .comment_content'
-}
+    'naver_cafe': 'li[data-v-49558ed9][data-v-7db6cb9f].reply .comment_content',
+    'naver_blog': '.u_cbox_ico_reply .u_cbox_contents'
+}   
 
 #각 파일에 대응하는 child comment 등록일 파싱키 클래스
 parsing_classKey_comment_data = { 
-    'naver_cafe': '.date'
+    'naver_cafe': '.date',
+    'naver_blog': '.u_cbox_date'
 }
 
 # 각 파일에 대응하는 secretComment 파싱 키 클래스
@@ -71,7 +76,6 @@ parsing_classKey_secretComment = {
     'naver_blog': 'u_cbox_delete_contents',
     'naver_kin': uuid.uuid4()
 }
-
 
 
 
@@ -90,7 +94,7 @@ def save_to_excel(rows, output_file):
 def main():
     
     # XML 파일 경로 설정
-    xml_file_path = 'xml/naver_cafe_20240722 (1).xml'
+    xml_file_path = 'xml/blog_대댓글_test.xml'
     
     # XML 파일 경로가 절대 경로인지 확인하고, 절대 경로로 변환
     if not os.path.isabs(xml_file_path):
@@ -107,10 +111,10 @@ def main():
     # 추출할 태그 및 클래스 지정
     tags_to_extract = ['comment_html', 'title', 'registered_date', 'detail_content']
     html_selectors = [
-        parsing_classKey_comment_level_1['naver_cafe'],
-        parsing_classKey_comment_level_2['naver_cafe'],
-        parsing_classKey_comment_level_3['naver_cafe'],
-        parsing_classKey_comment_data['naver_cafe']  # 날짜 선택자를 추가합니다.
+        parsing_classKey_comment_child['naver_blog'],
+        parsing_classKey_comment_level_2['naver_blog'],
+        parsing_classKey_comment_level_3['naver_blog'],
+        parsing_classKey_comment_data['naver_blog']  # 날짜 선택자를 추가합니다.
     ]
 
 
@@ -119,16 +123,17 @@ def main():
     logging.info(f"Extracted texts: {extracted_texts}")
 
     tree = build_comment_tree(extracted_texts)
-    #print_comment_tree(tree)
-    rows = get_rows_from_tree(tree,column_filed)
+    print_comment_tree(tree)
+    
+    """ rows = get_rows_from_tree(tree,column_filed)
     
     # 데이터가 제대로 구성되었는지 확인
     if not rows:
         logging.error("No rows generated from the comment tree.")
         return
 
-    save_to_excel(rows, "sampleout.xlsx")
-
+    #save_to_excel(rows, "sampleout.xlsx")
+ """
 
     
     
