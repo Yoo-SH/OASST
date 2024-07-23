@@ -39,7 +39,7 @@ def format_uuid():
     logging.debug(f"생성된 UUID: {uuid_value}")
     return uuid_value
 
-def build_comment_tree(extracted_texts):
+def build_comment_tree(extracted_texts, selectors_class_key, file):
     """
     추출된 텍스트 데이터를 기반으로 댓글의 계층 구조를 구축합니다.
     댓글이 pasing된 순서대로 1계층 2계층 댓글과 3계층 댓글을 구축합니다.
@@ -75,11 +75,11 @@ def build_comment_tree(extracted_texts):
             continue
 
         # 'ul[data-v-7db6cb9f].comment_list .comment_content'의 댓글을 추출합니다.
-        all_comments = item['html_texts'].get("ul[data-v-7db6cb9f].comment_list .comment_content", [])
+        all_comments = item['html_texts'].get(selectors_class_key["comment_child_level_all"]['naver_blog'], [])
 
         # 레벨 2 댓글과 레벨 3 댓글을 추출합니다.
-        level_2_comments = item['html_texts'].get("li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply) .comment_content", [])
-        level_3_comments = item['html_texts'].get("li[data-v-49558ed9][data-v-7db6cb9f].reply .comment_content", [])
+        level_2_comments = item['html_texts'].get(selectors_class_key["comment_child_level_2"]['naver_blog'], [])
+        level_3_comments = item['html_texts'].get(selectors_class_key["comment_child_level_3"]['naver_blog'], [])
         
         # 댓글들의 날짜를 추출합니다.
         comment_dates = item['html_texts'].get(".date", [])
