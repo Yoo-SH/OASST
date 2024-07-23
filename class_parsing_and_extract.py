@@ -1,6 +1,4 @@
-import os
 import logging
-import uuid
 from bs4 import BeautifulSoup
 from lxml import etree
 from collections import defaultdict
@@ -31,6 +29,8 @@ def extract_texts_from_html(html_content, html_selectors):
             result[selector] = texts
     logging.info("텍스트 추출 완료")
     return result
+
+
 
 def extract_class_and_text_from_xml_tag(tag, tags_to_extract, html_selectors):
     """
