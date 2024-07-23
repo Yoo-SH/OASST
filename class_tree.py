@@ -75,11 +75,11 @@ def build_comment_tree(extracted_texts, selectors_class_key, file):
             continue
 
         # 'ul[data-v-7db6cb9f].comment_list .comment_content'의 댓글을 추출합니다.
-        all_comments = item['html_texts'].get(selectors_class_key["comment_child_level_all"]['naver_blog'], [])
+        all_comments = item['html_texts'].get(selectors_class_key["comment_child_level_all"]['lawtalk_상담사례'], [])
 
         # 레벨 2 댓글과 레벨 3 댓글을 추출합니다.
-        level_2_comments = item['html_texts'].get(selectors_class_key["comment_child_level_2"]['naver_blog'], [])
-        level_3_comments = item['html_texts'].get(selectors_class_key["comment_child_level_3"]['naver_blog'], [])
+        level_2_comments = item['html_texts'].get(selectors_class_key["comment_child_level_2"]['lawtalk_상담사례'], [])
+        level_3_comments = item['html_texts'].get(selectors_class_key["comment_child_level_3"]['lawtalk_상담사례'], [])
         
         # 댓글들의 날짜를 추출합니다.
         comment_dates = item['html_texts'].get(".date", [])
@@ -144,6 +144,8 @@ def print_comment_tree(tree):
  
     
     
+ 
+
  
 def get_rows_from_tree(tree,column_filed):
     rows = []

@@ -11,7 +11,6 @@ import logging
 
 from class_tree import *
 from class_parsing_and_extract import *
-from xml_to_oasst_with_excel import *
 
 
 # Set up logging
@@ -47,34 +46,32 @@ selectors_class = {
     # 각 파일에 대응하는 comment 파싱 키 클래스, 전체 comment를 파싱하는 class key , level2, level3의 comment를 parsing함 (with css selector)
     'comment_child_level_all': {
         'naver_cafe': 'ul[data-v-7db6cb9f].comment_list .comment_content',
-        'naver_blog': '.u_cbox_contents'
+        'naver_blog': '.u_cbox_contents',
+        'lawtalk_상담사례': 'case-card__answer'
     },
     
     # 각 파일에 대응하는 child comment 파싱 키 클래스 , 전체 comment 중, level2 계층의 comment를 parsing함 (with css selector)
     'comment_child_level_2': {
         'naver_cafe': 'li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply) .comment_content',
         'naver_blog': '.u_cbox_contents:not(.u_cbox_reply_area .u_cbox_contents)',
+        'lawtalk_상담사례': 'No data',
         'naver_kin': 'answerDetail'
     },
 
     # 각 파일에 대응하는 child comment 파싱 키 클래스 , 전체 comment 중, level3 계층의 comment를 parsing함 (with css selector)
     'comment_child_level_3': {
         'naver_cafe': 'li[data-v-49558ed9][data-v-7db6cb9f].reply .comment_content',
-        'naver_blog': '.u_cbox_reply_area .u_cbox_contents'
+        'naver_blog': '.u_cbox_reply_area .u_cbox_contents',
+        'lawtalk_상담사례' :'No data'
     },
 
     #각 파일에 대응하는 child comment 등록일 파싱키 클래스
     'comment_child_date': {
         'naver_cafe': '.date',
-        'naver_blog': '.u_cbox_date'
+        'naver_blog': '.u_cbox_date',
+        'lawtalk_상담사례' :'No data'
     },
 
-    # 각 파일에 대응하는 secretComment 파싱 키 클래스
-    'secret_comment': {
-        'naver_cafe': uuid.uuid4(),
-        'naver_blog': 'u_cbox_delete_contents',
-        'naver_kin': uuid.uuid4()
-    }
 }
 
 
@@ -97,7 +94,7 @@ def save_to_excel(rows, output_file):
 def main():
     
     # XML 파일 경로 설정
-    xml_file_path = 'xml/naver_blog_20240722.xml'
+    xml_file_path = 'xml/lawtalk_상담사례_20240723.xml'
     
     # XML 파일 경로가 절대 경로인지 확인하고, 절대 경로로 변환
     if not os.path.isabs(xml_file_path):
@@ -112,12 +109,12 @@ def main():
 
 
     # 추출할 태그 및 클래스 지정
-    tags_to_extract = ['comment_html', 'title', 'registered_date', 'detail_content']
+    tags_to_extract = ['comment_html', 'title', 'registered_date', 'detail_content'] #comment_html은 0번 위치에 고정시켜야 합니다.
     html_selectors = [
-        selectors_class['comment_child_level_all']['naver_blog'],
-        selectors_class['comment_child_level_2']['naver_blog'],
-        selectors_class['comment_child_level_3']['naver_blog'],
-        selectors_class['comment_child_date']['naver_blog']  # 날짜 선택자를 추가합니다.
+        selectors_class['comment_child_level_all']['lawtalk_상담사례'],
+        selectors_class['comment_child_level_2']['lawtalk_상담사례'],
+        selectors_class['comment_child_level_3']['lawtalk_상담사례'],
+        selectors_class['comment_child_date']['lawtalk_상담사례']  # 날짜 선택자를 추가합니다.
     ]
 
 
@@ -125,18 +122,18 @@ def main():
     extracted_texts = parse_and_extract_from_xml(xml_file_path, tags_to_extract, html_selectors)
     logging.info(f"Extracted texts: {extracted_texts}")
 
-    tree = build_comment_tree(extracted_texts,selectors_class,'naver_blog')
-    #print_comment_tree(tree)
+    tree = build_comment_tree(extracted_texts,selectors_class,'lawtalk_상담사례')
+    print_comment_tree(tree)
     
-    rows = get_rows_from_tree(tree,column_filed)
+    """ rows = get_rows_from_tree(tree,column_filed)
     
     # 데이터가 제대로 구성되었는지 확인
     if not rows:
         logging.error("No rows generated from the comment tree.")
         return
 
-    save_to_excel(rows, "sampleout_blog.xlsx")
-  
+    save_to_excel(rows, "lawtalk_상담사례.xlsx")
+   """
 
     
     
