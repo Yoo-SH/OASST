@@ -76,6 +76,13 @@ parsing_classKey_secretComment = {
 }
 
 
+def save_to_excel(rows, output_file):
+    df = pd.DataFrame(rows)
+    if df.empty:
+        logging.warning("DataFrame is empty. No data to save.")
+    else:
+        df.to_excel(output_file, index=False)
+        logging.info(f"Excel 파일로 저장 완료: {output_file}")
 
 
 
@@ -95,7 +102,7 @@ def main():
 
 
     # XML 파일 경로 설정
-    xml_file_path = 'xml/sample.xml'
+    xml_file_path = 'xml/sample_mini.xml'
     
     # XML 파일 경로가 절대 경로인지 확인하고, 절대 경로로 변환
     if not os.path.isabs(xml_file_path):
@@ -125,8 +132,15 @@ def main():
 
     tree = build_comment_tree(extracted_texts)
     print_comment_tree(tree)
-
+    rows = get_rows_from_tree(tree)
     
+    # 데이터가 제대로 구성되었는지 확인
+    if not rows:
+        logging.error("No rows generated from the comment tree.")
+        return
+
+    save_to_excel(rows, "sampleout.xlsx")
+    print_comment_tree(tree)
 
 
     
