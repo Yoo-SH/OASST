@@ -1,1 +1,0 @@
-!function(e,n){var t,a=e.getElementsByTagName(n),r=a[0],s=e.createElement(n),c=/(https?:\/\/(test-)?openmain\.(m\.naver\.com|pstatic\.net)\/js\/)openmain\.js/;for(var o in a)null!==c.exec(a[o].src)&&(t=c.exec(a[o].src));null==t||null!=t&&t.length<2||(s.src=t[1]+"openmainBtn.js?"+Math.round(new Date/6e5),r.parentNode.insertBefore(s,r))}(document,"script");
