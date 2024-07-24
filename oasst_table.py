@@ -14,7 +14,7 @@ from class_parsing_and_extract import *
 
 
 # Set up logging
-logging.basicConfig(filename='parsing_link_test.log', level=logging.INFO,
+logging.basicConfig(filename='parsing_link.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 각 column_filed 번호에 대응하는 값
@@ -102,30 +102,106 @@ def save_to_excel(rows, output_file):
 
 
 
+def direct_path_input_file_link(input_path):
+    """
+    사용방법
+    python oasst_table.py -input ./inputexcelfile.xml -output ./outputexcelfile.xlsx -type naver_blog
+    python oasst_table.py -input D:\\users/documents/inputeexcelfile.xml -output ./outputexcelfile.xlsx -type naver_blog.
+    """
+
+
+
+    if  os.path.isabs(input_path) and platform.system() == "Windows":  #상대경로가 아니라면
+        print("input_path가 절대경로 입니다. input_path: "  + str(input_path))
+        input_path += '\\'
+    else:
+        input_path += '/'
+    
+    print("파일 입력 경로 확인:", input_path)
+    return input_path
+
+   
+
+
+
+def direct_path_output_file_link(output_path):
+    """
+    사용방법
+    python oasst_table.py   
+    """ 
+
+    if  os.path.isabs(output_path) and  platform.system() == "Windows":  #상대경로가 아니라면
+        print("output_path가 절대경로 입니다. output_path: "  + str(output_path))
+        output_path += '\\'        
+    else:
+        output_path += '/' 
+
+    print("파일 출력 경로 확인:", output_path)
+    return output_path
+    
+
+
+def check_link_rule(input_file_name,output_file_name,args):
+    
+
+
+
+    if not input_file_name:
+        print("Error: 파일 이름을 입력해야 합니다.")
+        exit(0)
+
+    
+    # XML 파일 존재 여부 확인
+    if not os.path.exists(input_file_name):
+        print(f"파일이 존재하지 않습니다.{input_file_name}")
+        exit(0)
+
+    
+    if not output_file_name: #output file명을 입력하지 않으면, _decompress이름이 붙은 파일이 생성.
+        output_file_name = None
+
+
+    if not args.type:
+        print("Error: 파일 종류를 입력해야 합니다.")
+        exit(0)
+
+
+
+
+
 def main():
     
-    # XML 파일 경로 설정
-    xml_file_path = 'xml/lawtalk_법률가이드_20240723_page_1.xml'
+    parser = argparse.ArgumentParser(description='Process Excel file.')
+    parser.add_argument('-input', required=True, help='input 경로와 파일 이름 (예: ./inputexcelfile.xml)')
+    parser.add_argument('-output', required=True, help='output 경로와 파일 이름 (예: ./outputexcelfile.xlsx)')
+    parser.add_argument('-type', required=True, help='파일 종류 (예: naver_blog)')
+    args = parser.parse_args()
+
+    input_path, input_file_name = os.path.split(args.input) #경로와 파일이름을 분리함
+    output_path, output_file_name = os.path.split(args.output) #경로와 파일이름을 분리함
+
+
+    input_path = direct_path_input_file_link(input_path) 
+    output_path = direct_path_output_file_link(output_path)
+    check_link_rule(input_file_name,output_file_name,args)
     
-    # XML 파일 경로가 절대 경로인지 확인하고, 절대 경로로 변환
-    if not os.path.isabs(xml_file_path):
-        xml_file_path = os.path.abspath(xml_file_path)
-
-
-    # XML 파일 존재 여부 확인
+    
+    # XML 파일 경로 설정
+    xml_file_path = 'xml/lawtalk_법률가이드_20240724.xml'
+    
+     # XML 파일 존재 여부 확인
     if not os.path.exists(xml_file_path):
         logging.error(f"File not found: {xml_file_path}")
         return
 
 
-
     # 추출할 태그 및 클래스 지정
     tags_to_extract = ['comment_html', 'title', 'registered_date', 'detail_content'] #comment_html은 0번 위치에 고정시켜야 합니다.
     html_selectors = [
-        selectors_class['comment_child_level_all']['lawtalk_법률가이드'],
-        selectors_class['comment_child_level_2']['lawtalk_법률가이드'],
-        selectors_class['comment_child_level_3']['lawtalk_법률가이드'],
-        selectors_class['comment_child_date']['lawtalk_법률가이드']  # 날짜 선택자를 추가합니다.
+        selectors_class['comment_child_level_all'][args.type],
+        selectors_class['comment_child_level_2'][args.type],
+        selectors_class['comment_child_level_3'][args.type],
+        selectors_class['comment_child_date'][args.type]  # 날짜 선택자를 추가합니다.
     ]
 
 
@@ -133,7 +209,7 @@ def main():
     extracted_texts = parse_and_extract_from_xml(xml_file_path, tags_to_extract, html_selectors)
     logging.info(f"Extracted texts: {extracted_texts}")
 
-    tree = build_comment_tree(extracted_texts,selectors_class,'lawtalk_상담사례')
+    tree = build_comment_tree(extracted_texts,selectors_class,args.type)
     #print_comment_tree(tree)
     
     rows = get_rows_from_tree(tree,column_filed)

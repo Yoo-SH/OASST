@@ -42,7 +42,7 @@ def format_uuid():
     return uuid_value
 
 
-def build_comment_tree(extracted_texts, selectors_class_key, file):
+def build_comment_tree(extracted_texts, selectors_class_key, file_type):
     """
     추출된 텍스트 데이터를 기반으로 댓글의 계층 구조를 구축합니다.
     댓글이 pasing된 순서대로 1계층 2계층 댓글과 3계층 댓글을 구축합니다.
@@ -76,11 +76,11 @@ def build_comment_tree(extracted_texts, selectors_class_key, file):
             continue
 
         # 'ul[data-v-7db6cb9f].comment_list .comment_content'의 댓글을 추출합니다.
-        all_comments = item['html_texts'].get(selectors_class_key["comment_child_level_all"]['lawtalk_법률가이드'], [])
+        all_comments = item['html_texts'].get(selectors_class_key["comment_child_level_all"][file_type], [])
 
         # 레벨 2 댓글과 레벨 3 댓글을 추출합니다.
-        level_2_comments = item['html_texts'].get(selectors_class_key["comment_child_level_2"]['lawtalk_법률가이드'], [])
-        level_3_comments = item['html_texts'].get(selectors_class_key["comment_child_level_3"]['lawtalk_법률가이드'], [])
+        level_2_comments = item['html_texts'].get(selectors_class_key["comment_child_level_2"][file_type], [])
+        level_3_comments = item['html_texts'].get(selectors_class_key["comment_child_level_3"][file_type], [])
         
         # 댓글들의 날짜를 추출합니다.
         comment_dates = item['html_texts'].get(".date", [])
