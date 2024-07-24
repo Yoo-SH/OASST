@@ -8,7 +8,7 @@ import requests
 
 
 # Set up logging
-logging.basicConfig(filename='parsing_link_test.log', level=logging.INFO,
+logging.basicConfig(filename='parsing_link.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 
@@ -79,6 +79,7 @@ def extract_contents(html_content, class_name):
         logging.error(f"Error in extract_contents: {e}")
         logging.exception("Traceback:")  # Log the full stack trace
         return []
+
 
 
 
@@ -157,6 +158,8 @@ def process_excel_file(input_path, file_name, output_path, output_file_name=None
     new_df.to_excel(output_file_path, index=False, columns=['사용여부', 'channel', 'category', 'title', 'detail_content', '종류', 'registered_date', 'site_name', 'board_name'])
 
     print(f"New Excel file saved to {output_file_path}")
+
+
 
 
 def main():
