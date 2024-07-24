@@ -49,7 +49,8 @@ selectors_class = {
         'naver_blog': '.u_cbox_contents',
         'naver_kin' : '.se-main-container',
         'lawtalk_상담사례': '.case-card__answer',
-        'lawtalk_법률가이드': '.se-component se-text se-l-default'
+        'lawtalk_성공사례': '.solution-card__content',
+        'lawtalk_법률가이드': '.guide-card__content'
     },
     
     # 각 파일에 대응하는 child comment 파싱 키 클래스 , 전체 comment 중, level2 계층의 comment를 parsing함 (with css selector)
@@ -58,7 +59,8 @@ selectors_class = {
         'naver_blog': '.u_cbox_contents:not(.u_cbox_reply_area .u_cbox_contents)',
         'naver_kin' : '.se-main-container',
         'lawtalk_상담사례': '.case-card__answer',
-        'lawtalk_법률가이드': '.se-component se-text se-l-default'
+        'lawtalk_성공사례': '.solution-card__content',
+        'lawtalk_법률가이드': '.guide-card__content'
     },
 
     # 각 파일에 대응하는 child comment 파싱 키 클래스 , 전체 comment 중, level3 계층의 comment를 parsing함 (with css selector)
@@ -67,6 +69,7 @@ selectors_class = {
         'naver_blog': '.u_cbox_reply_area .u_cbox_contents',
         'naver_kin' : 'No data',
         'lawtalk_상담사례' :'No data',
+        'lawtalk_성공사례': 'No data',
         'lawtalk_법률가이드': 'No data'
     },
 
@@ -76,7 +79,8 @@ selectors_class = {
         'naver_blog': '.u_cbox_date',
         'naver_kin' : '.se-main-container',
         'lawtalk_상담사례' :'.answerDate',
-        'lawtalk_법률가이드' :'No Data'
+        'lawtalk_성공사례': 'No data',
+        'lawtalk_법률가이드' :'No data'
     },
 
 }
@@ -101,7 +105,7 @@ def save_to_excel(rows, output_file):
 def main():
     
     # XML 파일 경로 설정
-    xml_file_path = 'xml/lawtalk_상담사례_20240723.xml'
+    xml_file_path = 'xml/lawtalk_법률가이드_20240723_page_1.xml'
     
     # XML 파일 경로가 절대 경로인지 확인하고, 절대 경로로 변환
     if not os.path.isabs(xml_file_path):
@@ -118,10 +122,10 @@ def main():
     # 추출할 태그 및 클래스 지정
     tags_to_extract = ['comment_html', 'title', 'registered_date', 'detail_content'] #comment_html은 0번 위치에 고정시켜야 합니다.
     html_selectors = [
-        selectors_class['comment_child_level_all']['lawtalk_상담사례'],
-        selectors_class['comment_child_level_2']['lawtalk_상담사례'],
-        selectors_class['comment_child_level_3']['lawtalk_상담사례'],
-        selectors_class['comment_child_date']['lawtalk_상담사례']  # 날짜 선택자를 추가합니다.
+        selectors_class['comment_child_level_all']['lawtalk_법률가이드'],
+        selectors_class['comment_child_level_2']['lawtalk_법률가이드'],
+        selectors_class['comment_child_level_3']['lawtalk_법률가이드'],
+        selectors_class['comment_child_date']['lawtalk_법률가이드']  # 날짜 선택자를 추가합니다.
     ]
 
 
