@@ -50,7 +50,7 @@ def extract_class_and_text_from_xml_tag(tag, tags_to_extract, html_selectors):
 
     texts = {}
     for desired_tag in desired_tags:
-        texts[desired_tag] = tag.find(desired_tag).text if tag.find(desired_tag) is not None else 'No Content' #로톡의 경우 title만 존재함.
+        texts[desired_tag] = tag.find(desired_tag).text if tag.find(desired_tag) is not None else ' ' #로톡의 경우 title만 존재하기 떄문에 content는 빈칸으로
 
     html_content = tag.find(html_tag).text if tag.find(html_tag) is not None else ''
     texts['html_texts'] = extract_texts_from_html(html_content, html_selectors) if html_content else {'None': ['None']}

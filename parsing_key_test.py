@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 
 # HTML 파일 경로
-file_path = '로톡 상담사례 검색하기 _ 변호사가 필요할 땐, 로톡.html'
+file_path = '성매매 기소유예 선처를 받기 위하여 _ 로톡.html'
 
 # HTML 파일 읽기
 with open(file_path, 'r', encoding='utf-8') as file:
@@ -11,7 +11,7 @@ with open(file_path, 'r', encoding='utf-8') as file:
 soup = BeautifulSoup(html_content, 'lxml')
 
 # 클래스명이 'u_cbox_contents'인 모든 요소 찾기 (기존 방식)
-description_elements = soup.find_all(class_='case-card__answer')
+description_elements = soup.find_all(class_='se-component se-text se-l-default')
 
 # 텍스트 추출 및 출력 (기존 방식)
 print("Using find_all with class name:")
