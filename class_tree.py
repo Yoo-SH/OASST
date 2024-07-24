@@ -76,11 +76,11 @@ def build_comment_tree(extracted_texts, selectors_class_key, file):
             continue
 
         # 'ul[data-v-7db6cb9f].comment_list .comment_content'의 댓글을 추출합니다.
-        all_comments = item['html_texts'].get(selectors_class_key["comment_child_level_all"]['lawtalk_상담사례'], [])
+        all_comments = item['html_texts'].get(selectors_class_key["comment_child_level_all"]['lawtalk_법률가이드'], [])
 
         # 레벨 2 댓글과 레벨 3 댓글을 추출합니다.
-        level_2_comments = item['html_texts'].get(selectors_class_key["comment_child_level_2"]['lawtalk_상담사례'], [])
-        level_3_comments = item['html_texts'].get(selectors_class_key["comment_child_level_3"]['lawtalk_상담사례'], [])
+        level_2_comments = item['html_texts'].get(selectors_class_key["comment_child_level_2"]['lawtalk_법률가이드'], [])
+        level_3_comments = item['html_texts'].get(selectors_class_key["comment_child_level_3"]['lawtalk_법률가이드'], [])
         
         # 댓글들의 날짜를 추출합니다.
         comment_dates = item['html_texts'].get(".date", [])
@@ -208,7 +208,7 @@ def get_rows_from_tree(tree, column_filed):
             for level_3_uuid, level_3_data in levels['Level_3'][level_2_uuid].items():
                 level_3_comment = level_3_data['comment']
                 level_3_date = level_3_data['date']
-                if level_3_comment not in seen_comments:  # 중복 검사
+                if level_3_comment not in seen_comments:  # 중복 검사, for 중복 수집된 lawTalk_상담사례
                     seen_comments.add(level_3_comment)
                     rows.append({
                         column_filed[1]: level_3_uuid,
