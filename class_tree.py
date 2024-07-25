@@ -147,12 +147,13 @@ def print_comment_tree(tree):
 
 def get_rows_from_tree(tree, column_filed):
     rows = []
-    seen_comments = set()  # 중복된 댓글을 추적하기 위한 집합
+    
 
     for root, levels in tree.items():
         root_uuid = levels['uuid']
         root_date = levels['date']
-        
+        seen_comments = set()  # 중복된 댓글을 추적하기 위한 집합
+
         # 루트 글 추가
         rows.append({
             column_filed[1]: root_uuid,
@@ -180,7 +181,7 @@ def get_rows_from_tree(tree, column_filed):
         for level_2_uuid, level_2_data in levels['Level_2'].items():
             level_2_comment = level_2_data['comment']
             level_2_date = level_2_data['date']
-            if level_2_comment not in seen_comments:  # 중복 검사
+            if level_2_comment not in seen_comments and level_2_comment != 'None' and level_2_comment != '':  # 중복 검사, None값, 비밀댓글 삭제.
                 seen_comments.add(level_2_comment)
                 rows.append({
                     column_filed[1]: level_2_uuid,

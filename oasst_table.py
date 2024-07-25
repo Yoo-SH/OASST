@@ -1,7 +1,6 @@
 import pandas as pd
 from bs4 import BeautifulSoup
 import logging
-import uuid
 import os
 import argparse
 import platform
@@ -106,7 +105,6 @@ def direct_path_input_file_link(input_path):
     """
     사용방법
     python oasst_table.py -input ./inputexcelfile.xml -output ./outputexcelfile.xlsx -type naver_blog
-    python oasst_table.py -input D:\\users/documents/inputeexcelfile.xml -output ./outputexcelfile.xlsx -type naver_blog.
     """
 
 
@@ -141,7 +139,7 @@ def direct_path_output_file_link(output_path):
     
 
 
-def check_link_rule(input_file_name,output_file_name,args):
+def check_link_rule(input_path,input_file_name,output_file_name,args):
     
 
 
@@ -152,8 +150,8 @@ def check_link_rule(input_file_name,output_file_name,args):
 
     
     # XML 파일 존재 여부 확인
-    if not os.path.exists(input_file_name):
-        print(f"파일이 존재하지 않습니다.{input_file_name}")
+    if not os.path.exists(input_path+input_file_name):
+        print(f"파일이 존재하지 않습니다:{input_file_name}")
         exit(0)
 
     
@@ -165,6 +163,9 @@ def check_link_rule(input_file_name,output_file_name,args):
         print("Error: 파일 종류를 입력해야 합니다.")
         exit(0)
 
+    print("입력 파일 확인", input_file_name)
+    print("출력 파일 확인", output_file_name)
+    print("파일 타입 확인:", args.type)
 
 
 
@@ -183,15 +184,12 @@ def main():
 
     input_path = direct_path_input_file_link(input_path) 
     output_path = direct_path_output_file_link(output_path)
-    check_link_rule(input_file_name,output_file_name,args)
+    check_link_rule(input_path,input_file_name,output_file_name,args)
     
-    
-    # XML 파일 경로 설정
-    xml_file_path = 'xml/lawtalk_법률가이드_20240724.xml'
     
      # XML 파일 존재 여부 확인
-    if not os.path.exists(xml_file_path):
-        logging.error(f"File not found: {xml_file_path}")
+    if not os.path.exists(input_path+input_file_name):
+        logging.error(f"File not found: {input_path+input_file_name}")
         return
 
 
@@ -204,11 +202,12 @@ def main():
         selectors_class['comment_child_date'][args.type]  # 날짜 선택자를 추가합니다.
     ]
 
-
-
-    extracted_texts = parse_and_extract_from_xml(xml_file_path, tags_to_extract, html_selectors)
+    
+    print("xml에서 데이터를 추출하는 중입니다..")
+    extracted_texts = parse_and_extract_from_xml(input_path+input_file_name, tags_to_extract, html_selectors)
     logging.info(f"Extracted texts: {extracted_texts}")
 
+    print("트리를 구성하는 중입니다..")
     tree = build_comment_tree(extracted_texts,selectors_class,args.type)
     #print_comment_tree(tree)
     
@@ -218,8 +217,9 @@ def main():
     if not rows:
         logging.error("No rows generated from the comment tree.")
         return
-
-    save_to_excel(rows, "test!.xlsx")
+    
+    print("oasst 테이블로 변환 중입니다. 잠시만 기다려 주세요.")
+    save_to_excel(rows, output_path+output_file_name)
    
     
     
