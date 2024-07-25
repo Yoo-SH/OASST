@@ -45,16 +45,19 @@ def format_uuid():
 def build_comment_tree(extracted_texts, selectors_class_key, file_type):
     """
     추출된 텍스트 데이터를 기반으로 댓글의 계층 구조를 구축합니다.
-    댓글이 pasing된 순서대로 1계층 2계층 댓글과 3계층 댓글을 구축합니다.
-    1계층은 원글, 2계층은 댓글, 3계층은 대댓글을 의미. 
-    2계층 댓글을 index를 추적하면서 3계층의 부모로 할당.
+    댓글이 파싱된 순서대로 1계층, 2계층 댓글과 3계층 댓글을 구축합니다.
+    1계층은 원글, 2계층은 댓글, 3계층은 대댓글을 의미합니다. 
+    2계층 댓글을 인덱스를 추적하면서 3계층의 부모로 할당합니다.
 
     Args:
         extracted_texts (list of dict): XML 항목에서 추출된 데이터의 리스트입니다.
+        selectors_class_key (dict): 파일 종류별로 댓글을 추출할 CSS 선택자 키를 포함하는 딕셔너리입니다.
+        file_type (str): 파일의 종류를 나타내는 문자열입니다.
 
     Returns:
         defaultdict: 댓글의 계층 구조를 나타내는 중첩된 딕셔너리입니다.
     """
+
     print("트리를 구성하는 중입니다..")
     logging.info("댓글 트리 구축 중")
     # 트리 구조를 초기화합니다.
@@ -152,6 +155,17 @@ def print_comment_tree(tree):
                 print(f"    레벨 3 댓글: {level_3_data['comment']} (UUID: {level_3_uuid}, 날짜: {level_3_data['date']})")
 
 def get_rows_from_tree(tree, column_filed):
+    """
+    댓글 트리에서 데이터를 추출하여 행(row) 형식의 리스트로 반환합니다.
+
+    Args:
+        tree (defaultdict): 댓글의 계층 구조를 나타내는 중첩된 딕셔너리입니다.
+        column_filed (dict): 데이터 컬럼 필드 이름과 번호를 매핑하는 딕셔너리입니다.
+
+    Returns:
+        list: 각 행이 댓글 데이터를 나타내는 딕셔너리로 구성된 리스트입니다.
+    """
+
     rows = []
     
 
