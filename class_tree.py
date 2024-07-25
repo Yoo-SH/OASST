@@ -3,6 +3,9 @@ import uuid
 from collections import defaultdict
 from datetime import datetime
 
+
+
+
 def format_date(date_str):
     """
     날짜 문자열을 표준 ISO 8601 형식으로 포맷합니다. 날짜 문자열이 유효하지 않은 경우 현재 날짜와 시간을 반환합니다.
@@ -71,20 +74,24 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
     for item in extracted_texts:
         # 제목이나 상세 내용이 누락된 경우 기본값을 빈 문자열로 설정합니다.
         title = item.get('title', '')
-        detail_content = item.get('detail_content','None')
-        if str(detail_content) == 'None' and file_type == 'naver_blog': 
-            continue
-        else:
-            detail_content = item.get('detail_content')
-           
+        detail_content = item.get('detail_content',' ')
         registered_date = item.get('registered_date', 'No Date')
-        root = str(title) + '.' + str(detail_content)
+
+        if file_type == 'naver_blog': #네이버 블로그의 경우, content를 assistanct로 넣음
+            if str(detail_content) == 'None':
+                continue
+            else:
+                detail_content = item.get('detail_content')
+                root = str(title) + '.'
+        else:    
+            root = str(title) + '.' + str(detail_content)
+
 
         if not root.strip():
             logging.debug(f"빈 루트 노드 건너뜁니다")
             continue
 
-        # 'ul[data-v-7db6cb9f].comment_list .comment_content'의 댓글을 추출합니다.
+        # 'chid level'의 댓글을 추출합니다.
         all_comments = item['html_texts'].get(selectors_class_key["comment_child_level_all"][file_type], [])
 
         # 레벨 2 댓글과 레벨 3 댓글을 추출합니다.
@@ -93,6 +100,7 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
         
         # 댓글들의 날짜를 추출합니다.
         comment_dates = item['html_texts'].get(".date", [])
+
         
         # 레벨 2 댓글과 레벨 3 댓글의 인덱스를 추적하기 위한 변수입니다.
         level_2_index = 0
@@ -107,6 +115,9 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
         tree[root]['uuid'] = format_uuid()
         tree[root]['date'] = format_date(registered_date)
         
+
+        
+
         # child계층의 댓글을 순회합니다.
         for comment in all_comments:
             comment_date = comment_dates[date_index] if date_index < len(comment_dates) else 'No Date'
@@ -116,6 +127,19 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
           
             if level_2_index < len(level_2_comments) and comment == level_2_comments[level_2_index]:
                 # 현재 댓글이 레벨 2 댓글이면 UUID를 추가하고 현재 레벨 2 댓글을 설정합니다.
+
+
+                if file_type == 'naver_blog' :
+
+                    formatted_date = format_date(registered_date)
+                    comment_uuid = format_uuid()
+                    tree[root]['Level_2'][comment_uuid] ={
+                    'comment' : detail_content,
+                    'date' : comment_uuid
+                    }
+                    level_2_index += 1
+
+
                 comment_uuid = format_uuid()
                 tree[root]['Level_2'][comment_uuid] = {
                     'comment': comment,
@@ -123,6 +147,9 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
                 }
                 current_level_2_comment = comment_uuid
                 level_2_index += 1
+
+                
+
           
 
             elif level_3_index < len(level_3_comments) and comment == level_3_comments[level_3_index]:
@@ -139,6 +166,7 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
     logging.info("댓글 트리 구축 완료")
     return tree
 
+
 def print_comment_tree(tree):
     """
     댓글 트리 구조를 출력합니다.
@@ -153,6 +181,8 @@ def print_comment_tree(tree):
             print(f"  레벨 2 댓글: {level_2_data['comment']} (UUID: {level_2_uuid}, 날짜: {level_2_data['date']})")
             for level_3_uuid, level_3_data in levels['Level_3'][level_2_uuid].items():
                 print(f"    레벨 3 댓글: {level_3_data['comment']} (UUID: {level_3_uuid}, 날짜: {level_3_data['date']})")
+
+
 
 def get_rows_from_tree(tree, column_filed):
     """
