@@ -55,6 +55,7 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
     Returns:
         defaultdict: 댓글의 계층 구조를 나타내는 중첩된 딕셔너리입니다.
     """
+    print("트리를 구성하는 중입니다..")
     logging.info("댓글 트리 구축 중")
     # 트리 구조를 초기화합니다.
     tree = defaultdict(lambda: {
@@ -67,7 +68,12 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
     for item in extracted_texts:
         # 제목이나 상세 내용이 누락된 경우 기본값을 빈 문자열로 설정합니다.
         title = item.get('title', '')
-        detail_content = item.get('detail_content', '')
+        detail_content = item.get('detail_content','None')
+        if str(detail_content) == 'None' and file_type == 'naver_blog': 
+            continue
+        else:
+            detail_content = item.get('detail_content')
+           
         registered_date = item.get('registered_date', 'No Date')
         root = str(title) + '.' + str(detail_content)
 
@@ -98,7 +104,7 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
         tree[root]['uuid'] = format_uuid()
         tree[root]['date'] = format_date(registered_date)
         
-        # 'ul[data-v-7db6cb9f].comment_list .comment_content'의 댓글을 순회합니다.
+        # child계층의 댓글을 순회합니다.
         for comment in all_comments:
             comment_date = comment_dates[date_index] if date_index < len(comment_dates) else 'No Date'
             formatted_date = format_date(comment_date)
@@ -181,7 +187,7 @@ def get_rows_from_tree(tree, column_filed):
         for level_2_uuid, level_2_data in levels['Level_2'].items():
             level_2_comment = level_2_data['comment']
             level_2_date = level_2_data['date']
-            if level_2_comment not in seen_comments and level_2_comment != 'None' and level_2_comment != '':  # 중복 검사, None값, 비밀댓글 삭제.
+            if level_2_comment not in seen_comments and level_2_comment != 'None' and level_2_comment != '':  # 중복 검사, 추출안된 None값, 비밀댓글 삭제.
                 seen_comments.add(level_2_comment)
                 rows.append({
                     column_filed[1]: level_2_uuid,

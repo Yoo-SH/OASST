@@ -91,6 +91,8 @@ selectors_class = {
 
 
 def save_to_excel(rows, output_file):
+    print("oasst 테이블로 변환 중입니다. 잠시만 기다려 주세요.")
+
     df = pd.DataFrame(rows)
     if df.empty:
         logging.warning("DataFrame is empty. No data to save.")
@@ -203,11 +205,9 @@ def main():
     ]
 
     
-    print("xml에서 데이터를 추출하는 중입니다..")
     extracted_texts = parse_and_extract_from_xml(input_path+input_file_name, tags_to_extract, html_selectors)
     logging.info(f"Extracted texts: {extracted_texts}")
 
-    print("트리를 구성하는 중입니다..")
     tree = build_comment_tree(extracted_texts,selectors_class,args.type)
     #print_comment_tree(tree)
     
@@ -218,7 +218,6 @@ def main():
         logging.error("No rows generated from the comment tree.")
         return
     
-    print("oasst 테이블로 변환 중입니다. 잠시만 기다려 주세요.")
     save_to_excel(rows, output_path+output_file_name)
    
     
