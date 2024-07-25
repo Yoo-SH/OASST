@@ -4,7 +4,6 @@ import logging
 import os
 import argparse
 import platform
-import requests
 from lxml import etree
 import logging
 
@@ -91,6 +90,16 @@ selectors_class = {
 
 
 def save_to_excel(rows, output_file):
+    """
+    주어진 데이터를 Pandas DataFrame으로 변환하여 Excel 파일로 저장합니다.
+
+    Args:
+        rows (list): 데이터 행을 담고 있는 리스트.
+        output_file (str): 출력할 Excel 파일의 경로와 이름.
+
+    Returns:
+        None
+    """
     print("oasst 테이블로 변환 중입니다. 잠시만 기다려 주세요.")
 
     df = pd.DataFrame(rows)
@@ -105,8 +114,13 @@ def save_to_excel(rows, output_file):
 
 def direct_path_input_file_link(input_path):
     """
-    사용방법
-    python oasst_table.py -input ./inputexcelfile.xml -output ./outputexcelfile.xlsx -type naver_blog
+    입력 파일 경로를 확인하고, 필요 시 경로 형식을 조정합니다.
+
+    Args:
+        input_path (str): 입력 파일의 디렉토리 경로.
+
+    Returns:
+        str: 조정된 입력 파일 경로.
     """
 
 
@@ -126,8 +140,13 @@ def direct_path_input_file_link(input_path):
 
 def direct_path_output_file_link(output_path):
     """
-    사용방법
-    python oasst_table.py   
+    출력 파일 경로를 확인하고, 필요 시 경로 형식을 조정합니다.
+
+    Args:
+        output_path (str): 출력 파일의 디렉토리 경로.
+
+    Returns:
+        str: 조정된 출력 파일 경로.
     """ 
 
     if  os.path.isabs(output_path) and  platform.system() == "Windows":  #상대경로가 아니라면
@@ -142,7 +161,18 @@ def direct_path_output_file_link(output_path):
 
 
 def check_link_rule(input_path,input_file_name,output_file_name,args):
-    
+    """
+    입력 및 출력 파일의 존재 여부와 유효성을 확인합니다.
+
+    Args:
+        input_path (str): 입력 파일의 디렉토리 경로.
+        input_file_name (str): 입력 파일의 이름.
+        output_file_name (str): 출력 파일의 이름 (선택 사항).
+        args (argparse.Namespace): 명령줄 인수 파서 객체.
+
+    Returns:
+        None
+    """
 
 
 
@@ -173,6 +203,21 @@ def check_link_rule(input_path,input_file_name,output_file_name,args):
 
 
 def main():
+    """
+    메인 함수로, 명령줄 인수를 처리하고 XML 파일에서 데이터를 추출하여 Excel 파일로 저장합니다.
+
+    Steps:
+        1. 명령줄 인수 파싱.
+        2. 입력 및 출력 경로 설정.
+        3. 파일 및 입력 인수 유효성 검사.
+        4. XML 파일에서 데이터 추출.
+        5. 추출한 데이터를 트리 구조로 변환.
+        6. 트리 구조에서 데이터 행을 생성.
+        7. 데이터 행을 Excel 파일로 저장.
+
+    Returns:
+        None
+    """
     
     parser = argparse.ArgumentParser(description='Process Excel file.')
     parser.add_argument('-input', required=True, help='input 경로와 파일 이름 (예: ./inputexcelfile.xml)')
