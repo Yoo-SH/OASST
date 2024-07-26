@@ -129,7 +129,8 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
                 # 현재 댓글이 레벨 2 댓글이면 UUID를 추가하고 현재 레벨 2 댓글을 설정합니다.
 
 
-                if file_type == 'naver_blog' :
+                if file_type == 'naver_blog' : #네이버 블로그의 경우, content를 assistanct로 넣음
+
 
                     formatted_date = format_date(registered_date)
                     comment_uuid = format_uuid()

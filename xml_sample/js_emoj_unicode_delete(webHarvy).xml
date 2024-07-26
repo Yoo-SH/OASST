@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<MineParams xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <VersionInfo>7.3.0.222</VersionInfo>
+    <RegInfo>epicmobile</RegInfo>
+    <MinerOptions>
+        <MinLevelsUp>2</MinLevelsUp>
+        <MinChildCount>10</MinChildCount>
+        <SelAccuracy>2</SelAccuracy>
+        <PageLoadTimeout>30</PageLoadTimeout>
+        <AJAXLoadTimeout>5</AJAXLoadTimeout>
+        <MaxLinkBrowsers>4</MaxLinkBrowsers>
+    </MinerOptions>
+    <StartURL>
+        <url>https://www.lawtalk.co.kr/posts/case</url>
+    </StartURL>
+    <FieldList>
+        <DATAFIELD>
+            <type>Invoke_Script</type>
+            <name> function removeSpecificCharacters(text) {
+                const specificCharsRegex
+                =/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{25A0}-\u{25FF}\u{2B50}\u{2B55}\u{2934}\u{2935}\u{2B05}\u{2B06}\u{2B07}\u{2B1B}\u{2B1C}\u{2B50}\u{2B55}\u{3030}\u{303D}\u{3297}\u{3299}\u{FE0F}]/gu;
+                return text.replace(specificCharsRegex, ''); }
+                function cleanTextNodes(node) { if (node.nodeType === Node.TEXT_NODE)
+                { node.textContent = removeSpecificCharacters(node.textContent); } else {
+                node.childNodes.forEach(cleanTextNodes); } }
+                cleanTextNodes(document.body);</name>
+            <selector>#root-view &gt; DIV &gt; DIV.search-content &gt; DIV &gt; SECTION &gt;
+                DIV.posts-section-wrap &gt; DIV &gt; DIV &gt; DIV.posts-section__load-section &gt;
+                SECTION &gt; DIV:nth-of-type(01) &gt; SOLUTION-CARD &gt; A &gt; DIV &gt;
+                DIV.solution-card__content</selector>
+            <pattern>true</pattern>
+            <regex />
+        </DATAFIELD>
+        <DATAFIELD>
+            <type>HTML</type>
+            <name>content_html</name>
+            <selector>#root-view &gt; DIV &gt; DIV.search-content &gt; DIV &gt; SECTION &gt;
+                DIV.posts-section-wrap &gt; DIV &gt; DIV &gt; DIV.posts-section__load-section &gt;
+                SECTION &gt; DIV:nth-of-type(01) &gt; SOLUTION-CARD &gt; A &gt; DIV &gt;
+                DIV.solution-card__content</selector>
+            <pattern>true</pattern>
+            <regex />
+        </DATAFIELD>
+        <DATAFIELD>
+            <type>Auto_Scroll</type>
+            <name>AutoScroll</name>
+            <selector />
+            <heading />
+            <pattern>false</pattern>
+            <regex />
+        </DATAFIELD>
+    </FieldList>
+    <KeywordList />
+    <KeywordFileList />
+    <FileAnchorKWList />
+</MineParams>
