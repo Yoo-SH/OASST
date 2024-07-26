@@ -45,6 +45,29 @@ def format_uuid():
     return uuid_value
 
 
+
+
+def remove_emojis(text):
+    """_summary_
+
+    Args:
+        string: 이모지를 제거할 텍스트입니다.
+
+
+    Returns:
+        string :  이모지가 제거된 텍스트. 새로운 이모지가 추가되면 유니코드 블록을 업데이트 해야함.
+    """
+
+      # 제거할 이모지와 특수 문자를 정의합니다.
+    chars_to_remove = "★▶◆○🌸📞✅⭐🤗☺️"
+
+    # 이모지 범위에 포함되지 않으며, 특정 문자 목록에도 포함되지 않는 문자만 필터링합니다.
+    return ''.join(char for char in text
+                   if not (char.isascii() and 0x1F600 <= ord(char) <= 0x1F64F) and char not in chars_to_remove)
+
+
+
+
 def build_comment_tree(extracted_texts, selectors_class_key, file_type):
     """
     추출된 텍스트 데이터를 기반으로 댓글의 계층 구조를 구축합니다.
@@ -169,6 +192,8 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
     return tree
 
 
+
+
 def print_comment_tree(tree):
     """
     댓글 트리 구조를 출력합니다.
@@ -212,8 +237,8 @@ def get_rows_from_tree(tree, column_filed):
             column_filed[2]: 'null',
             column_filed[3]: str(uuid.uuid4()),  # UUID를 문자열로 변환
             column_filed[4]: root_date,
-            column_filed[5]: root.split('_seperation_title_')[0],  # 제목
-            column_filed[6]: root.split('_seperation_title_')[0] + root.split('_seperation_title_')[1],  # 내용
+            column_filed[5]: remove_emojis(root.split('_seperation_title_')[0]),  # 제목
+            column_filed[6]: remove_emojis(root.split('_seperation_title_')[0] + root.split('_seperation_title_')[1]),  # 내용
             column_filed[8]: 'prompter',
             column_filed[9]: 'ko',
             column_filed[10]: 0,
@@ -240,7 +265,7 @@ def get_rows_from_tree(tree, column_filed):
                     column_filed[3]: str(uuid.uuid4()),  # UUID를 문자열로 변환
                     column_filed[4]: level_2_date,
                     column_filed[5]: 'null',
-                    column_filed[6]: level_2_comment,
+                    column_filed[6]: remove_emojis(level_2_comment),
                     column_filed[7]: 'None',
                     column_filed[8]: 'assistant',
                     column_filed[9]: 'ko',
@@ -268,7 +293,7 @@ def get_rows_from_tree(tree, column_filed):
                         column_filed[3]: str(uuid.uuid4()),  # UUID를 문자열로 변환
                         column_filed[4]: level_3_date,
                         column_filed[5]: 'null',
-                        column_filed[6]: level_3_comment,
+                        column_filed[6]: remove_emojis(level_3_comment),
                         column_filed[7]: 'None',
                         column_filed[8]: 'assistant',
                         column_filed[9]: 'ko',
