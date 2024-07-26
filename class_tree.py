@@ -77,14 +77,15 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
         detail_content = item.get('detail_content',' ')
         registered_date = item.get('registered_date', 'No Date')
 
+
         if file_type == 'naver_blog': #네이버 블로그의 경우, content를 assistanct로 넣음
             if str(detail_content) == ' ':
                 continue
             else:
                 detail_content = item.get('detail_content')
-                root = str(title) + '.'
+                root = str(title) + '.' + '_seperation_title_' #공백 추가는 slpit사용시 null값 나오는 것을 방지.
         else:    
-            root = str(title) + '.' + str(detail_content)
+            root = str(title) + '.' + '_seperation_title_' + str(detail_content)
 
 
         if not root.strip():
@@ -211,9 +212,8 @@ def get_rows_from_tree(tree, column_filed):
             column_filed[2]: 'null',
             column_filed[3]: str(uuid.uuid4()),  # UUID를 문자열로 변환
             column_filed[4]: root_date,
-            column_filed[5]: root.split('.')[0],  # 제목
-            column_filed[6]: root,  # 내용
-            column_filed[7]: 'None',
+            column_filed[5]: root.split('_seperation_title_')[0],  # 제목
+            column_filed[6]: root.split('_seperation_title_')[0] + root.split('_seperation_title_')[1],  # 내용
             column_filed[8]: 'prompter',
             column_filed[9]: 'ko',
             column_filed[10]: 0,
