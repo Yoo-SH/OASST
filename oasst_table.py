@@ -11,8 +11,8 @@ from class_tree import *
 from class_parsing_and_extract import *
 
 
-# Set up logging
-logging.basicConfig(filename='parsing_link.log', level=logging.INFO,
+# Set up logging, push떄문에 경로를 부모경로로 지정...
+logging.basicConfig(filename='../parsing_link.log', level=logging.INFO,  
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 # 각 column_filed 번호에 대응하는 값
