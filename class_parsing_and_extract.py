@@ -18,6 +18,7 @@ def extract_texts_from_html(html_content, html_selectors):
     """
     logging.info("HTML 컨텐츠에서 텍스트를 추출합니다.")
     soup = BeautifulSoup(html_content, 'html.parser')
+    #logging.info("encoding method : ",soup.original_encoding)
     result = {}
     for selector in html_selectors:
         elements = soup.select(selector)

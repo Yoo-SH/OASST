@@ -254,6 +254,7 @@ def main():
     logging.info(f"Extracted texts: {extracted_texts}")
 
     tree = build_comment_tree(extracted_texts,selectors_class,args.type)
+    
     #print_comment_tree(tree)
     
     rows = get_rows_from_tree(tree,column_filed)
