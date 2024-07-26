@@ -78,7 +78,7 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
         registered_date = item.get('registered_date', 'No Date')
 
         if file_type == 'naver_blog': #네이버 블로그의 경우, content를 assistanct로 넣음
-            if str(detail_content) == 'None':
+            if str(detail_content) == ' ':
                 continue
             else:
                 detail_content = item.get('detail_content')
