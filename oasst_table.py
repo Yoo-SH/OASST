@@ -6,6 +6,7 @@ import argparse
 import platform
 from lxml import etree
 import logging
+import json
 
 from class_tree import *
 from class_parsing_and_extract import *
@@ -84,6 +85,21 @@ selectors_class = {
 }
 
 
+def save_to_json(rows, output_file):
+    """
+    행 데이터를 JSON 파일로 저장합니다.
+
+    Args:
+        rows (list): JSON으로 저장할 데이터가 포함된 행 리스트입니다.
+        filename (str): 저장할 JSON 파일의 경로입니다.
+    """
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(rows, f, ensure_ascii=False, indent=4)
+    print(f"데이터가 '{output_file}' 파일에 저장되었습니다.")
+
+# 예시 사용법
+# tree는 build_comment_tree 함수에서 얻은 결과입니다.
+# column_field는 get_rows_from_tree 함수에 필요한 컬럼 필드를 정의한 딕셔너리입니다.
 
 
 
@@ -257,17 +273,16 @@ def main():
     
     #print_comment_tree(tree)
     
-    rows = get_rows_from_tree(tree,column_filed)
+    rows = json_get_rows_from_tree(tree,column_filed)
     
     # 데이터가 제대로 구성되었는지 확인
     if not rows:
         logging.error("No rows generated from the comment tree.")
         return
     
-    save_to_excel(rows, output_path+output_file_name)
-   
-    
-    
+    #save_to_excel(rows, output_path+output_file_name)
+    save_to_json(rows,output_path+output_file_name)
+        
 
 if __name__ == "__main__":
     main()
