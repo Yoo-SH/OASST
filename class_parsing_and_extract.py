@@ -1,8 +1,6 @@
 import logging
 from bs4 import BeautifulSoup
 from lxml import etree
-from collections import defaultdict
-from datetime import datetime
 
 
 def extract_texts_from_html(html_content, html_selectors):
