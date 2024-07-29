@@ -1,15 +1,14 @@
 import pandas as pd
-from bs4 import BeautifulSoup
 import logging
 import os
 import argparse
 import platform
-from lxml import etree
-import logging
 import json
 
-from class_tree import *
 from class_parsing_and_extract import *
+from class_tree import *
+from oasst_json_row import *
+from oasst_table_row import *
 
 
 # Set up logging, push떄문에 경로를 부모경로로 지정...
@@ -250,7 +249,7 @@ def main():
     check_link_rule(input_path,input_file_name,output_file_name,args)
     
     
-     # XML 파일 존재 여부 확인
+    # XML 파일 존재 여부 확인
     if not os.path.exists(input_path+input_file_name):
         logging.error(f"File not found: {input_path+input_file_name}")
         return
@@ -273,7 +272,7 @@ def main():
     
     #print_comment_tree(tree)
     
-    rows = json_get_rows_from_tree(tree,column_filed)
+    rows = get_rows_from_tree_jsonForm(tree,column_filed)
     
     # 데이터가 제대로 구성되었는지 확인
     if not rows:
