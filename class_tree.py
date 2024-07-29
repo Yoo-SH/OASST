@@ -2,7 +2,6 @@ import logging
 from collections import defaultdict
 from datetime import datetime
 import uuid
-import logging
 
 
 def format_date(date_str):
