@@ -1,4 +1,4 @@
-from emojis_deleter import remove_emojis
+from emojis import remove_emojis
 import uuid
 import logging
 

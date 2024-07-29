@@ -5,7 +5,7 @@ import argparse
 import platform
 import json
 
-from class_parsing_and_extract import *
+from parsing_and_extract_class import *
 from class_tree import *
 from oasst_json_row import *
 from oasst_table_row import *
