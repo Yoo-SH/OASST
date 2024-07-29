@@ -210,6 +210,9 @@ def check_link_rule(input_path,input_file_name,output_file_name,args):
         print("Error: 파일 종류를 입력해야 합니다.")
         exit(0)
 
+    if args.outputformat != ('json' or 'xlsx'):
+        print("Error: 올바르지 않은 파일출력 형식입니다. (xlsx, json 사용) ")
+        
     print("입력 파일 확인", input_file_name)
     print("출력 파일 확인", output_file_name)
     print("파일 타입 확인:", args.type)
@@ -236,12 +239,14 @@ def main():
     
     parser = argparse.ArgumentParser(description='Process Excel file.')
     parser.add_argument('-input', required=True, help='input 경로와 파일 이름 (예: ./inputexcelfile.xml)')
-    parser.add_argument('-output', required=True, help='output 경로와 파일 이름 (예: ./outputexcelfile.xlsx)')
-    parser.add_argument('-type', required=True, help='파일 종류 (예: naver_blog)')
+    parser.add_argument('-output', required=True, help='output 경로와 파일 이름 (예: ./outputexcelfile)')
+    parser.add_argument('-type', required=True, help='파일 종류 [naver_cafe, naver_blog, naver_kin, , lawtalk_상담사례, lawtalk_성공사례, lawtalk_법률가이드])')
+    parser.add_argument('-outputformat', required=True, help='[xlsx, json]')
     args = parser.parse_args()
 
     input_path, input_file_name = os.path.split(args.input) #경로와 파일이름을 분리함
     output_path, output_file_name = os.path.split(args.output) #경로와 파일이름을 분리함
+    output_file_name +='.' + args.outputformat
 
 
     input_path = direct_path_input_file_link(input_path) 
