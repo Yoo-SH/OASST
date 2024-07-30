@@ -92,6 +92,8 @@ def save_to_json(rows, output_file):
         rows (list): JSON으로 저장할 데이터가 포함된 행 리스트입니다.
         filename (str): 저장할 JSON 파일의 경로입니다.
     """
+    print("oasst json 파일로 변환 중입니다. 잠시만 기다려 주세요.")
+
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(rows, f, ensure_ascii=False, indent=4)
     print(f"데이터가 '{output_file}' 파일에 저장되었습니다.")
@@ -210,9 +212,13 @@ def check_link_rule(input_path,input_file_name,output_file_name,args):
         print("Error: 파일 종류를 입력해야 합니다.")
         exit(0)
 
-    if args.outputformat != ('json' or 'xlsx'):
+    if args.outputformat != 'json' and args.outputformat != 'xlsx':
         print("Error: 올바르지 않은 파일출력 형식입니다. (xlsx, json 사용) ")
-        
+        print("파일출력 형식 확인", args.outputformat)
+        exit(0)
+
+
+
     print("입력 파일 확인", input_file_name)
     print("출력 파일 확인", output_file_name)
     print("파일 타입 확인:", args.type)
@@ -231,7 +237,7 @@ def main():
         4. XML 파일에서 데이터 추출.
         5. 추출한 데이터를 트리 구조로 변환.
         6. 트리 구조에서 데이터 행을 생성.
-        7. 데이터 행을 Excel 파일로 저장.
+        7. 데이터 행을 Excel 파일로 혹은 json 파일로 저장.
 
     Returns:
         None
@@ -277,15 +283,20 @@ def main():
     
     #print_comment_tree(tree)
     
-    rows = get_rows_from_tree_jsonForm(tree,column_filed)
+    if(args.outputformat == 'xlsx'):
+        rows = get_rows_from_tree_tableForm(tree,column_filed)
+        # 데이터가 제대로 구성되었는지 확인
+        if not rows:
+            logging.error("No rows generated from the comment tree.")
+            return
+        save_to_excel(rows,output_path+output_file_name)
+    elif(args.outputformat == 'json'):
+        rows = get_rows_from_tree_jsonForm(tree,column_filed)
+        if not rows:
+            logging.error("No rows generated from the comment tree.")
+            return
+        save_to_json(rows,output_path+output_file_name)
     
-    # 데이터가 제대로 구성되었는지 확인
-    if not rows:
-        logging.error("No rows generated from the comment tree.")
-        return
-    
-    #save_to_excel(rows, output_path+output_file_name)
-    save_to_json(rows,output_path+output_file_name)
         
 
 if __name__ == "__main__":
