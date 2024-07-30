@@ -14,6 +14,12 @@ def format_date(date_str):
     Returns:
         str: ISO 8601 형식으로 포맷된 날짜 문자열입니다.
     """
+
+    if date_str is None:
+        logging.info("날짜 문자열이 None입니다. 현재 날짜를 반환합니다.")
+        return datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f+09:00")  # 현재 시간을 반환
+
+
     logging.debug(f"날짜 포맷팅: {date_str}")
     try:
         dt = datetime.strptime(date_str, "%Y.%m.%d. %H:%M")
@@ -26,7 +32,7 @@ def format_date(date_str):
             return formatted_date
         except ValueError:
             current_date = datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f+09:00")  # 현재 시간을 반환(로톡)
-            logging.warning(f"유효하지 않은 날짜 형식. 현재 날짜를 반환합니다: {current_date}")
+            logging.info(f"유효하지 않은 날짜 형식. 현재 날짜를 반환합니다: {current_date}")
             return current_date
 
 
