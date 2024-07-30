@@ -117,7 +117,6 @@ def get_rows_from_tree_jsonForm(tree, column_field):
             column_field[5]: remove_emojis(root.split('_seperation_title_')[0]),  # 제목
             column_field[6]: remove_emojis(root.split('_seperation_title_')[0] + root.split('_seperation_title_')[1]),  # 내용
             column_field[8]: 'prompter',
-            column_field[10]: 0,
             'replies': root_replies
         })
         else:
@@ -129,7 +128,6 @@ def get_rows_from_tree_jsonForm(tree, column_field):
             column_field[5]: remove_emojis(root.split('_seperation_title_')[0]),  # 제목
             column_field[6]: remove_emojis(root.split('_seperation_title_')[0] + root.split('_seperation_title_')[1]),  # 내용
             column_field[8]: 'prompter',
-            column_field[10]: 0,
             column_field[9]: 'ko',
             column_field[10]: 0,
             column_field[11]: 'null',

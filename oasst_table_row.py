@@ -24,10 +24,6 @@ def get_rows_from_tree_tableForm(tree, column_filed):
         root_date = levels['date']
         seen_comments = set()  # 중복된 댓글을 추적하기 위한 집합
 
-        replies_to_root = []
-        replies_to_level_2 =[]
-        replies_to_level_3 = []
-
         
         # 루트 글 추가
         rows.append({
@@ -38,6 +34,7 @@ def get_rows_from_tree_tableForm(tree, column_filed):
             column_filed[4]: root_date,
             column_filed[5]: remove_emojis(root.split('_seperation_title_')[0]),  # 제목
             column_filed[6]: remove_emojis(root.split('_seperation_title_')[0] + root.split('_seperation_title_')[1]),  # 내용
+            column_filed[7]: 'None',
             column_filed[8]: 'prompter',
             column_filed[9]: 'ko',
             column_filed[10]: 0,
