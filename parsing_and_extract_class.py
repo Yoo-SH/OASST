@@ -15,11 +15,15 @@ def extract_texts_from_html(html_content, html_selectors):
         dict: 선택자별로 텍스트 컨텐츠가 리스트로 저장된 딕셔너리입니다.
     """
     logging.info("HTML 컨텐츠에서 텍스트를 추출합니다.")
-    soup = BeautifulSoup(html_content, 'html.parser')
+
+    soup = BeautifulSoup(html_content, 'lxml')
     #logging.info("encoding method : ",soup.original_encoding)
     result = {}
 
-    # 특정 태그 선택, 네이버 카페의 경우 3계층 지움.
+    logging.info("추출된 컨텐츠에서 특정 텍스트를 제거하고 선택자를 통해 텍스트를 가져옵니다.")
+    
+    
+    # 특정 태그 선택, 네이버 카페의 경우 3계층 지움.(css선택자로 네이버카페HTML구조상 지우기가 어려움.)
     spans_to_clear = soup.find_all('span', class_='reply_to')
 
     # 텍스트 지우기 (각 요소에 대해 반복, )
@@ -38,6 +42,7 @@ def extract_texts_from_html(html_content, html_selectors):
             texts = [element.get_text(strip=True) for element in elements]
             result[selector] = texts
     logging.info("텍스트 추출 완료")
+    
     return result
 
 

@@ -21,13 +21,14 @@ for element in description_elements:
 
 
 
-# 특정 태그 선택
+""" # 특정 태그 선택
 spans_to_clear = soup.find_all('span', class_='reply_to')
 
 # 텍스트 지우기 (각 요소에 대해 반복)
 for span in spans_to_clear:
     span.string = ''  # 텍스트를 빈 문자열로 설정
     # 또는 span.clear()로 자식 요소와 텍스트 모두 제거 가능
+     """
 
 # CSS 셀렉터를 사용하여 클래스명이 ''인 모든 요소 찾기
 css_selector_elements = soup.select('li[data-v-49558ed9][data-v-7db6cb9f].reply .comment_content')  
