@@ -10,7 +10,7 @@ with open(file_path, 'r', encoding='utf-8') as file:
 # BeautifulSoup 객체 생성
 soup = BeautifulSoup(html_content, 'lxml')
 
-# 클래스명이 'u_cbox_contents'인 모든 요소 찾기 (기존 방식)
+# 클래스명이 ' '인 모든 요소 찾기 (기존 방식)
 description_elements = soup.find_all(class_='solution-card__content')
 
 # 텍스트 추출 및 출력 (기존 방식)
