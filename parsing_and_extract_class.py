@@ -16,7 +16,8 @@ def extract_texts_from_html(html_content, html_selectors):
     """
     logging.info("HTML 컨텐츠에서 텍스트를 추출합니다.")
 
-    soup = BeautifulSoup(html_content, 'lxml')
+
+    soup = BeautifulSoup(html_content, 'html.parser')
     #logging.info("encoding method : ",soup.original_encoding)
     result = {}
 
@@ -24,16 +25,20 @@ def extract_texts_from_html(html_content, html_selectors):
     
     
     # 특정 태그 선택, 네이버 카페의 경우 3계층 지움.(css선택자로 네이버카페HTML구조상 지우기가 어려움.)
-    spans_to_clear = soup.find_all('span', class_='reply_to')
+    if html_selectors == ['ul[data-v-7db6cb9f].comment_list .comment_content', 'li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply) .comment_content', 'li[data-v-49558ed9][data-v-7db6cb9f].reply .comment_content', '.date']: #네이버 카페 css 셀렉터
+        spans_to_clear = soup.find_all('span', class_='reply_to')
+        print("삭제")
+
 
     # 텍스트 지우기 (각 요소에 대해 반복, )
     for span in spans_to_clear:
         span.string = ''  # 텍스트를 빈 문자열로 설정
         # 또는 span.clear()로 자식 요소와 텍스트 모두 제거 가능
 
+
+
     for selector in html_selectors:
         elements = soup.select(selector)
-
 
         if not elements:
             logging.debug(f"선택자 {selector}에 대해 찾은 요소가 없습니다.")
