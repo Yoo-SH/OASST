@@ -18,8 +18,19 @@ def extract_texts_from_html(html_content, html_selectors):
     soup = BeautifulSoup(html_content, 'html.parser')
     #logging.info("encoding method : ",soup.original_encoding)
     result = {}
+
+    # 특정 태그 선택, 네이버 카페의 경우 3계층 지움.
+    spans_to_clear = soup.find_all('span', class_='reply_to')
+
+    # 텍스트 지우기 (각 요소에 대해 반복, )
+    for span in spans_to_clear:
+        span.string = ''  # 텍스트를 빈 문자열로 설정
+        # 또는 span.clear()로 자식 요소와 텍스트 모두 제거 가능
+
     for selector in html_selectors:
         elements = soup.select(selector)
+
+
         if not elements:
             logging.debug(f"선택자 {selector}에 대해 찾은 요소가 없습니다.")
             result[selector] = ['None']
@@ -49,10 +60,10 @@ def extract_class_and_text_from_xml_tag(tag, tags_to_extract, html_selectors):
 
     texts = {}
     for desired_tag in desired_tags:
-        texts[desired_tag] = tag.find(desired_tag).text if tag.find(desired_tag) is not None else ' ' 
+        texts[desired_tag] = tag.find(desired_tag).text if tag.find(desired_tag) is not None else ' '
 
     html_content = tag.find(html_tag).text if tag.find(html_tag) is not None else ' ' #로톡의 경우 title만 존재하기 떄문에 content는 공백 하나로 처리.
-    texts['html_texts'] = extract_texts_from_html(html_content, html_selectors) if html_content else {'None': ['None']}
+    texts['html_texts'] = extract_texts_from_html(html_content, html_selectors) if html_content else {'None': [' ']}
     
     logging.info("XML 태그에서 데이터 추출 완료")
     return texts
