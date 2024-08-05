@@ -27,7 +27,6 @@ def extract_texts_from_html(html_content, html_selectors):
     # 특정 태그 선택, 네이버 카페의 경우 3계층 지움.(css선택자로 네이버카페HTML구조상 지우기가 어려움.)
     if html_selectors == ['ul[data-v-7db6cb9f].comment_list .comment_content', 'li[data-v-49558ed9][data-v-7db6cb9f]:not(.reply) .comment_content', 'li[data-v-49558ed9][data-v-7db6cb9f].reply .comment_content', '.date']: #네이버 카페 css 셀렉터
         spans_to_clear = soup.find_all('span', class_='reply_to')
-        print("삭제")
 
 
     # 텍스트 지우기 (각 요소에 대해 반복, )
