@@ -1,0 +1,19 @@
+# xgboost
+# idna>=2.*
+
+# jupyter
+notebook
+jupyterlab
+jupyterthemes
+
+## https://github.com/jupyterlab/jupyterlab-git/issues/1245
+## I tested the latest jupyterlab_git 0.42.0--rc0 and it is still not functional with jupyterlab 4.x.
+jupyterlab-git
+
+## https://github.com/jupyterlab/jupyterlab-github
+jupyterlab-github
+
+## for https://fastgpu.fast.ai/
+# fastgpu
+# pynvml
+# fastcore
