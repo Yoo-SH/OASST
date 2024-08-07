@@ -1,42 +1,21 @@
+# -*- coding: utf-8 -*-
 import pandas as pd
-import spacy
+from kiwipiepy import Kiwi, Match
+from kiwipiepy.utils import Stopwords
 
 
-# 엑셀 파일 로드
-df = pd.read_excel('oasst_lawtalk_상담사례_20240807.xlsx')
+#kiwi 생성자 정보 Kiwi(num_workers=0, model_path=None, load_default_dict=True, integrate_allomorph=True, model_type='knlm', typos=None, typo_cost_threshold=2.5)
 
-# G열 데이터 가져오기
-g_column_data = df['text'].astype(str)  # G열의 모든 데이터를 문자열로 변환하여 가져옴
+kiwi = Kiwi()
+sentences = "안녕하세요. 최선을 다하는 이희범 변호사입니다. 1. 우선 상속인, 상속재산이 있었는지 등에 대한 판단이 필요해 보입니다. 2. 동사무소에 방문하여 상속재산 원스톱 서비스 등을 신청하시길 바랍니다.  더 궁금한 점이 있으시면 언제든지 연락 주시면 친절히 상담 드리도록 하겠습니다. [라미 법률사무소 대표 변호사 / 이희범 배상] - 대한 변호사 협회 등록 형사전문 변호사/ 공인 도로교통사고 감정사 - 대한 변호사 협회 등록 학교폭력 전문변호사 / 공인 가맹거래사 - 한 권에 담은 음주운전 사건 사고처리 저자 - 한 권에 담은 개인회생 사건 사고처리 저자 - 한 권에 담은 학교폭력의 바이블 저자"
 
 
-# Spacy 모델 로드 (한국어 모델 사용)
-nlp = spacy.blank("ko")
+# 토큰화
+tokens = kiwi.tokenize(sentences)
 
-# 키워드 정의
-keywords = ["변호사", "법무법인"]
+# NNG만 추출
+nng_tokens = [token[0] for token in tokens if token[1] == 'NNG']
 
-# 전처리 함수 정의
-def preprocess_text(text):
-    doc = nlp(text)
-    new_tokens = []
-    i = 0
-    while i < len(doc):
-        token = doc[i]
-        if token.text in keywords:
-            # 키워드 좌우 단어 검사
-            start = max(0, i - 3)  # 키워드 좌측 3단어
-            end = min(len(doc), i + 4)  # 키워드 우측 3단어
-            surrounding_tokens = doc[start:i] + doc[i+1:end]
-            
-            # 고유명사(NNP) 검사
-            if any(t.pos_ == "PROPN" for t in surrounding_tokens):
-                i += 4  # 키워드와 주변 단어를 건너뜀
-                continue
-        new_tokens.append(token.text)
-        i += 1
-    return " ".join(new_tokens)
-
-# 전처리 적용
-df['G_processed'] = g_column_data.apply(preprocess_text)
-
-df.to_excel('processed_file.xlsx', index=False)
+# 결과 출력
+print(f"NNG Tokens: {nng_tokens}")
+#print(f"Tokens: {tokens}")
