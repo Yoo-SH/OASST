@@ -22,6 +22,9 @@
 - https://github.com/bab2min/kiwipiepy (Kiwipiepy, Python용 Kiwi 패키지)
 
 #git
+
 -pip install -r requirements.txt (패키지 버전 통합관리)
+
 -git lfs install ==> git lfs track "\*." (깃 LFS 설치 및 트래킹)
+
 -pip install python-dotenv ==> os.getenv(key), os.environ.get(key) (파일로드 및 환경변수 로드)
