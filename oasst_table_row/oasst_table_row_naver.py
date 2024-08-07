@@ -22,6 +22,7 @@ def get_rows_from_tree_tableForm(tree, column_filed):
     for root, levels in tree.items():
         root_uuid = levels['uuid']
         root_date = levels['date']
+        root_link = levels['link']
         seen_comments = set()  # 중복된 댓글을 추적하기 위한 집합
 
         
@@ -47,7 +48,8 @@ def get_rows_from_tree_tableForm(tree, column_filed):
             column_filed[17]: root_uuid,
             column_filed[18]: "ready_for_export",
             column_filed[19]: '{ "name": [ "_skip_labeling" ], "count": [ 2 ] }',
-            column_filed[20]: '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }'
+            column_filed[20]: '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }',
+            column_filed[21]: root_link,                        
         })
         
         for level_2_uuid, level_2_data in levels['Level_2'].items():
@@ -75,7 +77,8 @@ def get_rows_from_tree_tableForm(tree, column_filed):
                     column_filed[17]: root_uuid,
                     column_filed[18]: "ready_for_export",
                     column_filed[19]: '{ "name": [ "_skip_labeling" ], "count": [ 2 ] }',
-                    column_filed[20]: '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }'
+                    column_filed[20]: '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }',
+                    column_filed[21]: root_link,                    
                 })
             
             for level_3_uuid, level_3_data in levels['Level_3'][level_2_uuid].items():
@@ -103,7 +106,8 @@ def get_rows_from_tree_tableForm(tree, column_filed):
                         column_filed[17]: root_uuid,
                         column_filed[18]: "ready_for_export",
                         column_filed[19]: '{ "name": [ "_skip_labeling" ], "count": [ 2 ] }',
-                        column_filed[20]: '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }'
+                        column_filed[20]: '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }',
+                        column_filed[21]: root_link,
                     })
 
     return rows

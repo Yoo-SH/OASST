@@ -7,8 +7,9 @@ import json
 
 from parsing_and_extract_class import *
 from class_tree import *
-from oasst_json_row import *
-from oasst_table_row import *
+from oasst_json_row import oasst_json_row_lawtalk, oasst_json_row_naver
+from oasst_table_row import oasst_table_row_lawtalk, oasst_table_row_naver
+
 
 
 # Set up logging, push떄문에 경로를 부모경로로 지정...
@@ -36,7 +37,9 @@ column_filed = {
     17: 'message_tree_id',  # string
     18: 'tree_state',  # string
     19: 'emojis',  # sequence
-    20: 'lavels'  # sequence
+    20: 'lavels',  # sequence
+    21: 'link',
+    22: '변호사명'
 }
 
 
@@ -267,7 +270,7 @@ def main():
 
 
     # 추출할 태그 및 클래스 지정
-    tags_to_extract = ['comment_html', 'title', 'registered_date', 'detail_content'] #comment_html은 0번 위치에 고정시켜야 합니다.
+    tags_to_extract = ['comment_html', 'title', 'registered_date', 'detail_content', 'link', 'lawyer_name'] #comment_html은 0번 위치에 고정시켜야 합니다.
     html_selectors = [
         selectors_class['comment_child_level_all'][args.type],
         selectors_class['comment_child_level_2'][args.type],
@@ -282,20 +285,24 @@ def main():
     tree = build_comment_tree(extracted_texts,selectors_class,args.type)
     
     #print_comment_tree(tree)
-    
-    if(args.outputformat == 'xlsx'):
-        rows = get_rows_from_tree_tableForm(tree,column_filed)
-        # 데이터가 제대로 구성되었는지 확인
+    if args.outputformat == 'xlsx':
+        if args.type in ['naver_cafe', 'naver_blog', 'naver_kin']:
+            rows = oasst_table_row_naver.get_rows_from_tree_tableForm(tree, column_filed)
+        elif args.type in ['lawtalk_상담사례', 'lawtalk_성공사례', 'lawtalk_법률가이드']:
+            rows = oasst_table_row_lawtalk.get_rows_from_tree_tableForm(tree, column_filed)
         if not rows:
             logging.error("No rows generated from the comment tree.")
             return
-        save_to_excel(rows,output_path+output_file_name)
-    elif(args.outputformat == 'json'):
-        rows = get_rows_from_tree_jsonForm(tree,column_filed)
+        save_to_excel(rows, output_path + output_file_name)
+    elif args.outputformat == 'json':
+        if args.type in ['naver_cafe', 'naver_blog', 'naver_kin']:
+            rows = oasst_json_row_naver.get_rows_from_tree_jsonForm(tree, column_filed)
+        elif args.type in ['lawtalk_상담사례', 'lawtalk_성공사례', 'lawtalk_법률가이드']:
+            rows = oasst_json_row_lawtalk.get_rows_from_tree_jsonForm(tree, column_filed)
         if not rows:
             logging.error("No rows generated from the comment tree.")
             return
-        save_to_json(rows,output_path+output_file_name)
+        save_to_json(rows, output_path + output_file_name)
     
         
 

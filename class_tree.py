@@ -82,7 +82,10 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
         title = item.get('title', '')
         detail_content = item.get('detail_content',' ')
         registered_date = item.get('registered_date', 'No Date')
-
+        link = item.get('link',' ')
+        
+        lawyer_name = item.get('lawyer_name',' ')
+        
 
         if file_type == 'naver_blog': #네이버 블로그의 경우, content를 assistanct로 넣음
             if str(detail_content) == ' ':
@@ -92,6 +95,7 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
                 root = str(title) + '.' + '_seperation_title_' #공백 추가는 slpit사용시 null값 나오는 것을 방지.
         else:    
             root = str(title) + '.' + '_seperation_title_' + str(detail_content)
+
 
 
         if not root.strip():
@@ -121,6 +125,8 @@ def build_comment_tree(extracted_texts, selectors_class_key, file_type):
         # 루트 노드에 UUID를 추가합니다.
         tree[root]['uuid'] = format_uuid()
         tree[root]['date'] = format_date(registered_date)
+        tree[root]['link'] = link
+        tree[root]['lawyer_name'] = lawyer_name
         
 
         
