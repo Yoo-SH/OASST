@@ -19,6 +19,8 @@
 
 - https://github.com/skrub-data/skrub
 
+- https://github.com/bab2min/kiwipiepy (Kiwipiepy, Python용 Kiwi 패키지)
+
 #git
 -pip install -r requirements.txt (패키지 버전 통합관리)
 -git lfs install ==> git lfs track "\*." (깃 LFS 설치 및 트래킹)
