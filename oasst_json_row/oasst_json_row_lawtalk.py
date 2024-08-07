@@ -24,6 +24,9 @@ def get_rows_from_tree_jsonForm(tree, column_field):
     for root, levels in tree.items():
         root_uuid = levels['uuid']
         root_date = levels['date']
+        root_link = levels['link']
+        root_lawyer_name = levels['lawyer_name']
+
         seen_comments = set()  # 중복된 댓글을 추적하기 위한 집합
         
         # 댓글을 저장할 리스트
@@ -103,7 +106,9 @@ def get_rows_from_tree_jsonForm(tree, column_field):
                     column_field[17]: root_uuid,
                     column_field[18]: "ready_for_export",
                     column_field[19]: '{ "name": [ "_skip_labeling" ], "count": [ 2 ] }',
-                    column_field[20]: '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }'
+                    column_field[20]: '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }',
+                    column_field[21]: root_link,
+                    column_field[22]: root_lawyer_name
                 })
 
                     
@@ -140,6 +145,7 @@ def get_rows_from_tree_jsonForm(tree, column_field):
             column_field[18]: "ready_for_export",
             column_field[19]: '{ "name": [ "_skip_labeling" ], "count": [ 2 ] }',
             column_field[20]: '{ "name": [ "spam", "lang_mismatch", "pii", "not_appropriate", "hate_speech", "sexual_content", "quality", "toxicity", "humor", "creativity", "violence" ], "value": [ 0, 0, 0, 0, 0, 0, 0.5833333333333334, 0.08333333333333333, 0.08333333333333333, 0.4166666666666667, 0 ], "count": [ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 ] }'
+            
         })
 
     
