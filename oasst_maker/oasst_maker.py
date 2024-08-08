@@ -154,7 +154,7 @@ def direct_path_input_file_link(input_path):
     print("파일 입력 경로 확인:", input_path)
     return input_path
 
-   
+
 
 
 
