@@ -1,7 +1,7 @@
 import pandas as pd
 
 # 엑셀 파일 경로 및 시트 이름 설정
-excel_file_path = 'oasst_naver_cafe_20240731_1.xlsx'
+excel_file_path = '../../oasst/oasst_naver_cafe_20240731_1.xlsx'
 sheet_name = 'Sheet1'
 
 # 엑셀 파일 읽기
@@ -10,7 +10,7 @@ df = pd.read_excel(excel_file_path, sheet_name=sheet_name)
 # 시작 및 종료 행 설정
 start_row = 0  # 첫 번째 행의 인덱스는 0
 end_row = 9999  # 0부터 시작하므로, 10000번째 행은 인덱스 9999
-separation_word = 'A.'  # 특정 단어 설정
+separation_words = ['A.','답변']  # 특정 단어 설정
 
 # 범위 내의 각 행에 대해 처리
 for idx in range(start_row, end_row + 1):
@@ -18,14 +18,17 @@ for idx in range(start_row, end_row + 1):
         break  # 인덱스 범위를 벗어나면 루프 중지
 
     # 'role' 열 값 가져오기
-    h_column_value = df.at[idx, 'role']  
+    role_column_value = df.at[idx, 'role']  
     # 'text' 열 값 가져오기
-    f_column_value = df.at[idx, 'text']  
+    text_column_value = df.at[idx, 'text']  
 
-    # 'role'이 "prompter"이고 'text'에 'separation_word'가 포함된 경우 처리
-    if h_column_value == 'prompter' and isinstance(f_column_value, str) and separation_word in f_column_value:
+    # 'role'이 "prompter"이고 'text'에  text가 존재하며 'separation_word'가 포함된 경우 처리
+    if role_column_value == 'prompter' and isinstance(text_column_value, str) and (separation_words[0] or separation_words[1]) in text_column_value:
+
+        separation_word = separation_words[0] if separation_words[0] in text_column_value else separation_words[1]
+        
         # separation_word의 인덱스를 기준으로 텍스트 분리
-        split_text = f_column_value.split(separation_word, 1)
+        split_text = text_column_value.split(separation_word, 1)
         
         if len(split_text) > 1:
             # separation_word 이후의 텍스트 추출
