@@ -36,7 +36,7 @@ update_query = f"""
                    regexp_replace(oasst_table.text,                       
                     '{filter_pattern}', '', 'g'),
                'http[s]?://\\S+|www\\.\\S+', '', 'g')
-    WHERE role = 'assistant'
+    WHERE role = 'assistant' OR role = 'prompter'
 """
 
 
