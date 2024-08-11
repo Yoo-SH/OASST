@@ -50,10 +50,10 @@ repos:
     -   id: poetry-install
         # args: ["-C", "./subdirectory"]
 
-# ## https://jorisroovers.com/gitlint/latest/commit_hooks/
-#   - repo: https://github.com/jorisroovers/gitlint
-#     rev: 0.19.1
-#     hooks:
-#     - id: gitlint
-#     - id: gitlint-ci
-#       # args: [--debug, --commits, mybranch] # enable debug mode, lint all commits in mybranch
+## https://jorisroovers.com/gitlint/latest/commit_hooks/
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.19.1
+    hooks:
+    - id: gitlint
+    - id: gitlint-ci
+      # args: [--debug, --commits, mybranch] # enable debug mode, lint all commits in mybranch
