@@ -16,13 +16,13 @@ python 기본 package manager는 poetry 사용하기. monorepo 셋팅시에도 p
 
 `poetry install`시 poetry-pre-commit-plugin도 설치됨 -> git hook [pre-commit, gitlint] 자동 설치됨
 
-commit 전 `.pre-commit-config.yaml` hook내용 실행 - hook 통과 되야 git commit 성공함 - https://pre-commit.com/ -->
+commit 전 `.pre-commit-config.yaml` hook내용 실행 - hook 통과 되야 git commit 성공함 - https://pre-commit.com/
 
 commit 전 `.gitlint` hook내용 실행 - git commit message 규칙 통과 되야 git commit 성공함
 
 https://jorisroovers.com/gitlint/latest/rules/contrib_rules/ \
 
-git commit message 규칙 참고: https://www.conventionalcommits.org/en/v1.0.0/ , https://github.com/angular/angular/blob/main/CONTRIBUTING.md#type -->
+git commit message 규칙 참고: https://www.conventionalcommits.org/en/v1.0.0/ , https://github.com/angular/angular/blob/main/CONTRIBUTING.md#type
 
 https://pypi.org/project/poetry-pre-commit-plugin/
 
@@ -33,7 +33,9 @@ https://velog.io/@qlgks1/Python-flake8-Black-%EB%8F%84%EC%9E%85-clean-code-%EC%8
 pre-commit autoupdate 를 통해서 우리가 세팅한 .pre-commit-config.yaml file을 알맞게 버전 세팅을 해주자! \
 이게 끝이 아니라 실제 commit 을 할 때마다 위 파일이 pre-commit 단계에 실행되도록 pre-commit install 를 실행해주자! 그러면 pre-commit installed at .git/hooks/pre-commit 라고 나온다.
 
-### -- `gitlint install-hook`: git commit-msg hook (작동 안하는 경우 명령어 실행) 설치
+<!-- ### -- `gitlint install-hook`: git commit-msg hook (작동 안하는 경우 명령어 실행) 설치 -->
+
+<!-- ### -- `gitlint install-hook`: git commit-msg hook (작동 안하는 경우 명령어 실행) 설치 -->
 
 ### duckdb
 
