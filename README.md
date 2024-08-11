@@ -1,5 +1,29 @@
 # oasst-preprocessor
 
+## setup, how to use?
+
+아래 내용 순서대로 셋팅하면 큰 문제 없을듯
+
+windows 환경 기준으로, linux macos 환경에서는 조금 다를 수 있음
+
+### -- `.vscode/extensions.json` 전부 설치
+
+### -- `poetry install`: python package 설치
+
+python 기본 package manager는 poetry 사용하기. monorepo 셋팅시에도 poetry 사용가능 - https://python-poetry.org/docs/
+
+### -- `pre-commit install`: git pre-commit hook 설치
+
+commit 전 `.pre-commit-config.yaml` hook내용 실행 - hook 통과 되야 git commit 성공함 - https://pre-commit.com/
+
+### -- `gitlint install-hook`: git commit-msg hook 설치
+
+commit 전 `.gitlint` hook내용 실행 - git commit message 규칙 통과 되야 git commit 성공함
+
+https://jorisroovers.com/gitlint/latest/rules/contrib_rules/ \
+
+git commit message 규칙 참고: https://www.conventionalcommits.org/en/v1.0.0/ , https://github.com/angular/angular/blob/main/CONTRIBUTING.md#type
+
 ### duckdb
 
 20240807 데이터전처리 생 파이썬코드로 짜면 병렬처리랑 메모리관리가 안되서 처리시간이 너무 오래걸릴 수 있어서, 데이터 병렬처리 라이브러리 duckdb 사용하기, 실행시간 오래 걸리는거도 디버그할때 계속 기다려야되서 문제가 되기 때문에, 개발생산성 향상을 위해서도 code실행시간도 중요함 \
@@ -14,7 +38,6 @@
 
 - https://duckdb.org/docs/sql/introduction duckdb sql 개발문서
 
-
 #### Python Function API - udf 사용시 유의사항
 
 https://duckdb.org/2023/07/07/python-udf.html DuckDB now supports vectorized Scalar Python User Defined Functions (UDFs)
@@ -26,7 +49,6 @@ duckdb 내장함수-내장type을 쓰는것이 가장 빠름, duckdb 뿐만 아�
 duckdb에 명확히 나와있지는 않지만, 추정상 pyarrow 처리된 function은 변수type크기 정의를 해줘야되서 개발이 귀찮아지고, 디버그 하기가 힘들것임 \
 **=> udf를 pyarrow 처리 하기전에, 일반 python function으로 개발-테스트 완료하기**
 
-
 #### DBeaver 연결
 
 다양한 connector를 제공하는 DBeaver와도 연결이 가능하다.
@@ -34,7 +56,6 @@ duckdb에 명확히 나와있지는 않지만, 추정상 pyarrow 처리된 funct
 MEMORY 버전과 .db 파일 연동 둘 다 가능하며, read_only 사용 시는 이미지처럼 driver properties에서 duckdb.read_only 값을 적용해주어야 한다.
 
 https://duckdb.org/docs/guides/sql_editors/dbeaver.html
-
 
 #### 타 데이터프레임과 호환
 
@@ -53,15 +74,13 @@ conn.sql(
 )
 ```
 
-### Connection
+#### Connection
 
 DuckDB는 다른 데이터베이스들과 마찬가지로 connection을 만들어 재사용할 수 있다. 각 connection은 쿼리 실행에 필요한 데이터 및 메타데이터를 메모리에 캐시해두었다가 연결이 끊기면 날려버리므로, 작은 쿼리를 여러번 실행시켜야 하는 경우에는 connection을 유지하는 것이 성능에 좋다.
 
 보통은 하나의 connection만 사용하는 것이 좋지만 connection pool을 만들어 여러 connection들을 사용하는 것도 가능하다. DuckDB는 이미 각 쿼리를 실행시키기 위해 병렬성을 충분히 활용하도록 설계되어 있지만, 모든 케이스에 대해 병렬 처리를 적용하는 것은 불가능하다. 따라서 만약 CPU 사용률이 널널하고, 네트워크 전송 속도 등이 병목의 원인이라면 여러 connection을 만들어 동시성을 확보하는 것도 도움이 될 것이다.
 
 팁) Python에서 사용되는 DuckDBPyConnection은 thread-safe하지 않다. 또한 single connection을 사용하더라도 쿼리가 실행되는 동안 lock이 걸린다. 따라서 multi-thread 환경에서서 데이터베이스에 접근하기 위해서는 위해서는 .cursur() 메서드를 호출해 각 thread마다 cursor를 만들어 주어야 한다.
-
-
 
 ## references
 
@@ -104,8 +123,8 @@ DuckDB는 다른 데이터베이스들과 마찬가지로 connection을 만들�
 
 - https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/
 
-
 -- https://github.com/bab2min/kiwipiepy (Kiwipiepy, Python용 Kiwi 패키지)
+
 ```shell
 #git
 
