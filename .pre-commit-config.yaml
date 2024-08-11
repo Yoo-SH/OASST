@@ -26,7 +26,9 @@ repos:
     rev: 7.1.1
     hooks:
       - id: flake8
-# args: ["--config=django_all_about/.flake8"]
+        # additional_dependencies: []
+        args: [--config=.flake8]
+        # args: ["--config=django_all_about/.flake8"]
         name: flake8
         description: "`flake8` is a command-line utility for enforcing style consistency across Python projects."
         entry: flake8
