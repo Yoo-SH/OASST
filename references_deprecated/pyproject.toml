@@ -1,0 +1,22 @@
+[build-system] # https://python-poetry.org/docs/pyproject/#poetry-and-pep-517
+requires = ["poetry-core", "wheel"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry] # https://python-poetry.org/docs/pyproject/
+name = "oasst_preprocessor"
+version = "0.1.0"
+description = ""
+authors = ["epicmobile <epicmobile181@gmail.com>"]
+readme = "README.md"
+# packages = [{include = "app", from = "src"}]
+
+
+## https://python-poetry.org/docs/cli/#install
+[tool.poetry.dependencies] # https://python-poetry.org/docs/dependency-specification/
+#python = "^3.12"
+#python = "~3.11"
+python = ">=3.10 <3.12" ## autogluon (1.0.1b20231216) requires Python >=3.8, <3.12
+
+## `poetry install --with test,docs` `poetry install --only test,docs` 로 설치 가능
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.2"
