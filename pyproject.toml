@@ -72,8 +72,8 @@ debugpy = { version = "^1.7.0", optional = true }
 pre-commit = "^3.6.0"
 poethepoet = "^0.27.0"
 ## `poetry run poe` 로 실행 가능
-# gitlint = "^0.19.0"      # https://pypi.org/project/gitlint/
-commit-linter = "^1.0.0" # https://github.com/Hoopher/commit-linter
+gitlint = "^0.19.0" # https://pypi.org/project/gitlint/
+# commit-linter = "^1.0.0" # https://github.com/Hoopher/commit-linter
 
 [tool.poetry.scripts] # https://python-poetry.org/docs/pyproject/#scriptsopenpyxl
 # poetry run my_command
