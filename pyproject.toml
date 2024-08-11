@@ -3,7 +3,7 @@ requires = ["poetry-core", "wheel"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry] # https://python-poetry.org/docs/pyproject/
-name = "oasst_maker"
+name = "oasst_preprocessor"
 version = "0.1.0"
 description = ""
 authors = ["epicmobile <epicmobile181@gmail.com>"]
@@ -38,10 +38,13 @@ classifiers = [
 #python = "^3.12"
 #python = "~3.11"
 python = ">=3.10 <3.12" ## autogluon (1.0.1b20231216) requires Python >=3.8, <3.12
+pip = ">=23 <25"        ## autogluon (1.0.1b20231216) requires Python >=3.8, <3.12
 # gradio = "^4.12.0"      ## autogluon 을 먼저 깔아버리면 종속성 error가 발생함; 패키지 설치 순서도 중요한듯;
 #huggingface
 #transformers = "^4.36.2"
 #pre-commit = "^3.6.0"
+urllib3 = "^1.26.16" # Needed cause of a bug in poetry   https://github.com/python-poetry/poetry/issues/7936
+
 
 # [tool.poetry.dev-dependencies]   Poetry pre-1.2.x style, understood by Poetry 1.0–1.2
 ## Poetry will slowly transition away from the dev-dependencies notation which will soon be deprecated
@@ -51,7 +54,6 @@ python = ">=3.10 <3.12" ## autogluon (1.0.1b20231216) requires Python >=3.8, <3.
 # cloudwatch = "^1.2.1"
 python-dotenv = "^1.0.1"
 dotenv-cli = "^3.3.1"
-
 
 ## `poetry install --with test,docs` `poetry install --only test,docs` 로 설치 가능
 [tool.poetry.group.dev.dependencies]
@@ -70,6 +72,7 @@ debugpy = { version = "^1.7.0", optional = true }
 pre-commit = "^3.6.0"
 poethepoet = "^0.27.0"
 ## `poetry run poe` 로 실행 가능
+gitlint = "^0.19.0" # https://pypi.org/project/gitlint/
 
 [tool.poetry.scripts] # https://python-poetry.org/docs/pyproject/#scriptsopenpyxl
 # poetry run my_command
@@ -104,7 +107,9 @@ skip_covered = true
 [tool.black]
 skip-string-normalization = true
 exclude = '/(tests/hooks-abort-render/hooks|docs\/HelloCookieCutter1)/'
-line-length = 88
+# line-length = 88
+line-length = 160
+## black 의 line-length을 생략하는 경우, flake8 pylint에서 막혀서 pre-commit 과정에서 코드가 수정되지 않습니다.
 target-version = ['py39', 'py310']
 # quiet = true
 
@@ -133,9 +138,7 @@ testpaths = ['tests']
 cache_dir = ".cache/pytest/"
 markers = []
 xfail_strict = true
-filterwarnings = [
-    "error",
-]
+filterwarnings = ["error"]
 
 [tool.ruff] # https://github.com/charliermarsh/ruff
 fix = true
@@ -276,7 +279,7 @@ cmd = """
 ## `poetry run poe test` OR `poe test`
 help = "Test this package"
 # envfile = ".env"
-cmd = "pytest -v tests"   # "pytest --cov=my_app"
+cmd = "pytest -v tests" # "pytest --cov=my_app"
 # cmd = pytest --cov=my_app -v tests --maxfail=2 --disable-warnings
 
 ## https://poethepoet.natn.io/tasks/task_types/sequence.html
