@@ -28,7 +28,7 @@ repos:
     rev: 7.1.1
     hooks:
       - id: flake8
-# args: ["--config=django_all_about/.flake8"]      
+# args: ["--config=django_all_about/.flake8"]
         name: flake8
         description: "`flake8` is a command-line utility for enforcing style consistency across Python projects."
         entry: flake8
@@ -48,3 +48,11 @@ repos:
         # args: ["-C", "./subdirectory", "-f", "requirements.txt", "-o", "./subdirectory/requirements.txt"]
     -   id: poetry-install
         # args: ["-C", "./subdirectory"]
+
+# ## https://jorisroovers.com/gitlint/latest/commit_hooks/
+#   - repo: https://github.com/jorisroovers/gitlint
+#     rev: 0.19.1
+#     hooks:
+#     - id: gitlint
+#     - id: gitlint-ci
+#       # args: [--debug, --commits, mybranch] # enable debug mode, lint all commits in mybranch
