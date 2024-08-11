@@ -11,3 +11,6 @@ exclude =
 max-complexity = 10
 ; max-line-length = 88
 max-line-length = 160
+; flake8의 ‘max-line-length = 88’ 를 생략하는 경우,
+; black은 88자를 통과시키지만 flake8은 기본값인 79자를 기준으로 검사합니다.
+; 반대로 black 의 line-length을 생략하는 경우, pre-commit 과정에서 코드가 수정되지 않습니다.
