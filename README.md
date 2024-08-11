@@ -12,17 +12,23 @@ windows 환경 기준으로, linux macos 환경에서는 조금 다를 수 있�
 
 python 기본 package manager는 poetry 사용하기. monorepo 셋팅시에도 poetry 사용가능 - https://python-poetry.org/docs/
 
-### -- `pre-commit install`: git pre-commit hook 설치
+### -- git hook 설치 [pre-commit, gitlint]
 
-commit 전 `.pre-commit-config.yaml` hook내용 실행 - hook 통과 되야 git commit 성공함 - https://pre-commit.com/
+`poetry install`시 poetry-pre-commit-plugin도 설치됨 -> git hook [pre-commit, gitlint] 자동 설치됨
 
-### -- `gitlint install-hook`: git commit-msg hook 설치
+commit 전 `.pre-commit-config.yaml` hook내용 실행 - hook 통과 되야 git commit 성공함 - https://pre-commit.com/ -->
 
 commit 전 `.gitlint` hook내용 실행 - git commit message 규칙 통과 되야 git commit 성공함
 
 https://jorisroovers.com/gitlint/latest/rules/contrib_rules/ \
 
-git commit message 규칙 참고: https://www.conventionalcommits.org/en/v1.0.0/ , https://github.com/angular/angular/blob/main/CONTRIBUTING.md#type
+git commit message 규칙 참고: https://www.conventionalcommits.org/en/v1.0.0/ , https://github.com/angular/angular/blob/main/CONTRIBUTING.md#type -->
+
+https://pypi.org/project/poetry-pre-commit-plugin/
+
+<!-- ### -- `pre-commit install`: git pre-commit hook 설치 -->
+
+<!-- ### -- `gitlint install-hook`: git commit-msg hook 설치 -->
 
 ### duckdb
 
