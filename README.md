@@ -26,9 +26,14 @@ git commit message 규칙 참고: https://www.conventionalcommits.org/en/v1.0.0/
 
 https://pypi.org/project/poetry-pre-commit-plugin/
 
-<!-- ### -- `pre-commit install`: git pre-commit hook 설치 -->
+### -- `pre-commit install`: git pre-commit hook (작동 안하는 경우 명령어 실행) 설치
 
-<!-- ### -- `gitlint install-hook`: git commit-msg hook 설치 -->
+https://velog.io/@qlgks1/Python-flake8-Black-%EB%8F%84%EC%9E%85-clean-code-%EC%8B%A4%EC%B2%9C%ED%95%98%EA%B8%B0
+
+pre-commit autoupdate 를 통해서 우리가 세팅한 .pre-commit-config.yaml file을 알맞게 버전 세팅을 해주자! \
+이게 끝이 아니라 실제 commit 을 할 때마다 위 파일이 pre-commit 단계에 실행되도록 pre-commit install 를 실행해주자! 그러면 pre-commit installed at .git/hooks/pre-commit 라고 나온다.
+
+### -- `gitlint install-hook`: git commit-msg hook (작동 안하는 경우 명령어 실행) 설치
 
 ### duckdb
 
