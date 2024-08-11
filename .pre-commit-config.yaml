@@ -47,6 +47,19 @@ repos:
     -   id: poetry-install
         # args: ["-C", "./subdirectory"]
 
+  - repo: local
+    # rev: v0.19.1
+    hooks:
+    - id: check_gitlint_install-hook
+      name: check_gitlint_install-hook
+      # entry: ./scripts/check_gitlint_install_hook.sh
+      entry: python ./scripts/check_gitlint_install_hook.py
+      # language: script
+      language: system
+      # language: python
+      types: [ python ]
+      verbose: true
+
 ## https://jorisroovers.com/gitlint/latest/commit_hooks/
   - repo: https://github.com/jorisroovers/gitlint
     rev: v0.19.1
