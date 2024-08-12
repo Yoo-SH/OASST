@@ -5,6 +5,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
+<<<<<<< HEAD
+=======
+*.pyc
+>>>>>>> c46d323f8a46c6fce809b95f4e83522d1ff65e5c
 
 ## C extensions
 *.so
@@ -49,6 +53,10 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+<<<<<<< HEAD
+=======
+.mypy_cache/
+>>>>>>> c46d323f8a46c6fce809b95f4e83522d1ff65e5c
 
 ## Translations
 *.mo
