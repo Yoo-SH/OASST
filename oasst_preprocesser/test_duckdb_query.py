@@ -12,11 +12,7 @@ conn.execute("DROP TABLE IF EXISTS section")
 conn.execute("CREATE TABLE items (id INTEGER, name STRING)")
 conn.execute("CREATE TABLE section (id STRING, name STRING, gender CHAR(1))")
 conn.execute("INSERT INTO items VALUES (1, 'Apple'), (2, 'Banana'), (3, 'Cherry')")
-<<<<<<< HEAD
 conn.execute("INSERT INTO section VALUES (' 이거 이렇게 쓰는거 맞냐', 'Apple', 'M'), ('이렇게?', 'Banana', 'W'), ('요렇게?', 'Cherry', 'M')")
-=======
-conn.execute("INSERT INTO section VALUES ('야 이거 이렇게 쓰는거 맞냐', 'Apple', 'M'), ('이렇게?', 'Banana', 'W'), ('요렇게?', 'Cherry', 'M')")
->>>>>>> c46d323f8a46c6fce809b95f4e83522d1ff65e5c
 
 # 쿼리 결과 가져오기
 result = conn.execute("SELECT * FROM section").fetchall()
