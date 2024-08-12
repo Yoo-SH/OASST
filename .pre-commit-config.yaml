@@ -1,0 +1,71 @@
+## https://pre-commit.com/
+## https://github.com/pre-commit/pre-commit.com/issues/255   2019 Understanding install vs install --install-hooks
+## don't write korean in this file - An unexpected error has occurred: UnicodeDecodeError: 'cp949' codec can't decode byte 0xbc in position 289: illegal multibyte sequence
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-yaml
+      - id: check-json
+
+  - repo: https://github.com/psf/black
+    rev: 24.8.0
+    hooks:
+      - id: black
+        name: black
+        description: "Black: The uncompromising Python code formatter"
+        entry: black
+        language: python
+        minimum_pre_commit_version: 2.9.2
+        require_serial: true
+        types_or: [python, pyi]
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.1.1
+    hooks:
+      - id: flake8
+        # additional_dependencies: []
+        args: [--config=.flake8]
+        # args: ["--config=django_all_about/.flake8"]
+        name: flake8
+        description: "`flake8` is a command-line utility for enforcing style consistency across Python projects."
+        entry: flake8
+        language: python
+        types: [python]
+        require_serial: true
+
+## https://python-poetry.org/docs/pre-commit-hooks/
+  - repo: https://github.com/python-poetry/poetry
+    rev: 1.8.0  # add version here
+    hooks:
+    -   id: poetry-check
+        # args: ["-C", "./subdirectory"]
+    -   id: poetry-lock
+        # args: ["-C", "./subdirectory"]
+    # -   id: poetry-export
+        # args: ["-C", "./subdirectory", "-f", "requirements.txt", "-o", "./subdirectory/requirements.txt"]
+    -   id: poetry-install
+        # args: ["-C", "./subdirectory"]
+
+  - repo: local
+    # rev: v0.19.1
+    hooks:
+    - id: check_gitlint_install-hook
+      name: check_gitlint_install-hook
+      # entry: ./scripts/check_gitlint_install_hook.sh
+      entry: python ./scripts/check_gitlint_install_hook.py
+      # language: script
+      language: system
+      # language: python
+      types: [ python ]
+      verbose: true
+
+## https://jorisroovers.com/gitlint/latest/commit_hooks/
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.19.1
+    hooks:
+    - id: gitlint
+    - id: gitlint-ci
+      # args: [--debug, --commits, mybranch] # enable debug mode, lint all commits in mybranch
