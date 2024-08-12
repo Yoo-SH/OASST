@@ -53,5 +53,5 @@ for idx in range(start_row, end_row + 1):
         df.at[idx, 'text'] = updated_f_column_value
 
 # 수정된 데이터프레임을 엑셀 파일로 저장
-output_file_path = 'output_excel_file.xlsx'
+output_file_path = 'output_QA_file.xlsx'
 df.to_excel(output_file_path, index=False)
