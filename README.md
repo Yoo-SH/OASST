@@ -146,4 +146,11 @@ DuckDB는 다른 데이터베이스들과 마찬가지로 connection을 만들�
 -git lfs install ==> git lfs track "\*." (깃 LFS 설치 및 트래킹)
 
 -pip install python-dotenv ==> os.getenv(key), os.environ.get(key) (파일로드 및 환경변수 로드)
+
+-pip install poetry (프로젝트의 패키지와 의존성 관리.)
+
+-pip install pre-commit => precommit autoupgrade (hook 설치, .pre-commit-config.yaml 파일에 정의된 훅을 실행 => .pre-commit-config.yaml 파일의 훅 버전을 최신으로 업데이트)
+
+-pip install gitlint (커밋 메시지 규칙 검사.)
+
 ```
