@@ -13,35 +13,66 @@ logging.info("프로그램 시작")
 
 # Excel 파일 읽기
 oasst_file_path = 'oasst_lawtalk_상담사례_20240807.xlsx'
-filter_file_path = '지역명.xlsx'
+filter_file_path = 'sample_지역명.xlsx'
 
 logging.info("Excel 파일 읽기 시작")
-# pandas로 읽기 대신 pyarrow로 읽기
 oasst_file = pa.Table.from_pandas(pd.read_excel(oasst_file_path))
 filter_file = pa.Table.from_pandas(pd.read_excel(filter_file_path))
 logging.info("Excel 파일 읽기 완료")
-
 
 # DuckDB 연결
 logging.info("DuckDB 데이터베이스 연결 시작")
 conn = duckdb.connect('my_database.duckdb')
 logging.info("DuckDB 데이터베이스 연결 완료")
 
-
 # 필터 리스트 생성
 logging.info("필터 리스트 생성 시작")
-filter_to_remove = [x.as_py() for x in filter_file.column('지역명') if x.as_py() is not None]  # NaN 제거
+filter_to_remove = [x.as_py() for x in filter_file.column('지역명') if x.as_py() is not None]
 filter_pattern = f"\\s*({'|'.join(map(re.escape, filter_to_remove))})\\s*"
 logging.info("필터 리스트 생성 완료")
 
-# PyArrow를 사용하여 데이터 필터링 및 텍스트 수정
+# PyArrow를 사용하여 기존의 text 컬럼을 수정
 logging.info("텍스트 필터링 및 수정 시작")
-oasst_file = oasst_file.append_column(
-    'text',
-    pc.replace_substring_regex(
-        pc.replace_substring_regex(oasst_file.column('text'), filter_pattern, '', max_replacements=-1), 'http[s]?://\\S+|www\\.\\S+', '', max_replacements=-1
-    ),
+
+# 기존 text 컬럼을 수정하고, 덮어쓰는 방식
+filtered_text_column = pc.replace_substring_regex(
+    pc.replace_substring_regex(oasst_file.column('text'), filter_pattern, '', max_replacements=-1), 'http[s]?://\\S+|www\\.\\S+', '', max_replacements=-1
 )
+
+# 덮어쓰기 위해 기존 컬럼을 삭제한 후 추가
+oasst_file = oasst_file.remove_column(oasst_file.column_names.index('text'))
+oasst_file = oasst_file.append_column('text', filtered_text_column)
+
+
+# 컬럼 순서 조정 (여기서 컬럼 순서를 명시적으로 설정할 수 있습니다)
+column_order = [
+    'message_id',
+    'parent_id',
+    'user_id',
+    'creadte_date',
+    'title',
+    'text',
+    '사용여부',
+    'role',
+    'lang',
+    'review_count',
+    'review_result',
+    'deleted',
+    'rank',
+    'synthetic',
+    'model_name',
+    'detoxify',
+    'message_tree_id',
+    'tree_state',
+    'emojis',
+    'lavels',
+    'link',
+    '변호사명',
+]
+
+# PyArrow 테이블의 컬럼 순서를 조정
+oasst_file = pa.Table.from_pandas(oasst_file.to_pandas()[column_order])
+
 logging.info("텍스트 필터링 및 수정 완료")
 
 # 필터링된 데이터를 DuckDB 테이블에 삽입
