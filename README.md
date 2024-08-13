@@ -6,6 +6,57 @@
 
 windows 환경 기준으로, linux macos 환경에서는 조금 다를 수 있음
 
+### -- python virtualenv환경 설정 또는 설치
+
+conda 설정 및 명령어
+https://studying-modory.tistory.com/entry/conda%EC%82%AC%EC%9A%A9%EB%B2%95-Anaconda-%ED%99%98%EA%B2%BD%EB%B3%80%EC%88%98path-%EC%84%A4%EC%A0%95-%EB%B0%8F-conda-%EB%AA%85%EB%A0%B9%EC%96%B4
+
+```powershell
+## windows 기준
+
+
+## conda base env를 cmd open시 default로 실행시키려면, 신뢰하지 않는 스크립트 실행가능 권한이 있어야 되는듯 - windows기본은 (N)으로 설정되어 있음
+Set-ExecutionPolicy RemoteSigned  -> 예(y) 입력
+
+#사용자 환경변수
+C:\Users\MOBLAB-PC1\miniconda3
+C:\Users\MOBLAB-PC1\miniconda3\Library
+C:\Users\MOBLAB-PC1\miniconda3\Script
+
+
+##가상환경만 생성시
+conda create -n [name]
+
+##가상환경 생성과 동시에 python 버전 설정시
+conda create -n [name] python=[version]
+conda create --name py312_1 python=3.12 -c conda-forge
+
+
+conda init
+conda activate (py312_1)
+
+## (선택)conda를 shell open시 기본 pyton virtualenv로 설정하기
+conda config --set auto_activate_base true
+
+##가상환경 접근
+conda activate [name]
+ex) conda activate test
+
+##가상환경 나오기(base로 돌아가기)
+condat deactivate
+
+
+
+```
+
+```text
+## conda 환경변수 등록(windows 기준)
+%UserProfile%\Miniconda3
+%UserProfile%\Miniconda3\Scripts
+```
+
+https://docs.anaconda.com/miniconda/#miniconda-latest-installer-links
+
 ### -- `.vscode/extensions.json` 전부 설치
 
 ### -- `poetry install`: python package 설치
