@@ -31,9 +31,13 @@ conda create -n [name]
 conda create -n [name] python=[version]
 conda create --name py312_1 python=3.12 -c conda-forge
 
+##콘다 버전 확인
+conda --version
+conda -V
 
 conda init
 conda activate (py312_1)
+
 
 ## (선택)conda를 shell open시 기본 pyton virtualenv로 설정하기
 conda config --set auto_activate_base true
@@ -41,6 +45,14 @@ conda config --set auto_activate_base true
 ##가상환경 접근
 conda activate [name]
 ex) conda activate test
+
+##가상환경에 설치된 목록
+conda list
+
+
+##가상환경 목록 불러오기
+conda env list
+conda info -env
 
 ##가상환경 나오기(base로 돌아가기)
 condat deactivate
