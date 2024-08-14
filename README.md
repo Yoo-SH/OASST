@@ -42,20 +42,28 @@ conda activate ("py312_1")
 ## (선택)conda를 shell open시 기본 pyton virtualenv로 설정하기
 conda config --set auto_activate_base true
 
+##가상환경 생성
+conda env create -f [name].yml
+
 ##가상환경 접근
 conda activate [name]
 ex) conda activate test
-
-##가상환경에 설치된 목록
-conda list
-
+ex) codna activate py312_1
 
 ##가상환경 목록 불러오기
 conda env list
 conda info -env
 
+
+##가상환경에 설치된 목록
+conda list
+
 ##가상환경 나오기(base로 돌아가기)
 condat deactivate
+
+##가상환경 삭제
+conda env remove -n [name]
+
 
 
 
