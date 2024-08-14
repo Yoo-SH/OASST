@@ -36,7 +36,7 @@ conda --version
 conda -V
 
 conda init
-conda activate (py312_1)
+conda activate ("py312_1")
 
 
 ## (선택)conda를 shell open시 기본 pyton virtualenv로 설정하기
