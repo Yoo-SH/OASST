@@ -2,14 +2,12 @@ import pandas as pd
 import uuid
 
 
-def process_excel_file(excel_file_path, separation_words, output_file_path):
+def preprocess_excel_file(excel_file_path, separation_words, output_file_path):
     """
     엑셀 파일을 처리하여 특정 단어(separation_words) 이후의 텍스트를 분리하고 새로운 행을 추가하는 함수.
 
     Parameters:
         excel_file_path (str): 엑셀 파일의 경로
-        start_row (int): 시작 행 번호 (0부터 시작)
-        end_row (int): 종료 행 번호
         separation_words (list): 텍스트 분리에 사용할 단어 목록
         output_file_path (str): 처리된 데이터를 저장할 엑셀 파일 경로
 
@@ -70,12 +68,3 @@ def process_excel_file(excel_file_path, separation_words, output_file_path):
 
     # 수정된 데이터프레임을 엑셀 파일로 저장
     df.to_excel(output_file_path, index=False)
-
-
-if __name__ == "__main__":
-    excel_file_path = '../../oasst/oasst_naver_cafe_20240731_1.xlsx'
-
-    separation_words = ['A.', '답변', '예시', '추가']  # 여기에 더 많은 단어를 추가할 수 있음
-    output_file_path = 'output_QA_file.xlsx'
-
-    process_excel_file(excel_file_path, separation_words, output_file_path)
