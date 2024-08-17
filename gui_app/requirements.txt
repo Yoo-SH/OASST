@@ -1,0 +1,4 @@
+transformers
+grdio
+openpyxl
+pytorch

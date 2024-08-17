@@ -1,0 +1,12 @@
+# xgboost
+# idna>=2.*
+duckdb
+pyarrow
+# pandas>=1.3.6
+pandas>=2
+beautifulsoup4
+# kiwipiepy
+# mecab-python3
+lxml
+## UserWarning: Pandas requiires version '1.3.6' or newer of 'bottleneck' (version '1.3.5' currently installed).
+Bottleneck>=1.4.0
