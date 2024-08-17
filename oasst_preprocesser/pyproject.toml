@@ -12,8 +12,8 @@ readme = "README.md"
 packages = [
   { include = "oasst_maker", from = "." },
   { include = "oasst_preprocesser", from = "." },
-  { include = "gui_app", from = "." },
-  { include = "utils", from = "." },
+  { include = "gui_app", from = "../" },
+  { include = "utils", from = "../" },
 
   # ,{ include="conf", from="." }
 ]
@@ -40,14 +40,25 @@ classifiers = [
 [tool.poetry.dependencies] # https://python-poetry.org/docs/dependency-specification/
 #python = "^3.12"
 #python = "~3.11"
+# python = ">=3.10 <3.12" ## autogluon (1.0.1b20231216) requires Python >=3.8, <3.12
 python = ">=3.10,<4.0" ## autogluon (1.0.1b20231216) requires Python >=3.8, <3.12
-pip = ">=23"           ## autogluon (1.0.1b20231216) requires Python >=3.8, <3.12
+# pip = ">=23 <25"  ## autogluon (1.0.1b20231216) requires Python >=3.8, <3.12
+pip = ">=23" ## autogluon (1.0.1b20231216) requires Python >=3.8, <3.12
 # gradio = "^4.12.0"      ## autogluon 을 먼저 깔아버리면 종속성 error가 발생함; 패키지 설치 순서도 중요한듯;
 #huggingface
 #transformers = "^4.36.2"
 #pre-commit = "^3.6.0"
 urllib3 = "^1.26.16" # Needed cause of a bug in poetry   https://github.com/python-poetry/poetry/issues/7936
 
+# idna>=2.*
+duckdb = "^1.0"
+pyarrow = "^17.0.0"
+pandas = "^2"
+beautifulsoup4 = "^4.10.0"
+# kiwipiepy
+# mecab-python3
+lxml = "^5.3.0"
+Bottleneck = "^1.4.0" ## UserWarning: Pandas requiires version '1.3.6' or newer of 'bottleneck' (version '1.3.5' currently installed).
 
 # [tool.poetry.dev-dependencies]   Poetry pre-1.2.x style, understood by Poetry 1.0–1.2
 ## Poetry will slowly transition away from the dev-dependencies notation which will soon be deprecated
@@ -66,19 +77,18 @@ isort = "^5.12.0"
 pytest = "^7.3.2"
 black = "^23.12.0"
 # jupyter = "^1.0.0"
-# jupyterlab = ">=3 <5"
-jupyterlab = ">=3"
-ipykernel = "^6.27.1"
-xeus-python = "^0.15.2"
+# jupyterlab = ">=3"
+# ipykernel = "^6.27.1"
+# xeus-python = "^0.15.2"
 # nb_conda_kernels   conda에서만 설치가능
 # jupyterthemes = "^0.2"
 debugpy = { version = "^1.7.0", optional = true }
-pre-commit = "^3.6.0"
+# pre-commit = "^3.6.0"
 poethepoet = "^0.27.0"
 ## `poetry run poe` 로 실행 가능
-gitlint = "^0.19.0" # https://pypi.org/project/gitlint/
+# gitlint = "^0.19.0" # https://pypi.org/project/gitlint/
 # commit-linter = "^1.0.0" # https://github.com/Hoopher/commit-linter
-poetry-pre-commit-plugin = "^0.1.2"
+# poetry-pre-commit-plugin = "^0.1.2"
 
 [tool.poetry.scripts] # https://python-poetry.org/docs/pyproject/#scriptsopenpyxl
 # poetry run my_command

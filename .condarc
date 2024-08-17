@@ -1,0 +1,27 @@
+## https://docs.conda.io/projects/conda/en/latest/user-guide/configuration/use-condarc.html
+## https://docs.conda.io/projects/conda/en/latest/configuration.html
+# channels:
+#   - <anaconda_dot_org_username>
+#   - http://some.custom/channel
+#   - file:///some/local/directory
+#   - defaults
+
+## https://docs.conda.io/projects/conda/en/latest/user-guide/troubleshooting.html
+## conda config --set remote_read_timeout_secs 600
+remote_read_timeout_secs: 600.0
+
+# remote_connect_timeout_secs: 9.15
+remote_connect_timeout_secs: 30.0
+
+## https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-channels.html#strict-channel-priority
+## Accepts values of 'strict', 'flexible', and 'disabled'. The default value is 'flexible'. With strict channel priority,
+# channel_priority: strict
+channel_priority: flexible
+
+
+# ssl_verify: truststore
+ssl_verify: false
+
+## https://conda.github.io/conda-libmamba-solver/user-guide/
+solver: libmamba
+

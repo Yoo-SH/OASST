@@ -1,9 +1,0 @@
-# xgboost
-# idna>=2.*
-duckdb
-pyarrow
-pandas
-beautifulsoup4
-kiwipiepy
-mecab-python3
-lxml

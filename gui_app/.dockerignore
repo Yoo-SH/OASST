@@ -1,0 +1,23 @@
+build
+
+.git
+.idea
+node_modules
+.dockerignore
+.vscode
+.readmes
+references_deprecated
+reference_deprecated
+
+
+# app build결과인 dist 디렉토리의 내용물이 있어야, strapi start가 가능함
+# docker build전, dist폴더롤 통째로 docker에 올리기 위해서, npm run build 을 실행함
+# dist
+
+.cache
+public/uploads/*
+!public/uploads/.gitkeep
+logs
+data
+# .vscode
+# .idea
