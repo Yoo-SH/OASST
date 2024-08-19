@@ -1,0 +1,33 @@
+## https://conda.io/projects/conda/en/latest/configuration.html
+
+## https://medium.com/semantixbr/getting-started-with-conda-or-poetry-for-data-science-projects-1b3add43956d
+## https://medium.com/@silvinohenriqueteixeiramalta/conda-and-poetry-a-harmonious-fusion-8116895b6380
+## https://stackoverflow.com/questions/70851048/does-it-make-sense-to-use-conda-poetry
+## https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#activating-an-environment
+## it is best to specify the package's exact version in environment.yml,
+## and after it's installed, to add an entry with the same version specification to Poetry's pyproject.toml (without ^ or ~ before the version number).
+## This will let Poetry know that the package is there and should not be upgraded.
+# name: gradio-gui
+channels:
+  # - defaults
+  - conda-forge
+  - huggingface
+  - pytorch
+  - nvidia
+
+## conda environment.yml은, dev dependencies 구분방법이 없음; -> conda-dev-environment.yml 추가해서 dev환경 설치하기
+dependencies:
+  # - python=3.10.12
+  #  - python=3.10.*
+  #  - python >=3.7,<4.0
+  - python >=3.10, <4.0
+  ## environment.yml 에서 poetry 설치시 error 발생 - poetry >=1.x  is not installable because there are no viable options
+  ## conda update -f environment.yml  전에, poetry는 따로 설치해야됨
+  # - poetry >=1.7
+  ## mamba is a drop-in replacement and uses the same commands and configuration options as conda.
+  #You can swap almost all commands between conda & mamba:
+  ## mamba나 conda나 똑같아 보이는데..; mamba를 쓸 이유가? conda도 제대로 못쓰고 있는데;  https://mamba.readthedocs.io/en/latest/user_guide/mamba.html
+  #  - mamba
+  ## conda는 lock파일을 default로 생성하지 않음; https://github.com/conda/conda-lock
+  - conda-lock
+  - pre-commit

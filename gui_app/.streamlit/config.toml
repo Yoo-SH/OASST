@@ -1,0 +1,5 @@
+## https://docs.streamlit.io/library/advanced-features/configuration
+# [server]
+# fileWatcherType = "poll"
+# runOnSave = true
+
