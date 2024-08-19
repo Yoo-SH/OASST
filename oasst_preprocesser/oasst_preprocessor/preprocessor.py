@@ -91,7 +91,6 @@ def check_link_rule(input_path, input_file_name, output_file_name, filter_path, 
         exit(0)
 
     # XML 파일 존재 여부 확인
-
     if not os.path.exists(input_path + input_file_name + '.' + args.format):  # 입력 파일이 존재하지 않으면 프로그램 종료
         print(f"파일이 존재하지 않습니다:{input_file_name}")
         exit(0)
@@ -105,6 +104,7 @@ def check_link_rule(input_path, input_file_name, output_file_name, filter_path, 
 
     print("입력 파일 확인", input_file_name)
     print("출력 파일 확인", output_file_name)
+    print("필터 파일 확인", filter_name)
     print("파일 타입 확인:", args.format)
 
 
@@ -144,7 +144,7 @@ def main():
     ensure_feather_file(args.filter + '.xlsx', args.filter + '.feather')  # 필터 파일을 feather 파일로 변환
 
     # Preprocess data
-    duck.preprocess_data(args.input, args.format, args.output, args.format, args.filter + '.feather', 8)
+    duck.preprocess_data(args.input, args.output, args.filter + '.feather', args.format, 8)
 
 
 if __name__ == "__main__":
