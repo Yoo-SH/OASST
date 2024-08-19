@@ -9,6 +9,18 @@ repos:
       - id: trailing-whitespace
       - id: check-yaml
       - id: check-json
+        exclude: |
+          (?x)^(
+            .vscode/.*|
+            data/.*|
+          )$
+        # exclude: |
+        #     (?x)^(
+        #         .vscode|
+        #         path/to/file2.py|
+        #         path/to/file3.py
+        #     )$
+
 
   - repo: https://github.com/psf/black
     rev: 24.8.0
@@ -28,6 +40,7 @@ repos:
       - id: flake8
         # additional_dependencies: []
         args: [--config=.flake8]
+        # args: [--append-config=.flake8]
         # args: ["--config=django_all_about/.flake8"]
         name: flake8
         description: "`flake8` is a command-line utility for enforcing style consistency across Python projects."
@@ -35,6 +48,12 @@ repos:
         language: python
         types: [python]
         require_serial: true
+        # exclude: ^testing/(data|examples)/
+        exclude: |
+          (?x)^(
+            reference_deprecated/.*|
+            references_deprecated/.*|
+          )$
 
 ## https://python-poetry.org/docs/pre-commit-hooks/
   - repo: https://github.com/python-poetry/poetry

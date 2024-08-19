@@ -106,8 +106,6 @@ pre-commit autoupdate 를 통해서 우리가 세팅한 .pre-commit-config.yaml 
 
 <!-- ### -- `gitlint install-hook`: git commit-msg hook (작동 안하는 경우 명령어 실행) 설치 -->
 
-<!-- ### -- `gitlint install-hook`: git commit-msg hook (작동 안하는 경우 명령어 실행) 설치 -->
-
 ### duckdb
 
 20240807 데이터전처리 생 파이썬코드로 짜면 병렬처리랑 메모리관리가 안되서 처리시간이 너무 오래걸릴 수 있어서, 데이터 병렬처리 라이브러리 duckdb 사용하기, 실행시간 오래 걸리는거도 디버그할때 계속 기다려야되서 문제가 되기 때문에, 개발생산성 향상을 위해서도 code실행시간도 중요함 \

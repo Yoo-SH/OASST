@@ -1,0 +1,6 @@
+## https://docs.conda.io/projects/conda/en/latest/user-guide/configuration/use-condarc.html
+# channels:
+#   - <anaconda_dot_org_username>
+#   - http://some.custom/channel
+#   - file:///some/local/directory
+#   - defaults
