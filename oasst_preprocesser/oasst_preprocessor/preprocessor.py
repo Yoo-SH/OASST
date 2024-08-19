@@ -3,15 +3,8 @@ import pandas as pd
 import parallel_processing as duck
 import qa_separator as qa
 import logging
-import platform
 import os
-
-filter_file_path = {
-    'sample_xlsx': '../../data/sample_preprocessor/sample_지역명.xlsx',
-    '지역명_xlsx': '../../data/지역명.xlsx',
-    'sample_feather': '../../data/sample_preprocessor/sample_지역명.feather',
-    '지역명_feather': '../../data/지역명.feather',
-}
+import platform
 
 
 # Excel 파일을 Feather 파일로 변환 (첫 실행 시에만 필요)
@@ -95,7 +88,7 @@ def check_link_rule(input_path, input_file_name, output_file_name, args):
 
     # XML 파일 존재 여부 확인
 
-    if not os.path.exists(input_path + input_file_name + '.' + args.inputformat):  # 입력 파일이 존재하지 않으면 프로그램 종료
+    if not os.path.exists(input_path + input_file_name + '.' + args.format):  # 입력 파일이 존재하지 않으면 프로그램 종료
         print(f"파일이 존재하지 않습니다:{input_file_name}")
         exit(0)
 
@@ -104,43 +97,46 @@ def check_link_rule(input_path, input_file_name, output_file_name, args):
 
     print("입력 파일 확인", input_file_name)
     print("출력 파일 확인", output_file_name)
-    print("파일 타입 확인:", args.inputformat)
+    print("파일 타입 확인:", args.format)
 
 
 def main():
 
     parser = argparse.ArgumentParser(description='Process files with various formats.')
     parser.add_argument('-input', required=True, help='input 경로와 파일 이름 (예: ./inputfile_name)')
+    parser.add_argument('-output', required=True, help='output 경로와 파일 이름 (예: ./outputfile_name)')
+    parser.add_argument('-filter', required=True, help='filter 경로와 파일 이름 (예: ./filterfile_name)')
     parser.add_argument(
-        '-inputformat',
+        '-format',
         required=True,
         choices=['xlsx', 'csv(comma)', 'csv(tab)', 'json', 'jsonl', 'parquet', 'feather'],
         help='Input file format[xlsx, csv(comma), csv(tab), json, jsonl, parquet, feather]',
     )
-    parser.add_argument('-output', required=True, help='output 경로와 파일 이름 (예: ./outputfile_name)')
-    parser.add_argument('-outputformat', required=True, choices=['xlsx', 'csv(comma)', 'csv(tab)', 'jsonl', 'parquet', 'feather'], help='Output file format')
+
     args = parser.parse_args()
 
     input_path, input_file_name = os.path.split(args.input)  # 경로와 파일이름을 분리함
     output_path, output_file_name = os.path.split(args.output)  # 경로와 파일이름을 분리함
+    filter_path, filter_file_name = os.path.split(args.filter)  # 경로와 파일이름을 분리함
 
     input_path = direct_path_input_file_link(input_path)  # 경로 형식을 조정함  (상대경로나 절대경로인 경우에 따라 다름)
     output_path = direct_path_output_file_link(output_path)  # 경로 형식을 조정함  (상대경로나 절대경로인 경우에 따라 다름)
+    filter_path = direct_path_input_file_link(filter_path)  # 경로 형식을 조정함  (상대경로나 절대경로인 경우에 따라 다름)
 
     check_link_rule(input_path, input_file_name, output_file_name, args)  # 경로와 파일이름을 확인함
 
     # Perform QA separation if needed
-    if args.input.split('_')[1] == 'cafe' and args.inputformat == 'xlsx':  # _로 구분된 파일명에서 두 번째 단어가 'cafe'인 경우 ex) ../naver_cafe_2021 => cafe
+    if args.input.split('_')[1] == 'cafe' and args.format == 'xlsx':  # _로 구분된 파일명에서 두 번째 단어가 'cafe'인 경우 ex) ../naver_cafe_2021 => cafe
         separation_words = ['A.', '답변']
         temp_output_path = 'temp_QA_file.xlsx'
         qa.preprocess_excel_file(args.input, separation_words, temp_output_path)
-    elif args.input.split('_')[1] == 'cafe' and args.inputformat != 'xlsx':
+    elif args.input.split('_')[1] == 'cafe' and args.format != 'xlsx':
         print.info("cafe 파일을 QA분류 작업을 처리하기 위해서는 xlsx 파일 형식이 필요합니다. QA분류 작업을 건너 뜁니다.")
 
-    ensure_feather_file(filter_file_path['지역명_xlsx'], filter_file_path['지역명_feather'])
+    ensure_feather_file(args.filter + '.xlsx', args.filter + '.feather')  # 필터 파일을 feather 파일로 변환
 
     # Preprocess data
-    duck.preprocess_data(args.input, args.inputformat, args.output, args.outputformat, filter_file_path['지역명_feather'], 8)
+    duck.preprocess_data(args.input, args.format, args.output, args.format, args.filter + '.feather', 8)
 
 
 if __name__ == "__main__":
