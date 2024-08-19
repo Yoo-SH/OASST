@@ -115,10 +115,10 @@ def parallel_processing(chunks, filter_pattern, num_threads):
 
 
 # 데이터 전처리 및 병렬 처리 실행 함수
-def preprocess_data(input_file, inputformat, output_file, outputformat, filter_file, num_threads=4):
+def preprocess_data(input_file, output_file, filter_file, format, num_threads=8):
 
     # 데이터 읽기 및 청크로 분할
-    chunks = load_and_split_data(input_file, inputformat, num_threads)
+    chunks = load_and_split_data(input_file, format, num_threads)
 
     # 필터 패턴 생성
     filter_pattern = create_filter_pattern(filter_file)
@@ -128,5 +128,5 @@ def preprocess_data(input_file, inputformat, output_file, outputformat, filter_f
     final_df = parallel_processing(chunks, filter_pattern, num_threads)
 
     # 결과를 Excel 파일로 저장
-    save_file(final_df, output_file, outputformat)
+    save_file(final_df, output_file, format)
     logging.info(f"결과 파일 저장 완료: {output_file}")
