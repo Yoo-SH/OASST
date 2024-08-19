@@ -50,6 +50,10 @@ conda activate [name]
 ex) conda activate test
 ex) codna activate py312_1
 
+
+##가상환경 패키지 목록 설치
+conda install -f ./environment.yml
+
 ##가상환경 목록 불러오기
 conda env list
 conda info -env
@@ -105,6 +109,14 @@ pre-commit autoupdate 를 통해서 우리가 세팅한 .pre-commit-config.yaml 
 이게 끝이 아니라 실제 commit 을 할 때마다 위 파일이 pre-commit 단계에 실행되도록 pre-commit install 를 실행해주자! 그러면 pre-commit installed at .git/hooks/pre-commit 라고 나온다.
 
 <!-- ### -- `gitlint install-hook`: git commit-msg hook (작동 안하는 경우 명령어 실행) 설치 -->
+
+<!-- ### -- `gitlint install-hook`: git commit-msg hook (작동 안하는 경우 명령어 실행) 설치 -->
+
+### -- `poetry run poe test`: test code 실행
+
+https://poethepoet.natn.io/installation.html
+
+https://docs.pytest.org/en/stable/
 
 ### duckdb
 
@@ -223,3 +235,5 @@ DuckDB는 다른 데이터베이스들과 마찬가지로 connection을 만들�
 -pip install gitlint (커밋 메시지 규칙 검사.)
 
 ```
+
+- https://code.visualstudio.com/docs/python/jupyter-support-py

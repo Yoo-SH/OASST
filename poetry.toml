@@ -1,13 +1,14 @@
-[virtualenvs]   # https://python-poetry.org/docs/configuration/#virtualenvsin-project
+[virtualenvs] # https://python-poetry.org/docs/configuration/#virtualenvsin-project
 ## 꼭 local path에 .env 저장 안해도 될듯
 ## {cache-dir}/virtualenvs 내부에 {project_name}-py{python_version} 이런식으로 venv dir를 poetry가 알아서 만든다
 ## ex> {cache-dir}/virtualenvs/hometips-gradio-gui-Wgp0iv8b-py3.12
-#in-project = true
+in-project = true
 
 ## Create a new virtual environment if one doesn’t already exist.
 ## If set to false, Poetry will not create a new virtual environment
 #create = true
 create = false
 
+#\ path = "C:\\Users\\MOBLAB-PC1\\Miniconda3"
 
 #[virtualenvs]

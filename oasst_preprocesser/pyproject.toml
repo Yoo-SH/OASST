@@ -40,7 +40,7 @@ classifiers = [
 [tool.poetry.dependencies] # https://python-poetry.org/docs/dependency-specification/
 #python = "^3.12"
 #python = "~3.11"
-# python = ">=3.10 <3.12" ## autogluon (1.0.1b20231216) requires Python >=3.8, <3.12
+#python = ">=3.10 <3.12" ## autogluon (1.0.1b20231216) requires Python >=3.8, <3.12
 python = ">=3.10,<4.0" ## autogluon (1.0.1b20231216) requires Python >=3.8, <3.12
 # pip = ">=23 <25"  ## autogluon (1.0.1b20231216) requires Python >=3.8, <3.12
 pip = ">=23" ## autogluon (1.0.1b20231216) requires Python >=3.8, <3.12
