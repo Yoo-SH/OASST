@@ -1,0 +1,14 @@
+name: py312_1
+dependencies:
+  - python=3.12
+  - pip
+  - duckdb
+  - pyarrow
+  - pandas
+  - beautifulsoup4
+  - argparse
+  - platform
+  - lxml
+  - poetry
+  - poethepoet
+  - numpy
