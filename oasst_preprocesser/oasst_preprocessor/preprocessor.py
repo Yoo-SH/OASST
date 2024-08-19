@@ -68,7 +68,7 @@ def direct_path_output_file_link(output_path):
     return output_path
 
 
-def check_link_rule(input_path, input_file_name, output_file_name, args):
+def check_link_rule(input_path, input_file_name, output_file_name, filter_path, filter_name, args):
     """
     입력 및 출력 파일의 존재 여부와 유효성을 확인합니다.
 
@@ -86,10 +86,18 @@ def check_link_rule(input_path, input_file_name, output_file_name, args):
         print("Error: 파일 이름을 입력해야 합니다.")
         exit(0)
 
+    if not filter_name:
+        print("Error: 필터 파일 이름을 입력해야 합니다.")
+        exit(0)
+
     # XML 파일 존재 여부 확인
 
     if not os.path.exists(input_path + input_file_name + '.' + args.format):  # 입력 파일이 존재하지 않으면 프로그램 종료
         print(f"파일이 존재하지 않습니다:{input_file_name}")
+        exit(0)
+
+    if not os.path.exists(filter_path + filter_name + '.xlsx'):  # 필터 파일이 존재하지 않으면 프로그램 종료
+        print(f"파일이 존재하지 않습니다:{filter_name}")
         exit(0)
 
     if not output_file_name:  # output file명을 입력하지 않으면, _decompress이름이 붙은 파일이 생성.
@@ -123,7 +131,7 @@ def main():
     output_path = direct_path_output_file_link(output_path)  # 경로 형식을 조정함  (상대경로나 절대경로인 경우에 따라 다름)
     filter_path = direct_path_input_file_link(filter_path)  # 경로 형식을 조정함  (상대경로나 절대경로인 경우에 따라 다름)
 
-    check_link_rule(input_path, input_file_name, output_file_name, args)  # 경로와 파일이름을 확인함
+    check_link_rule(input_path, input_file_name, output_file_name, filter_path, filter_file_name, args)  # 경로와 파일이름을 확인함
 
     # Perform QA separation if needed
     if args.input.split('_')[1] == 'cafe' and args.format == 'xlsx':  # _로 구분된 파일명에서 두 번째 단어가 'cafe'인 경우 ex) ../naver_cafe_2021 => cafe
