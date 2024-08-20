@@ -5,6 +5,7 @@ import qa_separator as qa
 import logging
 import os
 import platform
+import csv_preprocessor
 
 
 # Excel 파일을 Feather 파일로 변환 (첫 실행 시에만 필요)
@@ -142,6 +143,11 @@ def main():
         print.info("cafe 파일을 QA분류 작업을 처리하기 위해서는 xlsx 파일 형식이 필요합니다. QA분류 작업을 건너 뜁니다.")
 
     ensure_feather_file(args.filter + '.xlsx', args.filter + '.feather')  # 필터 파일을 feather 파일로 변환
+
+    if args.format == 'csv(comma)':
+        csv_preprocessor.process_csv_comma(args.input + '.csv', args.output + '.csv')
+    elif args.format == 'csv(tab)':
+        csv_preprocessor.process_csv_tab(args.input + '.csv', args.output + '.csv')
 
     # Preprocess data
     duck.preprocess_data(args.input, args.output, args.filter, args.format, os.cpu_count())
