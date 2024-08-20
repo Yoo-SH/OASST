@@ -115,13 +115,13 @@ def parallel_processing(chunks, filter_pattern, num_threads):
 
 
 # 데이터 전처리 및 병렬 처리 실행 함수
-def preprocess_data(input_file, output_file, filter_file, format, num_threads=8):
+def preprocess_data(input_file, output_file, filter_file, format, num_threads):
 
     # 데이터 읽기 및 청크로 분할
     chunks = load_and_split_data(input_file, format, num_threads)
 
     # 필터 패턴 생성
-    filter_pattern = create_filter_pattern(filter_file)
+    filter_pattern = create_filter_pattern(filter_file + '.feather')
 
     # 병렬 처리 실행
     logging.info("병렬 처리 실행")
