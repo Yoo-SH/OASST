@@ -10,7 +10,7 @@ def clean_text(text):
     return text.strip()  # strip() 메소드는 문자열의 시작과 끝에 있는 모든 공백을 제거
 
 
-def process_csv(input_file, output_file):
+def process_csv_comma(input_file, output_file):
     # with open(...) as ...는 파일을 열고 자동으로 닫는 작업을 수행하는 구문
     # newline=''는 파일을 읽고 쓸 때 줄바꿈을 조정하는 데 사용. CSV 파일을 다룰 때는 보통 이 옵션을 빈 문자열로 설정하여 표준 동작을 유지
     # Python은 모든 줄바꿈 문자를 운영체제에 맞는 기본 줄바꿈 문자로 변환. 예를 들어, Windows에서는 모든 줄바꿈이 \r\n으로 변환하는데 이를 방지하기 위해 newline=''을 사용
@@ -27,7 +27,22 @@ def process_csv(input_file, output_file):
             writer.writerow(cleaned_row)
 
 
-# 사용 예시
-input_csv = '../../data/sample_preprocessor/oasst_lawtalk_상담사례_20240807.csv'
-output_csv = '../../data/sample_preprocessor/output.csv'
-process_csv(input_csv, output_csv)
+def process_csv_tab(input_file, output_file):
+    with open(input_file, mode='r', newline='', encoding='utf-8') as infile, open(output_file, mode='w', newline='', encoding='utf-8') as outfile:
+        reader = csv.reader(infile, delimiter='\t')  # TSV 파일을 읽음 (탭 구분자 사용)
+        writer = csv.writer(outfile, delimiter='\t')  # TSV 파일로 씀 (탭 구분자 사용)
+
+        for row in reader:
+            cleaned_row = [clean_text(cell) for cell in row]  # 각 셀을 clean_text 함수로 처리
+            writer.writerow(cleaned_row)
+
+
+"""테스트 코드
+input_csv_tab_file = '../../data/sample_preprocessor/test_tab_utf-8.csv'
+input_csv_comma_file = '../../data/sample_preprocessor/test_comma_utf-8.csv'
+output_csv_tab_file = '../../data/sample_preprocessor/output_tab_utf-8_cleaned.csv'
+output_csv_comma_file = '../../data/sample_preprocessor/output_comma_utf-8_cleaned.csv'
+
+process_csv_tab(input_csv_tab_file, output_csv_tab_file)
+process_csv_comma(input_csv_comma_file, output_csv_comma_file)
+"""
