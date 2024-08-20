@@ -30,13 +30,13 @@ st.write("# hometips-ai-flow-models/gui_app - Welcome mainpage! 👋")
 
 st.write(f"Current Environment: {python_env}")
 
-# Retrieve all environment variables
-env_vars = os.environ
+# # Retrieve all environment variables
+# env_vars = os.environ
 
-# Display all environment variables
-st.write("### All Environment Variables")
-for key, value in env_vars.items():
-    st.write(f"{key}: {value}")
+# # Display all environment variables
+# st.write("### All Environment Variables")
+# for key, value in env_vars.items():
+#     st.write(f"{key}: {value}")
 
 # st.sidebar.success("Select a demo above.")
 
