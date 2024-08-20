@@ -12,7 +12,7 @@ repos:
         exclude: |
           (?x)^(
             .vscode/.*|
-            data/.*|
+            data/|
           )$
         # exclude: |
         #     (?x)^(
