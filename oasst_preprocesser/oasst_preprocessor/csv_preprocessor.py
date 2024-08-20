@@ -44,7 +44,7 @@ def process_csv_tab(input_file):
         writer.writerows(rows)  # 모든 클린된 행을 파일에 씀
 
 
-##테스트
+##테스트 코드
 """ input_csv_tab_file = '../../data/sample_preprocessor/test_tab_utf-8.csv'
 input_csv_comma_file = '../../data/sample_preprocessor/test_comma_utf-8.csv'
 
