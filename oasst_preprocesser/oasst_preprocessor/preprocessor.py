@@ -144,7 +144,7 @@ def main():
     ensure_feather_file(args.filter + '.xlsx', args.filter + '.feather')  # 필터 파일을 feather 파일로 변환
 
     # Preprocess data
-    duck.preprocess_data(args.input, args.output, args.filter + '.feather', args.format, os.cpu_count())
+    duck.preprocess_data(args.input, args.output, args.filter, args.format, os.cpu_count())
 
 
 if __name__ == "__main__":
