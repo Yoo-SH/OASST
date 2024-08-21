@@ -2,7 +2,7 @@ import pandas as pd
 import uuid
 
 
-def preprocess_excel_file(excel_file_path, separation_words, output_file_path):
+def preprocess_excel_file(excel_file_path, format, separation_words):
     """
     엑셀 파일을 처리하여 특정 단어(separation_words) 이후의 텍스트를 분리하고 새로운 행을 추가하는 함수.
 
@@ -67,4 +67,4 @@ def preprocess_excel_file(excel_file_path, separation_words, output_file_path):
                 df.at[idx, 'text'] = updated_f_column_value
 
     # 수정된 데이터프레임을 엑셀 파일로 저장
-    df.to_excel(output_file_path, index=False)
+    df.to_excel(excel_file_path + '.' + format, index=False)
