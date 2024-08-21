@@ -32,7 +32,7 @@ def read_file(file_path, file_format):
             file_path + '.json', orient='records'
         )  # 한 행에 대해, {columns:value} 형태의 딕셔너리를 요소로 하는 리스트 형태로 기존 json형태를 유지함.
     elif file_format == 'jsonl':
-        return pd.read_json(file_path + '.json', orient='records')  # jsonl 형태도 row형식으로 파일을 읽음.
+        return pd.read_json(file_path + '.jsonl', lines=True)  # lines=True로 수정
     elif file_format == 'parquet':
         return pd.read_parquet(file_path + '.parquet', na_values=[], keep_default_na=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
     elif file_format == 'feather':
@@ -55,8 +55,8 @@ def save_file(final_df, output_file_path, output_format):
         )  # JSON은 기본적으로 UTF-8로 저장, encoding 기능 지원 안함, force_ascii=False로 유니코드 문자열로 저장, indent=4(안 넣어도 됨)로 가독성 향상
     elif output_format == 'jsonl':
         return final_df.to_json(
-            output_file_path + '.jsonl', orient='split', force_ascii=False, indent=4
-        )  # JSON은 기본적으로 UTF-8로 저장 encoding 기능 지원 안함
+            output_file_path + '.jsonl', orient='records', force_ascii=False, indent=4
+        )  # JSON은 기본적으로 UTF-8로 저장 encoding 기능 지원 안
     elif output_format == 'parquet':
         return final_df.to_parquet(output_file_path + '.parquet', index=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
     elif output_format == 'feather':
@@ -70,7 +70,12 @@ def load_and_split_data(input_file, inputformat, num_chunks):
 
     logging.info(f" 파일 읽기 및 청크로 분할 중: {input_file}")
     df = read_file(input_file, inputformat)
-    chunk_size = len(df) // num_chunks
+    print(df)
+    if df.empty:
+        logging.warning("데이터프레임이 비어 있습니다.")
+        return
+
+    chunk_size = max(len(df) // num_chunks, 1)  # 청크 크기를 최소 1로 설정 (데이터 크기가 코어 갯수보다 작을 떄, 1로 설정)
     chunks = [df[i : i + chunk_size] for i in range(0, len(df), chunk_size)]
     logging.info("데이터 청크 분할 완료")
     return chunks
