@@ -10,12 +10,12 @@ authors = ["epicmobile <epicmobile181@gmail.com>"]
 readme = "README.md"
 # packages = [{include = "app", from = "src"}]
 packages = [
-  { include = "oasst_maker", from = "." },
-  { include = "oasst_preprocesser", from = "." },
-  { include = "gui_app", from = "../" },
-  { include = "utils", from = "../" },
+    { include = "oasst_maker", from = "." },
+    { include = "oasst_preprocesser", from = "." },
+    { include = "gui_app", from = "../" },
+    { include = "utils", from = "../" },
 
-  # ,{ include="conf", from="." }
+    # ,{ include="conf", from="." }
 ]
 # maintainers = ["Lari Liuhamo <lari.liuhamo+pypi@gmail.com>",]
 include = ['CHANGELOG.md', 'LICENSE', 'py.typed']
@@ -25,15 +25,15 @@ license = 'MIT'
 # documentation = 'https://github.com/Diapolo10/project-name/tree/main/docs'
 keywords = ['python3', 'ai']
 classifiers = [
-  # 'Development Status :: 3 - Alpha',
-  # 'License :: OSI Approved :: MIT License',
-  # 'Operating System :: OS Independent',
-  'Programming Language :: Python :: 3.10',
-  'Programming Language :: Python :: 3.11',
-  'Programming Language :: Python :: 3.12',
-  'Programming Language :: Python :: Implementation :: CPython',
-  'Programming Language :: Python :: Implementation :: PyPy',
-  'Typing :: Typed',
+    # 'Development Status :: 3 - Alpha',
+    # 'License :: OSI Approved :: MIT License',
+    # 'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: Implementation :: CPython',
+    'Programming Language :: Python :: Implementation :: PyPy',
+    'Typing :: Typed',
 ]
 
 ## https://python-poetry.org/docs/cli/#install
@@ -137,19 +137,19 @@ profile = "black"
 [tool.pytest.ini_options] # https://docs.pytest.org/en/latest/reference/reference.html#ini-options-ref
 minversion = '6.0'
 # addopts = "--color=yes --doctest-modules --exitfirst --failed-first --verbosity=2 --junitxml=reports/pytest.xml"
-addopts = """
---strict-markers \
+# addopts = """
+# --strict-markers \
 
--r sxX
---show-capture=log
---doctest-modules \
---cov=./ \
---cov-append \
---cov-report html:tests/reports/coverage-html \
---cov-report xml:tests/reports/coverage.xml \
---ignore=docs/
---no-cov-on-fail
-"""
+# -r sxX
+# --show-capture=log
+# --doctest-modules \
+# --cov=./ \
+# --cov-append \
+# --cov-report html:tests/reports/coverage-html \
+# --cov-report xml:tests/reports/coverage.xml \
+# --ignore=docs/
+# --no-cov-on-fail
+# """
 testpaths = ['tests']
 cache_dir = ".cache/pytest/"
 markers = []
@@ -159,70 +159,70 @@ filterwarnings = ["error"]
 [tool.ruff] # https://github.com/charliermarsh/ruff
 fix = true
 select = [
-  'A',   # Builtins
-  'ANN', # Annotations
-  'ARG', # Unused arguments
-  'B',   # Bugbear
-  'BLE', # Blind except
-  'C4',  # Comprehensions
-  'C90', # mccabe
-  'COM', # Commas
-  'D1',  # Undocumented public elements
-  'D2',  # Docstring conventions
-  'D3',  # Triple double quotes
-  'D4',  # Docstring text format
-  'DTZ', # Datetimes
-  'EM',  # Error messages
-  'ERA', # Commented-out code
-  'EXE', # Executable
-  'F',   # Pyflakes
-  'FA',  # __future__ annotations
-  'FLY', # F-strings
-  # 'FURB', # Refurb
-  'G',   # Logging format
-  'I',   # Isort
-  'ICN', # Import conventions
-  'INP', # Disallow PEP-420 (Implicit namespace packages)
-  'INT', # gettext
-  'ISC', # Implicit str concat
-  # 'LOG',  # Logging
-  'N',    # PEP-8 Naming
-  'NPY',  # Numpy
-  'PERF', # Unnecessary performance costs
-  'PGH',  # Pygrep hooks
-  'PIE',  # Unnecessary code
-  'PL',   # Pylint
-  'PT',   # Pytest
-  'PTH',  # Use Pathlib
-  'PYI',  # Stub files
-  'Q',    # Quotes
-  'RET',  # Return
-  'RUF',  # Ruff
-  'RSE',  # Raise
-  'S',    # Bandit
-  'SIM',  # Code simplification
-  'SLF',  # Private member access
-  'SLOT', # __slots__
-  'T10',  # Debugger
-  'T20',  # Print
-  'TCH',  # Type checking
-  'TID',  # Tidy imports
-  'TRY',  # Exception handling
-  'UP',   # Pyupgrade
-  'W',    # Warnings
-  'YTT',  # sys.version
+    'A',   # Builtins
+    'ANN', # Annotations
+    'ARG', # Unused arguments
+    'B',   # Bugbear
+    'BLE', # Blind except
+    'C4',  # Comprehensions
+    'C90', # mccabe
+    'COM', # Commas
+    'D1',  # Undocumented public elements
+    'D2',  # Docstring conventions
+    'D3',  # Triple double quotes
+    'D4',  # Docstring text format
+    'DTZ', # Datetimes
+    'EM',  # Error messages
+    'ERA', # Commented-out code
+    'EXE', # Executable
+    'F',   # Pyflakes
+    'FA',  # __future__ annotations
+    'FLY', # F-strings
+    # 'FURB', # Refurb
+    'G',   # Logging format
+    'I',   # Isort
+    'ICN', # Import conventions
+    'INP', # Disallow PEP-420 (Implicit namespace packages)
+    'INT', # gettext
+    'ISC', # Implicit str concat
+    # 'LOG',  # Logging
+    'N',    # PEP-8 Naming
+    'NPY',  # Numpy
+    'PERF', # Unnecessary performance costs
+    'PGH',  # Pygrep hooks
+    'PIE',  # Unnecessary code
+    'PL',   # Pylint
+    'PT',   # Pytest
+    'PTH',  # Use Pathlib
+    'PYI',  # Stub files
+    'Q',    # Quotes
+    'RET',  # Return
+    'RUF',  # Ruff
+    'RSE',  # Raise
+    'S',    # Bandit
+    'SIM',  # Code simplification
+    'SLF',  # Private member access
+    'SLOT', # __slots__
+    'T10',  # Debugger
+    'T20',  # Print
+    'TCH',  # Type checking
+    'TID',  # Tidy imports
+    'TRY',  # Exception handling
+    'UP',   # Pyupgrade
+    'W',    # Warnings
+    'YTT',  # sys.version
 ]
 ignore = [
-  "E501",
-  "PGH001",
-  "PGH002",
-  "PGH003",
-  "RET504",
-  "S101",
-  'D203',    # One blank line before class docstring
-  'D212',    # Multi-line summary first line
-  'PLR0913', # Too many arguments
-  'Q000',    # Single quotes found but double quotes preferred
+    "E501",
+    "PGH001",
+    "PGH002",
+    "PGH003",
+    "RET504",
+    "S101",
+    'D203',    # One blank line before class docstring
+    'D212',    # Multi-line summary first line
+    'PLR0913', # Too many arguments
+    'Q000',    # Single quotes found but double quotes preferred
 ]
 unfixable = ["F401", "F841"]
 ignore-init-module-imports = true
