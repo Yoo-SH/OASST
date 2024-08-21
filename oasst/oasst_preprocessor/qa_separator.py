@@ -1,5 +1,6 @@
 import pandas as pd
 import uuid
+import logging
 
 
 def preprocess_excel_file(excel_file_path, format, separation_words):
@@ -14,6 +15,7 @@ def preprocess_excel_file(excel_file_path, format, separation_words):
     Returns:
         None
     """
+    logging.info("QA 분리작업 데이터전처리 시작")
 
     # 엑셀 파일 읽기
     df = pd.read_excel(excel_file_path)
@@ -68,3 +70,4 @@ def preprocess_excel_file(excel_file_path, format, separation_words):
 
     # 수정된 데이터프레임을 엑셀 파일로 저장
     df.to_excel(excel_file_path + '.' + format, index=False)
+    logging.info("QA 분리작업 데이터전처리 종료")
