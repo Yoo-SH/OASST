@@ -6,6 +6,7 @@ import logging
 import os
 import platform
 import csv_preprocessor
+import file_encoding_data
 
 
 def convert_to_realformat(format):
@@ -13,6 +14,12 @@ def convert_to_realformat(format):
         return 'xlsx'
     elif (format == 'csv_comma') or (format == 'csv_tab'):
         return 'csv'
+    elif format == 'json':
+        return 'json'
+    elif format == 'jsonl':
+        return 'json'
+    elif format == 'parquet':
+        return 'parquet'
 
 
 # Excel 파일을 Feather 파일로 변환 (첫 실행 시에만 필요)
@@ -161,7 +168,11 @@ def main():
     output_path = direct_path_output_file_link(output_path)  # 경로 형식을 조정함  (상대경로나 절대경로인 경우에 따라 다름)
     filter_path = direct_path_filter_file_link(filter_path)  # 경로 형식을 조정함  (상대경로나 절대경로인 경우에 따라 다름)
 
+    # 경로규칙 및 파일 존재 유무 확인
     check_link_rule(input_path, input_file_name, output_file_name, filter_path, filter_file_name, args)  # 경로와 파일이름을 확인함
+
+    # 파일 인코딩 확인
+    file_encoding_data.get_encoding(args.input + '.' + convert_to_realformat(args.format))
 
     # Perform QA separation if needed
     if args.input.split('_')[1] == 'cafe' and args.format == 'excel':  # _로 구분된 파일명에서 두 번째 단어가 'cafe'인 경우 ex) ../naver_cafe_2021 => cafe

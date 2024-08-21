@@ -32,7 +32,7 @@ def read_file(file_path, file_format):
             file_path + '.json', orient='records'
         )  # 한 행에 대해, {columns:value} 형태의 딕셔너리를 요소로 하는 리스트 형태로 기존 json형태를 유지함.
     elif file_format == 'jsonl':
-        return pd.read_json(file_path + '.json', lines=False)
+        return pd.read_json(file_path + '.json', orient='records')  # jsonl 형태도 row형식으로 파일을 읽음.
     elif file_format == 'parquet':
         return pd.read_parquet(file_path + '.parquet', na_values=[], keep_default_na=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
     elif file_format == 'feather':
@@ -52,9 +52,11 @@ def save_file(final_df, output_file_path, output_format):
     elif output_format == 'json':
         return final_df.to_json(
             output_file_path + '.json', orient='records', force_ascii=False, indent=4
-        )  # JSON은 기본적으로 UTF-8로 저장, encoding 기능 지원 안함,
+        )  # JSON은 기본적으로 UTF-8로 저장, encoding 기능 지원 안함, force_ascii=False로 유니코드 문자열로 저장, indent=4(안 넣어도 됨)로 가독성 향상
     elif output_format == 'jsonl':
-        return final_df.to_json(output_file_path + '.jsonl', lines=False)  # JSON은 기본적으로 UTF-8로 저장 encoding 기능 지원 안함
+        return final_df.to_json(
+            output_file_path + '.jsonl', orient='split', force_ascii=False, indent=4
+        )  # JSON은 기본적으로 UTF-8로 저장 encoding 기능 지원 안함
     elif output_format == 'parquet':
         return final_df.to_parquet(output_file_path + '.parquet', index=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
     elif output_format == 'feather':
