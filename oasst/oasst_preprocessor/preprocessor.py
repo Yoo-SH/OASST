@@ -17,7 +17,7 @@ def convert_to_realformat(format):
     elif format == 'json':
         return 'json'
     elif format == 'jsonl':
-        return 'json'
+        return 'jsonl'
     elif format == 'parquet':
         return 'parquet'
 
