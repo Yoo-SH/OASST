@@ -16,7 +16,7 @@ def process_csv_comma(input_file):
     temp_file = input_file + '.tmp'
 
     # 파일 읽기 및 쓰기
-    with open(input_file, mode='r', newline='', encoding='cp949') as infile, open(temp_file, mode='w', newline='', encoding='cp949') as outfile:
+    with open(input_file, mode='r', newline='', encoding='utf-8') as infile, open(temp_file, mode='w', newline='', encoding='utf-8') as outfile:
         reader = csv.reader(infile)
         writer = csv.writer(outfile)
 
@@ -44,7 +44,8 @@ def process_csv_tab(input_file):
     os.replace(temp_file, input_file)
 
 
-# 테스트 코드
+""" # 테스트 코드
 input_csv_comma_file = '../../data/sample_preprocessor/oasst_lawtalk_상담사례_20240807.csv'
 
 process_csv_comma(input_csv_comma_file)
+ """

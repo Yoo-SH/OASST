@@ -1,30 +1,59 @@
 import argparse
 import pandas as pd
 import parallel_processing as duck
-import qa_separator as qa
+import qa_separator
 import logging
 import os
 import platform
 import csv_preprocessor
 
 
+def convert_to_realformat(format):
+    if format == 'excel':
+        return 'xlsx'
+    elif (format == 'csv_comma') or (format == 'csv_tab'):
+        return 'csv'
+
+
 # Excel 파일을 Feather 파일로 변환 (첫 실행 시에만 필요)
-def convert_excel_to_feather(excel_path, feather_path):
-    df = pd.read_excel(excel_path)
+def convert_excel_to_feather(filter_file):
+    df = pd.read_excel(filter_file)
     if df.empty:
-        logging.warning(f"Excel 파일에 데이터가 없습니다: {excel_path}")
+        logging.warning(f"Excel 파일에 데이터가 없습니다: {filter_file}")
         raise ValueError("Excel 파일이 비어 있어 Feather 파일로 변환할 수 없습니다.")
-    df.to_feather(feather_path)
+    df.to_feather(filter_file)
 
 
 # Feather 파일로 변환하는 함수 (존재하지 않는 경우에만)
-def ensure_feather_file(excel_path, feather_path):
-    if not os.path.exists(feather_path) or os.path.getsize(feather_path) == 0:
-        logging.info(f"Excel 파일을 Feather 파일로 변환 중: {excel_path}")
-        convert_excel_to_feather(excel_path, feather_path)
-        logging.info(f"Feather 파일 변환 완료: {feather_path}")
+def ensure_feather_file(filter_file):
+
+    filter_type = filter_file.split('.')[1]
+
+    if filter_type == 'xlsx' and filter_type != 'feather':
+        logging.info(f"Excel 파일을 Feather 파일로 변환 중: {filter_file}")
+        convert_excel_to_feather(filter_file)
+        logging.info(f"Feather 파일 변환 완료: {filter_file}")
+
+
+def direct_path_filter_file_link(filter_path):
+    """
+    입력 파일 경로를 확인하고, 필요 시 경로 형식을 조정합니다.
+
+    Args:
+        input_path (str): 입력 파일의 디렉토리 경로.
+
+    Returns:
+        str: 조정된 입력 파일 경로.
+    """
+
+    if os.path.isabs(filter_path) and platform.system() == "Windows":  # 상대경로가 아니라면
+        print("filter_path가 절대경로 입니다. filter_path: " + str(filter_path))
+        filter_path += '\\'
     else:
-        logging.info(f"Feather 파일이 이미 존재하며 유효합니다: {feather_path}")
+        filter_path += '/'
+
+    print("필터 파일 입력 경로 확인:", filter_path)
+    return filter_path
 
 
 def direct_path_input_file_link(input_path):
@@ -44,7 +73,7 @@ def direct_path_input_file_link(input_path):
     else:
         input_path += '/'
 
-    print("파일 입력 경로 확인:", input_path)
+    print("인풋 파일 입력 경로 확인:", input_path)
     return input_path
 
 
@@ -65,7 +94,7 @@ def direct_path_output_file_link(output_path):
     else:
         output_path += '/'
 
-    print("파일 출력 경로 확인:", output_path)
+    print("아웃풋 파일 출력 경로 확인:", output_path)
     return output_path
 
 
@@ -92,12 +121,12 @@ def check_link_rule(input_path, input_file_name, output_file_name, filter_path, 
         exit(0)
 
     # XML 파일 존재 여부 확인
-    if not os.path.exists(input_path + input_file_name + '.' + args.format):  # 입력 파일이 존재하지 않으면 프로그램 종료
-        print(f"파일이 존재하지 않습니다:{input_file_name}")
+    if not os.path.exists(input_path + input_file_name + '.' + convert_to_realformat(args.format)):  # 입력 파일이 존재하지 않으면 프로그램 종료
+        print(f"입력 파일이 존재하지 않습니다:{input_file_name}.{args.format}")
         exit(0)
 
-    if not os.path.exists(filter_path + filter_name + '.xlsx'):  # 필터 파일이 존재하지 않으면 프로그램 종료
-        print(f"파일이 존재하지 않습니다:{filter_name}")
+    if not os.path.exists(filter_path + filter_name):  # 필터 파일이 존재하지 않으면 프로그램 종료
+        print(f"필터 파일이 존재하지 않습니다:{filter_name}")
         exit(0)
 
     if not output_file_name:  # output file명을 입력하지 않으면, _decompress이름이 붙은 파일이 생성.
@@ -118,8 +147,8 @@ def main():
     parser.add_argument(
         '-format',
         required=True,
-        choices=['xlsx', 'csv(comma)', 'csv(tab)', 'json', 'jsonl', 'parquet', 'feather'],
-        help='Input file format[xlsx, csv(comma), csv(tab), json, jsonl, parquet, feather]',
+        choices=['excel', 'csv_comma', 'csv_tab', 'json', 'jsonl', 'parquet', 'feather'],
+        help='Input file format[xlsx, csv_comma, csv_tab, json, jsonl, parquet, feather]',
     )
 
     args = parser.parse_args()
@@ -130,26 +159,33 @@ def main():
 
     input_path = direct_path_input_file_link(input_path)  # 경로 형식을 조정함  (상대경로나 절대경로인 경우에 따라 다름)
     output_path = direct_path_output_file_link(output_path)  # 경로 형식을 조정함  (상대경로나 절대경로인 경우에 따라 다름)
-    filter_path = direct_path_input_file_link(filter_path)  # 경로 형식을 조정함  (상대경로나 절대경로인 경우에 따라 다름)
+    filter_path = direct_path_filter_file_link(filter_path)  # 경로 형식을 조정함  (상대경로나 절대경로인 경우에 따라 다름)
 
     check_link_rule(input_path, input_file_name, output_file_name, filter_path, filter_file_name, args)  # 경로와 파일이름을 확인함
 
     # Perform QA separation if needed
-    if args.input.split('_')[1] == 'cafe' and args.format == 'xlsx':  # _로 구분된 파일명에서 두 번째 단어가 'cafe'인 경우 ex) ../naver_cafe_2021 => cafe
+    if args.input.split('_')[1] == 'cafe' and args.format == 'excel':  # _로 구분된 파일명에서 두 번째 단어가 'cafe'인 경우 ex) ../naver_cafe_2021 => cafe
+        logging.info("QA 분리 작업 시작")
         separation_words = ['A.', '답변']
-        temp_output_path = 'temp_QA_file.xlsx'
-        qa.preprocess_excel_file(args.input, separation_words, temp_output_path)
-    elif args.input.split('_')[1] == 'cafe' and args.format != 'xlsx':
+        qa_separator.preprocess_excel_file(args.input, convert_to_realformat(args.format), separation_words)
+    elif args.input.split('_')[1] == 'cafe' and args.format != 'excel':
         print.info("cafe 파일을 QA분류 작업을 처리하기 위해서는 xlsx 파일 형식이 필요합니다. QA분류 작업을 건너 뜁니다.")
 
-    ensure_feather_file(args.filter + '.xlsx', args.filter + '.feather')  # 필터 파일을 feather 파일로 변환
+    # 필터 파일을 feather 파일로 변환
+    ensure_feather_file(args.filter)
 
-    if args.format == 'csv(comma)':
-        csv_preprocessor.process_csv_comma(args.input + '.csv', args.output + '.csv')
-    elif args.format == 'csv(tab)':
-        csv_preprocessor.process_csv_tab(args.input + '.csv', args.output + '.csv')
+    # Preprocess CSV files
+    if args.format == 'csv_comma':
+        logging.info("CSV_comma파일 전처리 작업 시작")
+        csv_preprocessor.process_csv_comma(args.input + '.' + convert_to_realformat(args.format))
+        logging.info("CSV_comma파일 전처리 작업 종료")
+    elif args.format == 'csv_tab':
+        logging.info("CSV_tab 파일 전처리 작업 시작")
+        csv_preprocessor.process_csv_tab(args.input + '.' + convert_to_realformat(args.format))
+        logging.info("CSV_tab파일 전처리 작업 종료")
 
     # Preprocess data
+    logging.info("데이터 전처리 작업 시작")
     duck.preprocess_data(args.input, args.output, args.filter, args.format, os.cpu_count())
 
 

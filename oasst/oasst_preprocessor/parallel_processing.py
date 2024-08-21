@@ -43,7 +43,7 @@ def save_file(final_df, output_file_path, output_format):
     if output_format == 'excel':
         return final_df.to_excel(output_file_path + '.xlsx', index=False)
     elif output_format == 'csv_comma':
-        return final_df.to_csv(output_file_path + '.csv', index=False)
+        return final_df.to_csv(output_file_path + '.csv', index=False, encoding='cp949')  # encoding 추가
     elif output_format == 'csv_tab':
         return final_df.to_csv(output_file_path + '.csv', index=False, sep='\t')  # encoding 추가
     elif output_format == 'json':
