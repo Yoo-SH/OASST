@@ -3,6 +3,7 @@ import pandas as pd
 import re
 from concurrent.futures import ThreadPoolExecutor
 import logging
+import csv_preprocessor
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -23,9 +24,9 @@ def read_file(file_path, file_format):
             file_path + '.xlsx', na_values=[], keep_default_na=False
         )  # na_values, keep_default_na 추가하여 기본 누락된 값 처리 옵션을 비활성화 null 문자열 사라짐 방지
     elif file_format == 'csv_comma':
-        return pd.read_csv(file_path + '.csv', na_values=[], keep_default_na=False)
+        return pd.read_csv(file_path + '.csv', na_values=[], keep_default_na=False, encoding=csv_preprocessor.GLOBAL_ENCODING_CSV)
     elif file_format == 'csv_tab':
-        return pd.read_csv(file_path + '.csv', sep='\t', na_values=[], keep_default_na=False)
+        return pd.read_csv(file_path + '.csv', sep='\t', na_values=[], keep_default_na=False, encoding=csv_preprocessor.GLOBAL_ENCODING_CSV)
     elif file_format == 'json':
         return pd.read_json(file_path + '.json', na_values=[], keep_default_na=False)
     elif file_format == 'jsonl':
@@ -43,9 +44,9 @@ def save_file(final_df, output_file_path, output_format):
     if output_format == 'excel':
         return final_df.to_excel(output_file_path + '.xlsx', index=False)
     elif output_format == 'csv_comma':
-        return final_df.to_csv(output_file_path + '.csv', index=False, encoding='cp949')  # encoding 추가
+        return final_df.to_csv(output_file_path + '.csv', index=False, encoding=csv_preprocessor.GLOBAL_ENCODING_CSV)  # encoding 추가
     elif output_format == 'csv_tab':
-        return final_df.to_csv(output_file_path + '.csv', index=False, sep='\t')  # encoding 추가
+        return final_df.to_csv(output_file_path + '.csv', index=False, sep='\t', encoding=csv_preprocessor.GLOBAL_ENCODING_CSV)  # encoding 추가
     elif output_format == 'json':
         return final_df.to_json(output_file_path + '.json', index=False)
     elif output_format == 'jsonl':
