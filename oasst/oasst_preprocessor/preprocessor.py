@@ -7,6 +7,24 @@ import os
 import platform
 import csv_preprocessor
 import file_encoding_data
+import re
+
+
+def isContainsKeyword(path, keyword):
+    """
+    경로에서 특정 키워드가 포함되어 있는지 확인합니다.
+
+    Args:
+        path (str): 검색할 경로 문자열.
+        keyword (str): 찾고자 하는 키워드.
+
+    Returns:
+        bool: 키워드가 경로에 포함되어 있으면 True, 그렇지 않으면 False.
+    """
+    # 정규 표현식 패턴을 정의합니다.
+    pattern = rf'{keyword}'
+    # 정규 표현식을 사용하여 경로에서 키워드를 찾습니다.
+    return re.search(pattern, path) is not None
 
 
 def convert_to_realformat(format):
@@ -202,11 +220,14 @@ def main():
     # 경로규칙 및 파일 존재 유무 확인
     check_link_rule(input_path, input_file_name, output_file_name, filter_path, filter_file_name, args)  # 경로와 파일이름을 확인함
 
+    print(args.input.split('_')[1])
+
     # 파일 인코딩 확인
     file_encoding_data.get_encoding(args.input + '.' + convert_to_realformat(args.format))
 
+    keyword = 'oasst_naver_cafe'
     # Perform QA separation if needed
-    if args.input.split('_')[1] == 'cafe' and args.format == 'excel':  # _로 구분된 파일명에서 두 번째 단어가 'cafe'인 경우 ex) ../naver_cafe_2021 => cafe
+    if isContainsKeyword(args.input, keyword) and args.format == 'excel':  # _로 구분된 파일명에서 두 번째 단어가 'cafe'인 경우 ex) ../naver_cafe_2021 => cafe
         separation_words = ['A.', '답변']
         qa_separator.preprocess_excel_file(args.input, convert_to_realformat(args.format), separation_words)
     elif args.input.split('_')[1] == 'cafe' and args.format != 'excel':

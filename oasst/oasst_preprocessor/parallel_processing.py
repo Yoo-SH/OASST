@@ -56,7 +56,7 @@ def save_file(final_df, output_file_path, output_format):
         ValueError: 지원되지 않는 파일 형식이 제공된 경우 발생.
     """
     if output_format == 'excel':
-        return final_df.to_excel(output_file_path + '.xlsx', index=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
+        return final_df.to_excel(output_file_path + '.xlsx', index=False)
     elif output_format == 'csv_comma':
         return final_df.to_csv(output_file_path + '.csv', index=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
     elif output_format == 'csv_tab':
@@ -89,7 +89,6 @@ def load_and_split_data(input_file, inputformat, num_chunks):
 
     logging.info(f" 파일 읽기 및 청크로 분할 중: {input_file}")
     df = read_file(input_file, inputformat)
-    print(df)
     if df.empty:
         logging.warning("데이터프레임이 비어 있습니다.")
         return
