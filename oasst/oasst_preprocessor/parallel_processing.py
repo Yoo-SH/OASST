@@ -8,7 +8,7 @@ import file_encoding_data
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-def read_file(file_path, file_format):
+def read_file(file_name, input_extention):
     """
     파일 형식에 따라 파일을 읽어 데이터프레임으로 반환합니다.
 
@@ -22,25 +22,25 @@ def read_file(file_path, file_format):
     Raises:
         ValueError: 지원되지 않는 파일 형식이 제공된 경우 발생.
     """
-    if file_format == 'excel':
-        return pd.read_excel(file_path + '.xlsx', na_values=[], keep_default_na=False)
-    elif file_format == 'csv_comma':
-        return pd.read_csv(file_path + '.csv', na_values=[], keep_default_na=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
-    elif file_format == 'csv_tab':
-        return pd.read_csv(file_path + '.csv', sep='\t', na_values=[], keep_default_na=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
-    elif file_format == 'json':
-        return pd.read_json(file_path + '.json', orient='records')
-    elif file_format == 'jsonl':
-        return pd.read_json(file_path + '.jsonl', lines=True)
-    elif file_format == 'parquet':
-        return pd.read_parquet(file_path + '.parquet')
-    elif file_format == 'feather':
-        return pd.read_feather(file_path + '.feather', na_values=[], keep_default_na=False, encoding=file_encoding_data)
+    if input_extention == '.xlsx':
+        return pd.read_excel(file_name, na_values=[], keep_default_na=False)
+    elif input_extention == '.csv':  # 나중에 comma, tab 구분자를 구분할 수 있도록 수정 필요 (우선 comma가 우선순위)
+        return pd.read_csv(file_name, na_values=[], keep_default_na=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
+    elif input_extention == '.csv':  # 나중에 comma, tab 구분자를 구분할 수 있도록 수정 필요
+        return pd.read_csv(file_name, sep='\t', na_values=[], keep_default_na=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
+    elif input_extention == '.json':
+        return pd.read_json(file_name, orient='records')
+    elif input_extention == '.jsonl':
+        return pd.read_json(file_name, lines=True)  # jsonl로 read 정상작동
+    elif input_extention == '.parquet':
+        return pd.read_parquet(file_name)
+    elif input_extention == '.feather':
+        return pd.read_feather(file_name, na_values=[], keep_default_na=False, encoding=file_encoding_data)
     else:
-        raise ValueError(f"Unsupported file format in reading file: {file_format}")
+        raise ValueError(f"Unsupported file format in reading file: {input_extention}")
 
 
-def save_file(final_df, output_file_path, output_format):
+def save_file(final_df, output_file, output_extention):
     """
     데이터프레임을 지정된 파일 형식으로 저장합니다.
 
@@ -55,26 +55,27 @@ def save_file(final_df, output_file_path, output_format):
     Raises:
         ValueError: 지원되지 않는 파일 형식이 제공된 경우 발생.
     """
-    if output_format == 'excel':
-        return final_df.to_excel(output_file_path + '.xlsx', index=False)
-    elif output_format == 'csv_comma':
-        return final_df.to_csv(output_file_path + '.csv', index=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
-    elif output_format == 'csv_tab':
-        return final_df.to_csv(output_file_path + '.csv', index=False, sep='\t', encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
-    elif output_format == 'json':
-        return final_df.to_json(output_file_path + '.json', orient='records', force_ascii=False, indent=4)
-    elif output_format == 'jsonl':
-        return final_df.to_json(output_file_path + '.jsonl', orient='records', force_ascii=False, indent=4)
-    elif output_format == 'parquet':
-        return final_df.to_parquet(output_file_path + '.parquet', index=False)
-    elif output_format == 'feather':
-        return final_df.to_feather(output_file_path + '.feather', index=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
+    if output_extention == '.xlsx':
+        return final_df.to_excel(output_file, index=False)
+    elif output_extention == '.csv':  # 나중에 comma, tab 구분자를 구분할 수 있도록 수정 필요 (우선 comma가 우선순위)
+        return final_df.to_csv(output_file, index=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
+    elif output_extention == '.csv':
+        return final_df.to_csv(output_file, index=False, sep='\t', encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
+    elif output_extention == '.json':
+        return final_df.to_json(output_file, orient='records', force_ascii=False, indent=4)
+    elif output_extention == '.jsonl':
+        ## https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_json.html#:~:text=linesbool%2C%20default%20False
+        return final_df.to_json(output_file, orient='records', force_ascii=False, indent=4, lines=True)
+    elif output_extention == '.parquet':
+        return final_df.to_parquet(output_file, index=False)
+    elif output_extention == '.feather':
+        return final_df.to_feather(output_file, index=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
     else:
-        raise ValueError(f"Unsupported file format in saving file: {output_format}")
+        raise ValueError(f"Unsupported file format in saving file: {output_extention}")
 
 
 # Feather 파일을 읽어 청크로 분할하는 함수
-def load_and_split_data(input_file, inputformat, num_chunks):
+def load_and_split_data(input_file, input_extention, num_chunks):
     """
     파일에서 데이터를 읽고, 병렬 처리를 위해 청크로 분할합니다.
 
@@ -88,7 +89,7 @@ def load_and_split_data(input_file, inputformat, num_chunks):
     """
 
     logging.info(f" 파일 읽기 및 청크로 분할 중: {input_file}")
-    df = read_file(input_file, inputformat)
+    df = read_file(input_file, input_extention)
     if df.empty:
         logging.warning("데이터프레임이 비어 있습니다.")
         return
@@ -100,7 +101,7 @@ def load_and_split_data(input_file, inputformat, num_chunks):
 
 
 # 필터 패턴 생성 함수
-def create_filter_pattern(filter_feather_path):
+def create_filter_pattern(filter_feather, filter_extention):
     """
     필터링 조건이 포함된 feather 파일을 기반으로 필터 패턴을 생성합니다.
 
@@ -110,8 +111,9 @@ def create_filter_pattern(filter_feather_path):
     Returns:
         str: 텍스트 필터링에 사용될 정규식 패턴.
     """
-    logging.info(f"필터 패턴 생성 중: {filter_feather_path}")
-    filter_file = pd.read_feather(filter_feather_path)
+    logging.info(f"필터 패턴 생성 중: {filter_feather}")
+
+    filter_file = read_file(filter_feather, filter_extention)
     filter_to_remove = [x for x in filter_file['지역명'] if pd.notnull(x)]
     filter_pattern = f"\\s*({'|'.join(map(re.escape, filter_to_remove))})\\s*"
     logging.info("필터 패턴 생성 완료")
@@ -178,7 +180,7 @@ def parallel_processing(chunks, filter_pattern, num_threads):
 
 
 # 데이터 전처리 및 병렬 처리 실행 함수
-def preprocess_data(input_file, output_file, filter_file, format, num_threads):
+def preprocess_data(input_file, input_extention, output_file, output_extention, filter_file, filter_extention, num_threads):
     """
     데이터 전처리 작업을 병렬로 수행하고, 결과를 파일로 저장합니다.
 
@@ -186,7 +188,7 @@ def preprocess_data(input_file, output_file, filter_file, format, num_threads):
         input_file (str): 입력 파일의 경로 (확장자 제외).
         output_file (str): 출력 파일의 경로 (확장자 제외).
         filter_file (str): 필터 데이터가 포함된 feather 파일의 경로.
-        format (str): 파일의 형식.
+        format (str): 파일의 형식. [csv, json]
         num_threads (int): 사용할 스레드 수.
 
     Returns:
@@ -195,15 +197,15 @@ def preprocess_data(input_file, output_file, filter_file, format, num_threads):
     logging.info("데이터전처리 병렬작업 시작")
 
     # 데이터 읽기 및 청크로 분할
-    chunks = load_and_split_data(input_file, format, num_threads)
+    chunks = load_and_split_data(input_file, input_extention, num_threads)
 
     # 필터 패턴 생성
-    filter_pattern = create_filter_pattern(filter_file)
+    filter_pattern = create_filter_pattern(filter_file, filter_extention)
 
     # 병렬 처리 실행
     logging.info("병렬 처리 실행")
     final_df = parallel_processing(chunks, filter_pattern, num_threads)
 
     # 결과를 파일로 저장
-    save_file(final_df, output_file, format)
+    save_file(final_df, output_file, output_extention)
     logging.info(f"결과 파일 저장 완료: {output_file}")
