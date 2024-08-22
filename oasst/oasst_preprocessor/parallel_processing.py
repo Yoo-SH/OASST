@@ -34,7 +34,7 @@ def read_file(file_path, file_format):
     elif file_format == 'jsonl':
         return pd.read_json(file_path + '.jsonl', lines=True)  # lines=True로 수정
     elif file_format == 'parquet':
-        return pd.read_parquet(file_path + '.parquet', na_values=[], keep_default_na=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
+        return pd.read_parquet(file_path + '.parquet')
     elif file_format == 'feather':
         return pd.read_feather(file_path + '.feather', na_values=[], keep_default_na=False, encoding=file_encoding_data)
     else:
@@ -58,7 +58,7 @@ def save_file(final_df, output_file_path, output_format):
             output_file_path + '.jsonl', orient='records', force_ascii=False, indent=4
         )  # JSON은 기본적으로 UTF-8로 저장 encoding 기능 지원 안
     elif output_format == 'parquet':
-        return final_df.to_parquet(output_file_path + '.parquet', index=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
+        return final_df.to_parquet(output_file_path + '.parquet', index=False)
     elif output_format == 'feather':
         return final_df.to_feather(output_file_path + '.feather', index=False, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
     else:
