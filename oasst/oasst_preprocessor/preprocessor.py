@@ -10,6 +10,15 @@ import file_encoding_data
 
 
 def convert_to_realformat(format):
+    """
+    주어진 형식을 실제 파일 확장자로 변환합니다.
+
+    Args:
+        format (str): 파일 형식 (예: 'excel', 'csv_comma', 'csv_tab', 'json', 'jsonl', 'parquet').
+
+    Returns:
+        str: 실제 파일 확장자 (예: 'xlsx', 'csv', 'json', 'jsonl', 'parquet').
+    """
     if format == 'excel':
         return 'xlsx'
     elif (format == 'csv_comma') or (format == 'csv_tab'):
@@ -24,6 +33,15 @@ def convert_to_realformat(format):
 
 # Excel 파일을 Feather 파일로 변환 (첫 실행 시에만 필요)
 def convert_excel_to_feather(filter_file):
+    """
+    Excel 파일을 Feather 파일로 변환합니다.
+
+    Args:
+        filter_file (str): 변환할 Excel 파일의 경로.
+
+    Raises:
+        ValueError: Excel 파일이 비어 있을 때 예외를 발생시킵니다.
+    """
     df = pd.read_excel(filter_file)
     if df.empty:
         logging.warning(f"Excel 파일에 데이터가 없습니다: {filter_file}")
@@ -33,6 +51,12 @@ def convert_excel_to_feather(filter_file):
 
 # Feather 파일로 변환하는 함수 (존재하지 않는 경우에만)
 def ensure_feather_file(filter_file):
+    """
+    Feather 파일이 존재하지 않을 경우, Excel 파일을 Feather 파일로 변환합니다.
+
+    Args:
+        filter_file (str): Feather 파일로 변환할 원본 파일의 경로.
+    """
 
     filter_type = filter_file.split('.')[1]
 
@@ -113,10 +137,12 @@ def check_link_rule(input_path, input_file_name, output_file_name, filter_path, 
         input_path (str): 입력 파일의 디렉토리 경로.
         input_file_name (str): 입력 파일의 이름.
         output_file_name (str): 출력 파일의 이름 (선택 사항).
+        filter_path (str): 필터 파일의 디렉토리 경로.
+        filter_name (str): 필터 파일의 이름.
         args (argparse.Namespace): 명령줄 인수 파서 객체.
 
-    Returns:
-        None
+    Raises:
+        SystemExit: 파일이 존재하지 않거나 필수 파일 이름이 주어지지 않은 경우 프로그램을 종료합니다.
     """
 
     if not input_file_name:
@@ -146,6 +172,11 @@ def check_link_rule(input_path, input_file_name, output_file_name, filter_path, 
 
 
 def main():
+    """
+    메인 함수는 파일 형식에 따라 파일을 처리하고 출력 파일을 생성합니다.
+
+    명령줄 인수를 통해 입력, 출력, 필터 파일의 경로와 파일 형식을 지정할 수 있습니다.
+    """
 
     parser = argparse.ArgumentParser(description='Process files with various formats.')
     parser.add_argument('-input', required=True, help='input 경로와 파일 이름 (예: ./inputfile_name)')
@@ -176,7 +207,6 @@ def main():
 
     # Perform QA separation if needed
     if args.input.split('_')[1] == 'cafe' and args.format == 'excel':  # _로 구분된 파일명에서 두 번째 단어가 'cafe'인 경우 ex) ../naver_cafe_2021 => cafe
-        logging.info("QA 분리 작업 시작")
         separation_words = ['A.', '답변']
         qa_separator.preprocess_excel_file(args.input, convert_to_realformat(args.format), separation_words)
     elif args.input.split('_')[1] == 'cafe' and args.format != 'excel':
@@ -187,16 +217,11 @@ def main():
 
     # Preprocess CSV files
     if args.format == 'csv_comma':
-        logging.info("CSV_comma파일 전처리 작업 시작")
         csv_preprocessor.process_csv_comma(args.input + '.' + convert_to_realformat(args.format))
-        logging.info("CSV_comma파일 전처리 작업 종료")
     elif args.format == 'csv_tab':
-        logging.info("CSV_tab 파일 전처리 작업 시작")
         csv_preprocessor.process_csv_tab(args.input + '.' + convert_to_realformat(args.format))
-        logging.info("CSV_tab파일 전처리 작업 종료")
 
     # Preprocess data
-    logging.info("데이터 전처리 작업 시작")
     duck.preprocess_data(args.input, args.output, args.filter, args.format, os.cpu_count())
 
 
