@@ -4,24 +4,7 @@ import os
 import platform
 import csv_preprocessor
 import file_encoding_data
-import re
-
-
-def isContainsKeyword(path, keyword):
-    """
-    경로에서 특정 키워드가 포함되어 있는지 확인합니다.
-
-    Args:
-        path (str): 검색할 경로 문자열.
-        keyword (str): 찾고자 하는 키워드.
-
-    Returns:
-        bool: 키워드가 경로에 포함되어 있으면 True, 그렇지 않으면 False.
-    """
-    # 정규 표현식 패턴을 정의합니다.
-    pattern = rf'{keyword}'
-    # 정규 표현식을 사용하여 경로에서 키워드를 찾습니다.
-    return re.search(pattern, path) is not None
+import qa_separator
 
 
 def direct_path_filter_file_link(filter_path):
@@ -184,17 +167,13 @@ def main():
     # 파일 인코딩 확인
     if input_extention == '.csv' or input_extention == '.feather':
         file_encoding_data.get_encoding(args.input)
-    """
-    keyword = 'oasst_naver_cafe'
-    # Perform QA separation if needed
-    if (
-        isContainsKeyword(input_extention, keyword) and input_extention == 'xlsx'
-    ):  # _로 구분된 파일명에서 두 번째 단어가 'cafe'인 경우 ex) ../naver_cafe_2021 => cafe
-        separation_words = ['A.', '답변']
-        qa_separator.preprocess_excel_file(args.input, input_extention, separation_words)
+
+    # 네이버 카페의 경우 QA분류 전처리를 시작함.
+    separation_words = ['A.', '답변']
+    if qa_separator.isBeQAseparated(args.input, input_extention, separation_words):
+        qa_separator.preprocess_excel_file(args.input, separation_words)
     elif args.input.split('_')[1] == 'cafe' and args.format != 'excel':
         print.info("cafe 파일을 QA분류 작업을 처리하기 위해서는 xlsx 파일 형식이 필요합니다. QA분류 작업을 건너 뜁니다.")
-    """
 
     # Preprocess CSV files
     if input_extention == '.csv':  # 일단은 csv(콤마)로 구분된 파일만 처리하도록 함, 나중에 tab으로 구분된 파일도 처리할 수 있도록 수정 필요
