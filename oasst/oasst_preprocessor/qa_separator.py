@@ -21,7 +21,7 @@ def isBeQAseparated(input_file, input_extention, separation_words='oasst_naver_c
     return re.search(pattern, input_file) is not None and input_extention == 'xlsx'
 
 
-def preprocess_excel_file(input_filet, separation_words):
+def preprocess_excel_file(input_file, separation_words):
     """
     엑셀 파일을 처리하여 특정 단어(separation_words) 이후의 텍스트를 분리하고 새로운 행을 추가하는 함수.
 
@@ -36,7 +36,7 @@ def preprocess_excel_file(input_filet, separation_words):
     logging.info("QA 분리작업 데이터전처리 시작")
 
     # 엑셀 파일 읽기
-    df = pd.read_excel(input_filet, na_values=[], keep_default_na=False)
+    df = pd.read_excel(input_file, na_values=[], keep_default_na=False)
 
     start_row = 0
     end_row = df.shape[0]  # 마지막 행 번호, 참고로 shape[0]은 행의 개수를 나타냄, shape[1]은 열의 개수를 나타냄
@@ -88,5 +88,5 @@ def preprocess_excel_file(input_filet, separation_words):
 
     # 수정된 데이터프레임을 엑셀 파일로 저장
 
-    df.to_excel(input_filet, index=False)
+    df.to_excel(input_file, index=False)
     logging.info("QA 분리작업 데이터전처리 종료")
