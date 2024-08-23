@@ -1,6 +1,27 @@
 import json
 
 
+keys_to_remove = [
+    'lang',
+    'review_count',
+    'review_result',
+    'deleted',
+    'rank',
+    'synthetic',
+    'model_name',
+    'detoxify',
+    'message_tree_id',
+    'tree_state',
+    'emojis',  # sequence
+    'lavels',
+    'link',
+    '변호사명',
+    '작업자명',
+    '작업일자',
+    '사용여부',
+]
+
+
 def iterative_dfs(message_tree: list, keys_to_remove: list):
     """
     비재귀 DFS를 사용하여 트리를 순회하면서 중복 필드를 하위 메시지로 이동합니다.
@@ -34,7 +55,7 @@ def iterative_dfs(message_tree: list, keys_to_remove: list):
                 stack.append(reply)
 
 
-def load_and_process_json(input_file: str, output_file: str) -> None:
+def convert_flat_to_tree(input_file, output_file):
     """
     주어진 JSON 파일을 읽고, 중복된 필드를 하위 메시지로 이동시키는 트리 구조로 변환한 후,
     결과를 새로운 JSON 파일로 저장합니다.
@@ -49,26 +70,6 @@ def load_and_process_json(input_file: str, output_file: str) -> None:
 
     # 메시지들로 구성된 딕셔너리 생성 (message_id를 키로 사용)
     messages = {msg['message_id']: msg for msg in data}
-
-    keys_to_remove = [
-        'review_count',
-        'review_result',
-        'deleted',
-        'rank',
-        'synthetic',
-        'model_name',
-        'detoxify',
-        'message_tree_id',
-        'tree_state',
-        'emojis',  # sequence
-        'lavels',
-        'link',
-        '변호사명',
-        '작업자명',
-        '작업일자',
-        '사용여부',
-        'lang',
-    ]
 
     # 새로운 메시지 트리를 저장할 리스트
     message_tree = []
@@ -97,4 +98,4 @@ def load_and_process_json(input_file: str, output_file: str) -> None:
 
 
 # 실행
-load_and_process_json('../../data/sample_preprocessor/naver_result.json', '../../data/sample_preprocessor/naver_result_tree.json')
+convert_flat_to_tree('../../data/sample_preprocessor/oasst_lawtalk_상담사례_20240807.json', '../../data/sample_preprocessor/result.json')
