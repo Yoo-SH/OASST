@@ -4,7 +4,7 @@ import logging
 import re
 
 
-def isBeQAseparated(input_file, input_extention, separation_words='oasst_naver_cafe'):
+def canQAseparated(input_file, input_extention, separation_words):
     """
     경로에서 특정 키워드가 포함되어 있는지 확인합니다.
 
@@ -15,10 +15,11 @@ def isBeQAseparated(input_file, input_extention, separation_words='oasst_naver_c
     Returns:
         bool: 키워드가 경로에 포함되어 있으면 True, 그렇지 않으면 False.
     """
+
     # 정규 표현식 패턴을 정의합니다.
     pattern = rf'{separation_words}'
     # 정규 표현식을 사용하여 경로에서 키워드를 찾습니다.
-    return re.search(pattern, input_file) is not None and input_extention == 'xlsx'
+    return re.search(pattern, input_file) is not None and input_extention == '.xlsx'
 
 
 def preprocess_excel_file(input_file, separation_words):

@@ -170,7 +170,7 @@ def main():
 
     # 네이버 카페의 경우 QA분류 전처리를 시작함.
     separation_words = ['A.', '답변']
-    if qa_separator.isBeQAseparated(args.input, input_extention, separation_words):
+    if qa_separator.canQAseparated(args.input, input_extention, separation_words):
         qa_separator.preprocess_excel_file(args.input, separation_words)
     elif args.input.split('_')[1] == 'cafe' and args.format != 'excel':
         print.info("cafe 파일을 QA분류 작업을 처리하기 위해서는 xlsx 파일 형식이 필요합니다. QA분류 작업을 건너 뜁니다.")
