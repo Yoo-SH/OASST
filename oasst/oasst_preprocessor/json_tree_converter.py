@@ -1,73 +1,40 @@
 import json
 
-# 중복 제거할 필드 목록 (이 필드들은 최하위 노드에만 존재해야 함)
-fields_to_deduplicate = [
-    "lang",
-    "review_count",
-    "review_result",
-    "deleted",
-    "rank",
-    "synthetic",
-    "model_name",
-    "detoxify",
-    "message_tree_id",
-    "tree_state",
-    "emojis",
-    "lavels",
-    "link",
-    "변호사명",
-]
+# JSON 파일 경로 설정
+input_file = '../../data/sample_preprocessor/naver_result.json'
+output_file = '../../data/sample_preprocessor/result3.json'
 
+# 파일을 열고 데이터 로드
+with open(input_file, 'r', encoding='utf-8') as f:
+    data = json.load(f)
 
-# 부모-자식 관계를 구성하는 함수
-def build_tree(messages):
-    message_map = {msg['message_id']: msg for msg in messages}
-    tree = {}
-    for message in messages:
-        message_id = message['message_id']
-        parent_id = message['parent_id']
+# 새로운 메시지 트리를 저장할 리스트
+message_tree = []
 
-        if parent_id == "null":
-            # 최상위 노드로 추가
-            tree[message_id] = message
-            tree[message_id]['replies'] = []
-        else:
-            # 부모 메시지를 찾아서 자식으로 추가
-            parent = message_map.get(parent_id)
-            if parent:
-                if 'replies' not in parent:
-                    parent['replies'] = []
-                parent['replies'].append(message)
+# 메시지들로 구성된 딕셔너리 생성 (message_id를 키로 사용)
+messages = {msg['message_id']: msg for msg in data}
 
-    # 트리 구조를 리스트로 변환
-    return [tree[message_id] for message_id in tree]
+# 중복 필드를 제외할 키 목록
+keys_to_remove = ["message_id", "parent_id", "user_id", "creadte_date", "title", "text", "role"]
 
+# 각 메시지에 대해 parent_id를 참조해 계층 구조 설정
+for message_id, message in messages.items():
+    parent_id = message.get('parent_id')
+    if parent_id and parent_id in messages:
+        parent_message = messages[parent_id]
+        if 'replies' not in parent_message:
+            parent_message['replies'] = []
 
-# 필드를 최하위 노드로만 남기고, 상위 노드에서는 제거하는 함수
-def deduplicate_fields(node):
-    if 'replies' in node and node['replies']:
-        for reply in node['replies']:
-            deduplicate_fields(reply)
+        # 마지막 계층에서는 중복 필드를 유지
+        if 'replies' in message and len(message['replies']) > 0:
+            # 중복되는 필드 삭제
+            for key in keys_to_remove:
+                if key in message:
+                    message[key] = None
+        parent_message['replies'].append(message)
+    else:
+        message_tree.append(message)
 
-        # 자식 노드들이 모두 처리된 후, 부모 노드에서 중복 필드 제거
-        for field in fields_to_deduplicate:
-            if field in node:
-                del node[field]
-
-
-# 파일에서 JSON 데이터를 읽어옴
-with open('../../data/sample_preprocessor/result.json', 'r', encoding='utf-8') as infile:
-    data = json.load(infile)
-
-# 트리 구조를 생성
-tree = build_tree(data)
-
-# 필드 중복 제거
-for root in tree:
-    deduplicate_fields(root)
-
-# 결과를 출력 파일로 저장
-with open('../../data/sample_preprocessor/result2.json', 'w', encoding='utf-8') as outfile:
-    json.dump(tree, outfile, ensure_ascii=False, indent=2)
-
-print("처리가 완료되었습니다.")
+# 트리 구조를 가진 데이터를 JSON으로 저장
+with open(output_file, 'w', encoding='utf-8') as f:
+    json.dump(message_tree, f, ensure_ascii=False, indent=4)
