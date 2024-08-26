@@ -22,7 +22,7 @@ def detect_encoding(file_path):
 
 def under_sampling(input_file: str, ratio: float) -> None:
     """
-    지정된 비율에 따라 데이터셋을 샘플링하는 함수입니다.
+    지정된 비율에 따라 분류열에 있는 데이터셋(형사, 민사, 이혼 등)을 토대로 샘플링하는 함수
 
     Parameters:
     - input_file (str): 샘플링할 파일의 경로 (xlsx, csv, json, parquet)

@@ -19,7 +19,7 @@ def canQAseparated(input_file, input_extention, separation_words):
     # 정규 표현식 패턴을 정의합니다.
     pattern = rf'{separation_words}'
     # 정규 표현식을 사용하여 경로에서 키워드를 찾습니다.
-    return re.search(pattern, input_file) is not None and input_extention == '.xlsx'
+    return re.search(pattern, input_file) is not None and (input_extention == '.xlsx') and ("cafe" in input_file)
 
 
 def preprocess_excel_file(input_file, separation_words):
