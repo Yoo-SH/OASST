@@ -1,4 +1,5 @@
 import json
+import logging
 
 keys_to_add = [
     'lang',
@@ -81,7 +82,7 @@ def dfs_update_message(message, keys_to_add):
             dfs_update_message(reply, keys_to_add)
 
 
-def seperate_replie_at_tree(input_file):
+def seperate_tree(input_file):
     """
     주어진 JSON 파일을 읽고, 하위 메시지의 중복 필드를 상위 메시지로 이동시키는 트리 구조로 변환한 후,
     결과를 새로운 JSON 파일로 저장합니다.
@@ -100,54 +101,33 @@ def seperate_replie_at_tree(input_file):
 
 
 def split_replies(input_file):
-    """
-    JSON 파일을 읽고, 각 메시지의 'replies' 필드의 값을 상위 메시지에서 분리하여
-    새로운 파일에 저장합니다.
-
-    Args:
-        input_file (str): 입력 JSON 파일의 경로
-    """
     with open(input_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     def process_message(message):
-        """
-        메시지에서 'replies' 필드를 분리하여 새로운 리스트에 저장합니다.
-
-        Args:
-            message (dict): 현재 메시지
-
-        Returns:
-            dict: 업데이트된 메시지와 분리된 replies 리스트
-        """
         replies = message.pop('replies', [])
         separated_replies = []
         for reply in replies:
-            # 'replies' 필드를 가지는 각 하위 메시지를 'replies' 키 없이 업데이트
             separated_replies.append(reply)
-            process_message(reply)  # 재귀적으로 하위 메시지를 처리
-
+            separated_replies.extend(process_message(reply))  # 재귀적으로 하위 메시지를 처리
         return separated_replies
 
     result = []
     for message in data:
         replies = process_message(message)
+        result.append(message)  # 최상위 메시지를 리스트에 추가
         if replies:
-            # 메시지에서 'replies'를 분리하고, 별도의 리스트에 저장
-            for reply in replies:
-                result.append(reply)
+            result.extend(replies)  # 분리된 replies를 리스트에 추가
 
     with open(input_file, 'w', encoding='utf-8') as f:
         json.dump(result, f, ensure_ascii=False, indent=4)
 
 
 def convert_tree_to_flat(input_file):
-    """
-    주어진 JSON 파일을 처리하여, 먼저 트리 구조를 평탄화하고,
-    이후에 'replies' 필드를 분리하여 저장합니다.
-
-    Args:
-        input_file (str): 입력 JSON 파일의 경로
-    """
-    seperate_replie_at_tree(input_file)
+    logging.info(f"JSON 트리 구조를 평탄화 작업 시작.{input_file}")
+    seperate_tree(input_file)
     split_replies(input_file)
+    logging.info(f"JSON 트리 구조를 평탄화 작업 종료.{input_file}")
+
+
+convert_tree_to_flat('../../../data/sample_preprocessor/oasst_lawtalk_상담사례_20240807.json')
