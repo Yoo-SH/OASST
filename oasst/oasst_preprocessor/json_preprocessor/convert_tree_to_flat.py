@@ -41,8 +41,6 @@ def dfs_collect_fields(message, keys_to_add):
             else:
                 fields_to_add[key] = message[key]
 
-    # print(f"Collecting fields from message {message.get('message_id', 'unknown')}: {fields_to_add}")
-
     if 'replies' in message:
         for reply in message['replies']:
             child_fields = dfs_collect_fields(reply, keys_to_add)
@@ -65,7 +63,6 @@ def dfs_update_message(message, keys_to_add):
         keys_to_add (list): 수집할 필드의 키 목록
     """
     fields_to_add = dfs_collect_fields(message, keys_to_add)
-    # print(f"Updating message {message.get('message_id', 'unknown')} with fields: {fields_to_add}")
 
     if fields_to_add:
         # 현재 메시지에 필드를 추가
@@ -78,7 +75,6 @@ def dfs_update_message(message, keys_to_add):
                     message[key] = value
             else:
                 message[key] = value
-        # print(f"Message after update: {message}")
 
     if 'replies' in message:
         for reply in message['replies']:
@@ -92,7 +88,6 @@ def convert_tree_to_flat(input_file):
 
     Args:
         input_file (str): 입력 JSON 파일의 경로
-        output_file (str): 결과를 저장할 JSON 파일의 경로
     """
     with open(input_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -104,5 +99,59 @@ def convert_tree_to_flat(input_file):
         json.dump(data, f, ensure_ascii=False, indent=4)
 
 
+def split_replies(input_file):
+    """
+    JSON 파일을 읽고, 각 메시지의 'replies' 필드의 값을 상위 메시지에서 분리하여
+    새로운 파일에 저장합니다.
+
+    Args:
+        input_file (str): 입력 JSON 파일의 경로
+    """
+    with open(input_file, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    def process_message(message):
+        """
+        메시지에서 'replies' 필드를 분리하여 새로운 리스트에 저장합니다.
+
+        Args:
+            message (dict): 현재 메시지
+
+        Returns:
+            dict: 업데이트된 메시지와 분리된 replies 리스트
+        """
+        replies = message.pop('replies', [])
+        separated_replies = []
+        for reply in replies:
+            # 'replies' 필드를 가지는 각 하위 메시지를 'replies' 키 없이 업데이트
+            separated_replies.append(reply)
+            process_message(reply)  # 재귀적으로 하위 메시지를 처리
+
+        return separated_replies
+
+    result = []
+    for message in data:
+        replies = process_message(message)
+        if replies:
+            # 메시지에서 'replies'를 분리하고, 별도의 리스트에 저장
+            for reply in replies:
+                result.append(reply)
+
+    with open(input_file, 'w', encoding='utf-8') as f:
+        json.dump(result, f, ensure_ascii=False, indent=4)
+
+
+def process_json(input_file):
+    """
+    주어진 JSON 파일을 처리하여, 먼저 트리 구조를 평탄화하고,
+    이후에 'replies' 필드를 분리하여 저장합니다.
+
+    Args:
+        input_file (str): 입력 JSON 파일의 경로
+    """
+    convert_tree_to_flat(input_file)
+    split_replies(input_file)
+
+
 # 실행 예제
-convert_tree_to_flat('../../data/sample_preprocessor/result.json')
+process_json('../../data/sample_preprocessor/result.json')
