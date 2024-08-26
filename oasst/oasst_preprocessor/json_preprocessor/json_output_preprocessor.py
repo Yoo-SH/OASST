@@ -1,7 +1,7 @@
 import json
+import logging
 
-
-keys_to_remove = [
+keys_to_move = [
     'lang',
     'review_count',
     'review_result',
@@ -12,7 +12,7 @@ keys_to_remove = [
     'detoxify',
     'message_tree_id',
     'tree_state',
-    'emojis',  # sequence
+    'emojis',
     'lavels',
     'link',
     '변호사명',
@@ -20,6 +20,8 @@ keys_to_remove = [
     '작업일자',
     '사용여부',
 ]
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def iterative_dfs(message_tree: list, keys_to_remove: list):
@@ -55,7 +57,7 @@ def iterative_dfs(message_tree: list, keys_to_remove: list):
                 stack.append(reply)
 
 
-def convert_flat_to_tree(input_file):
+def convert_flat_to_tree(input_file, output_file):
     """
     주어진 JSON 파일을 읽고, 중복된 필드를 하위 메시지로 이동시키는 트리 구조로 변환한 후,
     결과를 새로운 JSON 파일로 저장합니다.
@@ -64,7 +66,8 @@ def convert_flat_to_tree(input_file):
         input_file (str): 입력 JSON 파일의 경로
         output_file (str): 결과를 저장할 JSON 파일의 경로
     """
-    # 파일을 열고 데이터 로드
+    logging.info(f"평탄화된 JSON 파일을 트리 구조로 변환시작.{input_file}")
+
     with open(input_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
@@ -90,11 +93,13 @@ def convert_flat_to_tree(input_file):
             message_tree.append(message)
 
     # 중복 필드를 하위 메시지로 이동시키기
-    iterative_dfs(message_tree, keys_to_remove)
+    iterative_dfs(message_tree, keys_to_move)
 
     # 트리 구조를 가진 데이터를 JSON으로 저장
     with open(input_file, 'w', encoding='utf-8') as f:
         json.dump(message_tree, f, ensure_ascii=False, indent=4)
 
+    logging.info(f"평탄화된 JSON 파일을 트리 구조로 변환종료.{input_file}")
 
-# 실행
+
+convert_flat_to_tree('../../../data/sample_preprocessor/oasst_lawtalk_상담사례_20240807.json')
