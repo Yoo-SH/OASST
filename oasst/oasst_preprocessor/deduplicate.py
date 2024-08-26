@@ -1,15 +1,18 @@
 import pandas as pd
 import os
 import chardet
+import json
 
 
-def detect_encoding(file_path):
-    with open(file_path, 'rb') as f:
+def detect_encoding(file_type):
+    """파일의 인코딩을 감지"""
+    with open(file_type, 'rb') as f:
         result = chardet.detect(f.read())
     return result['encoding']
 
 
 def remove_duplicate_prompters(file_path):
+    """한 파일 내에서'text' 열을 기준으로 중복된 행을 제거하고 결과를 새 파일에 저장"""
     # 파일 확장자 확인
     file_extension = os.path.splitext(file_path)[1].lower()
 
@@ -23,38 +26,56 @@ def remove_duplicate_prompters(file_path):
         try:
             df = pd.read_csv(file_path, encoding=encoding)
         except UnicodeDecodeError:
-            raise ValueError(f"Unable to decode the file with detected encoding: {encoding}.")
+            raise ValueError(f"파일 인코딩을 감지할 수 없습니다: {encoding}.")
     elif file_extension == '.parquet':
         df = pd.read_parquet(file_path)
+    elif file_extension == '.json':
+        with open(file_path, 'r', encoding=encoding) as f:
+            data = json.load(f)
+        df = pd.json_normalize(data)
     else:
-        raise ValueError("Unsupported file format. Please provide a .xlsx, .csv, or .parquet file.")
+        raise ValueError("지원하지 않는 파일 형식입니다. .xlsx, .csv, .parquet, 또는 .json 파일을 제공해 주세요.")
 
-    # 'role' 열이 'prompter'인 행을 선택합니다.
-    prompters = df[df['role'] == 'prompter']
+    # 중복 제거 전 행 개수
+    before_count = len(df)
 
-    # 중복된 'text'를 가진 'prompter' 중 첫 번째를 제외하고 나머지의 'message_tree_id'를 추출합니다.
-    duplicate_message_tree_ids = prompters[prompters.duplicated(subset='text', keep='first')]['message_tree_id']
+    if file_extension == '.json':
+        # 'text' 열을 기준으로 중복된 행 제거
+        filtered_df = df.drop_duplicates(subset='text', keep='first')
 
-    # 중복된 'message_tree_id' 출력
-    print("Duplicate message_tree_id values:")
-    print(duplicate_message_tree_ids.tolist())
+        # 필터링된 데이터를 새로운 JSON 파일로 저장
+        directory = os.path.dirname(file_path)
+        base_name = os.path.basename(file_path)
+        file_name, _ = os.path.splitext(base_name)
 
-    # 원본 데이터에서 'message_tree_id'가 중복된 값에 해당하는 모든 행을 삭제합니다.
-    filtered_df = df[~df['message_tree_id'].isin(duplicate_message_tree_ids)]
+        output_file_path = os.path.join(directory, f"{file_name}_filtered.json")
+        filtered_df.to_json(output_file_path, orient='records', lines=True, force_ascii=False)
+        print(f'필터링된 데이터 저장: {output_file_path}')
+    else:
+        # 'text' 열을 기준으로 중복된 행 제거
+        duplicate_texts = df[df.duplicated(subset='text', keep='first')]['text']
+        filtered_df = df[~df['text'].isin(duplicate_texts)]
 
-    # 파일 확장자에 따라 결과 파일 저장
-    directory = os.path.dirname(file_path)
-    base_name = os.path.basename(file_path)
-    file_name, _ = os.path.splitext(base_name)
+        # 필터링된 데이터를 파일에 저장
+        directory = os.path.dirname(file_path)
+        base_name = os.path.basename(file_path)
+        file_name, _ = os.path.splitext(base_name)
 
-    if file_extension == '.xlsx':
-        output_file_path = os.path.join(directory, f"{file_name}_filtered.xlsx")
-        filtered_df.to_excel(output_file_path, index=False)
-    elif file_extension == '.csv':
-        output_file_path = os.path.join(directory, f"{file_name}_filtered.csv")
-        filtered_df.to_csv(output_file_path, index=False, encoding='utf-8-sig')  # 저장 시 인코딩을 utf-8-sig로 지정
-    elif file_extension == '.parquet':
-        output_file_path = os.path.join(directory, f"{file_name}_filtered.parquet")
-        filtered_df.to_parquet(output_file_path, index=False)
+        if file_extension == '.xlsx':
+            output_file_path = os.path.join(directory, f"{file_name}_filtered.xlsx")
+            filtered_df.to_excel(output_file_path, index=False)
+        elif file_extension == '.csv':
+            output_file_path = os.path.join(directory, f"{file_name}_filtered.csv")
+            filtered_df.to_csv(output_file_path, index=False, encoding='utf-8-sig')
+        elif file_extension == '.parquet':
+            output_file_path = os.path.join(directory, f"{file_name}_filtered.parquet")
+            filtered_df.to_parquet(output_file_path, index=False)
 
-    print(f'Filtered data saved to {output_file_path}')
+        print(f'필터링된 데이터 저장: {output_file_path}')
+
+    # 중복 제거 후 행 개수
+    after_count = len(filtered_df)
+
+    # 제거된 데이터 수 출력
+    removed_count = before_count - after_count
+    print(f'총 {removed_count}개의 데이터가 제거되었습니다.')

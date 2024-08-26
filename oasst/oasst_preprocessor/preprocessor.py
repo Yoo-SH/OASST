@@ -1,5 +1,5 @@
 import argparse
-import parallel_processing as duck
+import parallel_processing as filtering
 import os
 import platform
 import csv_preprocessor
@@ -7,6 +7,8 @@ import file_encoding_data
 import qa_separator
 import logging
 from json_preprocessor import json_input_preprocessor, json_output_preprocessor
+import under_sampling as sampling
+import deduplicate as deduplicator
 
 
 def direct_path_filter_file_link(filter_path):
@@ -72,7 +74,9 @@ def direct_path_output_file_link(output_path):
     return output_path
 
 
-def check_link_rule(input_path, input_file_name, input_extention, output_file_name, output_extention, filter_path, filter_name, filter_extention):
+def check_link_rule(
+    input_path, input_file_name, input_extention, output_file_name, output_extention, filter_path, filter_name, filter_extention, undersample_ratio
+):
     """
     입력 및 출력 파일의 존재 여부와 유효성을 확인합니다.
 
@@ -87,6 +91,10 @@ def check_link_rule(input_path, input_file_name, input_extention, output_file_na
     Raises:
         SystemExit: 파일이 존재하지 않거나 필수 파일 이름이 주어지지 않은 경우 프로그램을 종료합니다.
     """
+
+    if undersample_ratio < 1.0:
+        print("Error: under sample ratio는 1.0 이상이어야 합니다.")
+        exit(0)
 
     if not input_file_name:
         print("Error: 파일 이름을 입력해야 합니다.")
@@ -135,10 +143,13 @@ def input_file_preprocess(input_file, input_extention, output_extention):
     """
 
     # 파일 인코딩 확인 및  GLOBAL 인코딩값 설정.
-    file_encoding_data.get_encoding(input_file)
+    if input_extention == '.csv' or input_extention == '.json':
+        file_encoding_data.get_encoding(input_file)
+    else:
+        file_encoding_data.GLOBAL_ENCODING_UNIFICATION = 'utf-8'
 
-    if output_extention == '.json' and file_encoding_data.GLOBAL_ENCODING_UNIFICATION != 'utf-8':
-        logging.info("csv 파일을 json 파일로 변환할 때, utf-8 형식으로만 지정해야합니다.")
+    if (output_extention == '.json' or input_extention == '.json') and file_encoding_data.GLOBAL_ENCODING_UNIFICATION != 'utf-8':
+        logging.info("json 파일이용시, utf-8 형식으로만 지정해야합니다.")
         exit(0)
 
     # Preprocess CSV files
@@ -178,6 +189,8 @@ def main():
     parser.add_argument('-input', required=True, help='input 경로와 파일 이름 (예: ./inputfile_name)')
     parser.add_argument('-output', required=True, help='output 경로와 파일 이름 (예: ./outputfile_name)')
     parser.add_argument('-filter_region', required=True, help='filter 경로와 파일 이름 (예: ./filterfile_name)')
+    parser.add_argument('input_format', required=True, help='oasst or text')
+    parser.add_argument('-undersample', type=float, required=True, help='input over 1.0')
 
     args = parser.parse_args()
 
@@ -199,19 +212,28 @@ def main():
     filter_path = direct_path_filter_file_link(filter_path)  # 경로 형식을 조정함  (상대경로나 절대경로인 경우에 따라 다름)
 
     if not output_file_name:  # output file명을 입력하지 않으면, _decompress이름이 붙은 파일이 생성.
-        output_file_name = input_file_name + '_decompress.'
+        output_file_name = input_file_name + '_decompress' + output_extention
 
     # 경로규칙 및 파일 존재 유무 확인
     check_link_rule(
-        input_path, input_file_name, input_extention, output_file_name, output_extention, filter_path, filter_file_name, filter_extention
+        input_path, input_file_name, input_extention, output_file_name, output_extention, filter_path, filter_file_name, filter_extention, args.undersample
     )  # 경로와 파일이름을 확인함
 
     print(args.input.split('_')[1])
 
+    # 파일 전처리(인코딩, json flatting, QA분류)
     input_file_preprocess(args.input, input_extention, output_extention)
-    # Preprocess data
-    duck.preprocess_data(args.input, input_extention, args.output, output_extention, args.filter_region, filter_extention, os.cpu_count())
 
+    # deduplicate
+    deduplicator.remove_duplicate_prompters(args.input)
+
+    # Under sampling
+    sampling.under_sampling(args.input, args.undersample)
+
+    # filtering data
+    filtering.preprocess_data(args.input, input_extention, args.output, output_extention, args.filter_region, filter_extention, os.cpu_count())
+
+    # 파일 후처리(json tree 복원)
     output_file_preprocess(args.input, input_extention, args.output, output_extention)
 
 
