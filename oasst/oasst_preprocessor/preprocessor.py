@@ -189,7 +189,7 @@ def main():
     parser.add_argument('-input', required=True, help='input 경로와 파일 이름 (예: ./inputfile_name)')
     parser.add_argument('-output', required=True, help='output 경로와 파일 이름 (예: ./outputfile_name)')
     parser.add_argument('-filter_region', required=True, help='filter 경로와 파일 이름 (예: ./filterfile_name)')
-    parser.add_argument('input_format', required=True, help='oasst or text')
+    parser.add_argument('-input_format', required=True, help='oasst or text')
     parser.add_argument('-undersample', type=float, required=True, help='input over 1.0')
 
     args = parser.parse_args()
@@ -219,22 +219,24 @@ def main():
         input_path, input_file_name, input_extention, output_file_name, output_extention, filter_path, filter_file_name, filter_extention, args.undersample
     )  # 경로와 파일이름을 확인함
 
-    print(args.input.split('_')[1])
+    temp_file = args.input + '.tmp'
 
     # 파일 전처리(인코딩, json flatting, QA분류)
-    input_file_preprocess(args.input, input_extention, output_extention)
+    input_file_preprocess(temp_file, input_extention, output_extention)
 
     # deduplicate
-    deduplicator.remove_duplicate_prompters(args.input)
+    deduplicator.remove_duplicate_prompters(temp_file)
 
     # Under sampling
-    sampling.under_sampling(args.input, args.undersample)
+    sampling.under_sampling(temp_file, args.undersample)
 
     # filtering data
-    filtering.preprocess_data(args.input, input_extention, args.output, output_extention, args.filter_region, filter_extention, os.cpu_count())
+    filtering.preprocess_data(temp_file, input_extention, args.output, output_extention, args.filter_region, filter_extention, os.cpu_count())
 
     # 파일 후처리(json tree 복원)
-    output_file_preprocess(args.input, input_extention, args.output, output_extention)
+    output_file_preprocess(temp_file, input_extention, args.output, output_extention)
+
+    os.remove(temp_file)
 
 
 if __name__ == "__main__":

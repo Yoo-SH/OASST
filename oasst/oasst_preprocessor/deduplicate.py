@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import chardet
 import json
+import logging
 
 
 def detect_encoding(file_type):
@@ -43,39 +44,25 @@ def remove_duplicate_prompters(file_path):
         # 'text' 열을 기준으로 중복된 행 제거
         filtered_df = df.drop_duplicates(subset='text', keep='first')
 
-        # 필터링된 데이터를 새로운 JSON 파일로 저장
-        directory = os.path.dirname(file_path)
-        base_name = os.path.basename(file_path)
-        file_name, _ = os.path.splitext(base_name)
-
-        output_file_path = os.path.join(directory, f"{file_name}_filtered.json")
-        filtered_df.to_json(output_file_path, orient='records', lines=True, force_ascii=False)
-        print(f'필터링된 데이터 저장: {output_file_path}')
+        filtered_df.to_json(file_path, orient='records', lines=True, force_ascii=False)
+        logging.info(f'필터링된 데이터 저장: {file_path}')
     else:
         # 'text' 열을 기준으로 중복된 행 제거
         duplicate_texts = df[df.duplicated(subset='text', keep='first')]['text']
         filtered_df = df[~df['text'].isin(duplicate_texts)]
 
-        # 필터링된 데이터를 파일에 저장
-        directory = os.path.dirname(file_path)
-        base_name = os.path.basename(file_path)
-        file_name, _ = os.path.splitext(base_name)
-
         if file_extension == '.xlsx':
-            output_file_path = os.path.join(directory, f"{file_name}_filtered.xlsx")
-            filtered_df.to_excel(output_file_path, index=False)
+            filtered_df.to_excel(file_path, index=False)
         elif file_extension == '.csv':
-            output_file_path = os.path.join(directory, f"{file_name}_filtered.csv")
-            filtered_df.to_csv(output_file_path, index=False, encoding='utf-8-sig')
+            filtered_df.to_csv(file_path, index=False, encoding='utf-8-sig')
         elif file_extension == '.parquet':
-            output_file_path = os.path.join(directory, f"{file_name}_filtered.parquet")
-            filtered_df.to_parquet(output_file_path, index=False)
+            filtered_df.to_parquet(file_path, index=False)
 
-        print(f'필터링된 데이터 저장: {output_file_path}')
+        logging.info(f'필터링된 데이터 저장: {file_path}')
 
     # 중복 제거 후 행 개수
     after_count = len(filtered_df)
 
     # 제거된 데이터 수 출력
     removed_count = before_count - after_count
-    print(f'총 {removed_count}개의 데이터가 제거되었습니다.')
+    logging.info(f'총 {removed_count}개의 데이터가 제거되었습니다.')
