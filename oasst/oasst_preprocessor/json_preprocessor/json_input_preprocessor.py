@@ -128,6 +128,3 @@ def convert_tree_to_flat(input_file):
     seperate_tree(input_file)
     split_replies(input_file)
     logging.info(f"JSON 트리 구조를 평탄화 작업 종료.{input_file}")
-
-
-convert_tree_to_flat('../../../data/sample_preprocessor/oasst_lawtalk_상담사례_20240807.json')

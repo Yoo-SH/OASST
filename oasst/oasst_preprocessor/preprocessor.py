@@ -5,7 +5,7 @@ import platform
 import csv_preprocessor
 import file_encoding_data
 import qa_separator
-import json_preprocessor as json_preprocessor
+from json_preprocessor import json_input_preprocessor, json_output_preprocessor
 
 
 def direct_path_filter_file_link(filter_path):
@@ -140,7 +140,7 @@ def input_file_preprocess(input_file, input_extention):
         csv_preprocessor.process_csv_tab(input_file)
 
     if input_extention == '.json':
-        json_preprocessor.convert_tree_to_flat(input_file)
+        json_input_preprocessor.convert_tree_to_flat(input_file)
 
     # 네이버 카페의 경우 QA분류 전처리를 시작함.
     separation_words = ['A.', '답변']
@@ -150,10 +150,13 @@ def input_file_preprocess(input_file, input_extention):
         print.info("cafe 파일을 QA분류 작업을 처리하기 위해서는 xlsx 파일 형식이 필요합니다. QA분류 작업을 건너 뜁니다.")
 
 
-def output_file_preprocess(output_file, output_extention):
+def output_file_preprocess(input_file, input_extention, output_file, output_extention):
+
+    if input_extention == '.json':
+        json_output_preprocessor.convert_flat_to_tree(input_file)
 
     if output_extention == '.json':
-        json_preprocessor.convert_flat_to_tree(output_file)
+        json_output_preprocessor.convert_flat_to_tree(output_file)
 
 
 def main():
@@ -205,7 +208,7 @@ def main():
     # Preprocess data
     duck.preprocess_data(args.input, input_extention, args.output, output_extention, args.filter_region, filter_extention, os.cpu_count())
 
-    output_file_preprocess(args.output, output_extention)
+    output_file_preprocess(args.input, input_extention, args.output, output_extention)
 
 
 if __name__ == "__main__":
