@@ -5,6 +5,7 @@ import platform
 import csv_preprocessor
 import file_encoding_data
 import qa_separator
+import logging
 from json_preprocessor import json_input_preprocessor, json_output_preprocessor
 
 
@@ -124,7 +125,7 @@ def check_link_rule(input_path, input_file_name, input_extention, output_file_na
     print("필터 파일 확인", filter_name)
 
 
-def input_file_preprocess(input_file, input_extention):
+def input_file_preprocess(input_file, input_extention, output_extention):
     """
     다른 파일 형식으로 처리하기 변환 및 전처리하기전에 입력 파일을 전처리 하는 함수입니다.
 
@@ -132,6 +133,13 @@ def input_file_preprocess(input_file, input_extention):
         input_file (_type_): _description_
         input_type (_type_): _description_
     """
+
+    # 파일 인코딩 확인 및  GLOBAL 인코딩값 설정.
+    file_encoding_data.get_encoding(input_file)
+
+    if output_extention == '.json' and file_encoding_data.GLOBAL_ENCODING_UNIFICATION != 'utf-8':
+        logging.info("csv 파일을 json 파일로 변환할 때, utf-8 형식으로만 지정해야합니다.")
+        exit(0)
 
     # Preprocess CSV files
     if input_extention == '.csv':  # 일단은 csv(콤마)로 구분된 파일만 처리하도록 함, 나중에 tab으로 구분된 파일도 처리할 수 있도록 수정 필요
@@ -200,11 +208,7 @@ def main():
 
     print(args.input.split('_')[1])
 
-    # 파일 인코딩 확인 및  GLOBAL 인코딩값 설정.
-    if input_extention == '.csv' or input_extention == '.feather':
-        file_encoding_data.get_encoding(args.input)
-
-    input_file_preprocess(args.input, input_extention)
+    input_file_preprocess(args.input, input_extention, output_extention)
     # Preprocess data
     duck.preprocess_data(args.input, input_extention, args.output, output_extention, args.filter_region, filter_extention, os.cpu_count())
 

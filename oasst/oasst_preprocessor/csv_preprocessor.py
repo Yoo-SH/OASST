@@ -35,7 +35,9 @@ def process_csv_comma(input_file):
     Side Effects:
         원본 CSV 파일이 임시 파일로 덮어쓰기됩니다.
     """
-    logging.info("CSV_comma파일 전처리 작업 시작")
+
+    logging.info(f"CSV_comma파일 전처리 작업 시작 by encoding {file_encoding_data.GLOBAL_ENCODING_UNIFICATION}")
+
     # 임시 파일에 기록 후 원본 파일에 덮어쓰기
     temp_file = input_file + '.tmp'
 
