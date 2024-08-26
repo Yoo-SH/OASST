@@ -81,7 +81,7 @@ def dfs_update_message(message, keys_to_add):
             dfs_update_message(reply, keys_to_add)
 
 
-def convert_tree_to_flat(input_file):
+def seperate_replie_at_tree(input_file):
     """
     주어진 JSON 파일을 읽고, 하위 메시지의 중복 필드를 상위 메시지로 이동시키는 트리 구조로 변환한 후,
     결과를 새로운 JSON 파일로 저장합니다.
@@ -141,7 +141,7 @@ def split_replies(input_file):
         json.dump(result, f, ensure_ascii=False, indent=4)
 
 
-def process_json(input_file):
+def convert_tree_to_flat(input_file):
     """
     주어진 JSON 파일을 처리하여, 먼저 트리 구조를 평탄화하고,
     이후에 'replies' 필드를 분리하여 저장합니다.
@@ -149,9 +149,5 @@ def process_json(input_file):
     Args:
         input_file (str): 입력 JSON 파일의 경로
     """
-    convert_tree_to_flat(input_file)
+    seperate_replie_at_tree(input_file)
     split_replies(input_file)
-
-
-# 실행 예제
-process_json('../../data/sample_preprocessor/result.json')

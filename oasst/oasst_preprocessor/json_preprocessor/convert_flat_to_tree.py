@@ -55,7 +55,7 @@ def iterative_dfs(message_tree: list, keys_to_remove: list):
                 stack.append(reply)
 
 
-def convert_flat_to_tree(input_file, output_file):
+def convert_flat_to_tree(input_file):
     """
     주어진 JSON 파일을 읽고, 중복된 필드를 하위 메시지로 이동시키는 트리 구조로 변환한 후,
     결과를 새로운 JSON 파일로 저장합니다.
@@ -93,9 +93,8 @@ def convert_flat_to_tree(input_file, output_file):
     iterative_dfs(message_tree, keys_to_remove)
 
     # 트리 구조를 가진 데이터를 JSON으로 저장
-    with open(output_file, 'w', encoding='utf-8') as f:
+    with open(input_file, 'w', encoding='utf-8') as f:
         json.dump(message_tree, f, ensure_ascii=False, indent=4)
 
 
 # 실행
-convert_flat_to_tree('../../data/sample_preprocessor/oasst_naver_cafe_20240805.json', '../../data/sample_preprocessor/result.json')
