@@ -13,7 +13,7 @@ https://studying-modory.tistory.com/entry/conda%EC%82%AC%EC%9A%A9%EB%B2%95-Anaco
 
 ```powershell
 ## windows 기준
-
+....
 
 ## conda base env를 cmd open시 default로 실행시키려면, 신뢰하지 않는 스크립트 실행가능 권한이 있어야 되는듯 - windows기본은 (N)으로 설정되어 있음
 Set-ExecutionPolicy RemoteSigned  -> 예(y) 입력
