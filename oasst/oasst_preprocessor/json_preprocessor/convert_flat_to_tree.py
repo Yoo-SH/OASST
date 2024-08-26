@@ -98,4 +98,4 @@ def convert_flat_to_tree(input_file, output_file):
 
 
 # 실행
-convert_flat_to_tree('../../data/sample_preprocessor/oasst_lawtalk_상담사례_20240807.json', '../../data/sample_preprocessor/result.json')
+convert_flat_to_tree('../../data/sample_preprocessor/oasst_naver_cafe_20240805.json', '../../data/sample_preprocessor/result.json')

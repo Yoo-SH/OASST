@@ -5,6 +5,7 @@ import platform
 import csv_preprocessor
 import file_encoding_data
 import qa_separator
+import json_preprocessor as json_preprocessor
 
 
 def direct_path_filter_file_link(filter_path):
@@ -180,6 +181,9 @@ def main():
         csv_preprocessor.process_csv_comma(args.input)
     elif input_extention == '.csv':
         csv_preprocessor.process_csv_tab(args.input)
+
+    if input_extention == '.json':
+        json_preprocessor.converter_flat_to_tree(args.input)
 
     # Preprocess data
     duck.preprocess_data(args.input, input_extention, args.output, output_extention, args.filter_region, filter_extention, os.cpu_count())
