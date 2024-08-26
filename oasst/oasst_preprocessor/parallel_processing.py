@@ -115,7 +115,6 @@ def create_filter_pattern(input_file, filter_extention):
 
     filter_file = read_file(input_file, filter_extention)
     filter_to_remove = [x for x in filter_file['지역명'] if pd.notnull(x)]
-    print(filter_to_remove)
     filter_pattern = f"\\s*({'|'.join(map(re.escape, filter_to_remove))})\\s*"
     logging.info("필터 패턴 생성 완료")
     return filter_pattern
@@ -141,19 +140,13 @@ def process_chunk(chunk, filter_pattern):
     chunk_conn.execute("CREATE TEMPORARY TABLE chunk_table AS SELECT * FROM chunk")
 
     # 패턴을 여러 번 적용하여 모든 일치를 제거
-    for _ in range(5):  # 반복 횟수를 늘리거나 필요에 맞게 조정
-        chunk_conn.execute(
-            f"""
-            UPDATE chunk_table
-            SET text = regexp_replace(text, '{filter_pattern}', '')
-            """
-        )
-
-    # URL 필터링 적용
+    ## 20240826 로직 문제
+    # # 한 ROW에 필터링 되어야할 단어가 모두 제거되지 않음. 1개씩만
+    # 완주입니다 완주로 오세요 => 입니다 완주로 오세요 -> 뒤에 있는 "완주" 제거가 안됨
     chunk_conn.execute(
-        """
+        f"""
         UPDATE chunk_table
-        SET text = regexp_replace(text, 'http[s]?://\\S+|www\\.\\S+', '')
+        SET text = regexp_replace(regexp_replace(text, '{filter_pattern}', ''), 'http[s]?://\\S+|www\\.\\S+', '')
         """
     )
 
@@ -218,4 +211,3 @@ def preprocess_data(input_file, input_extention, output_file, output_extention, 
 
     # 결과를 파일로 저장
     save_file(final_df, output_file, output_extention)
-    logging.info(f"결과 파일 저장 완료: {output_file}")

@@ -3,6 +3,8 @@ import numpy as np
 from math import ceil
 import os
 import chardet
+import logging
+import file_encoding_data
 
 
 def detect_encoding(file_path):
@@ -36,11 +38,10 @@ def under_sampling(input_file: str, ratio: float) -> None:
     if file_extension == '.xlsx':
         df = pd.read_excel(input_file)
     elif file_extension == '.csv':
-        encoding = detect_encoding(input_file)
         try:
-            df = pd.read_csv(input_file, encoding=encoding)
+            df = pd.read_csv(input_file, encoding=file_encoding_data.GLOBAL_ENCODING_UNIFICATION)
         except UnicodeDecodeError:
-            raise ValueError(f"감지된 인코딩으로 파일을 디코딩할 수 없습니다: {encoding}.")
+            raise ValueError(f"감지된 인코딩으로 파일을 디코딩할 수 없습니다: {file_encoding_data.GLOBAL_ENCODING_UNIFICATION}.")
     elif file_extension == '.json':
         df = pd.read_json(input_file)
     elif file_extension == '.parquet':
@@ -86,25 +87,17 @@ def under_sampling(input_file: str, ratio: float) -> None:
         max_samples = ceil(min_class_count * ratio)
         df_resampled = df.groupby('분류').apply(lambda x: x.sample(min(len(x), max_samples))).reset_index(drop=True)
 
-    # 입력 파일의 디렉토리와 파일 이름 추출
-    input_dir = os.path.dirname(input_file)
-    input_filename = os.path.basename(input_file)
-
-    # 결과 파일 이름 생성 (기본 파일 이름에 '_resampled' 추가)
-    output_filename = os.path.splitext(input_filename)[0] + '_resampled' + file_extension
-    output_file = os.path.join(input_dir, output_filename)
-
     # 샘플링된 데이터셋 저장 (파일 형식에 따라)
     if file_extension == '.xlsx':
-        df_resampled.to_excel(output_file, index=False)
+        df_resampled.to_excel(input_file, index=False)
     elif file_extension == '.csv':
-        df_resampled.to_csv(output_file, index=False, encoding='utf-8-sig')
+        df_resampled.to_csv(input_file, index=False, encoding='utf-8-sig')
     elif file_extension == '.json':
-        df_resampled.to_json(output_file, orient='records', force_ascii=False, indent=4)
+        df_resampled.to_json(input_file, orient='records', force_ascii=False, indent=4)
     elif file_extension == '.parquet':
-        df_resampled.to_parquet(output_file, index=False)
+        df_resampled.to_parquet(input_file, index=False)
     else:
         raise ValueError("저장할 수 없는 파일 형식입니다.")
 
     # 샘플링 결과에 대한 설명 출력
-    print("\n샘플링이 성공적으로 완료되었습니다.")
+    logging.info("샘플링이 성공적으로 완료되었습니다.")
