@@ -15,7 +15,7 @@ exclude =
 max-complexity = 10
 ; max-line-length = 88
 max-line-length = 160
-ignore = E266, E203, E501, E265
+ignore = E266, E203, E501, E265, C901
 ; E266: too many leading '#' for block comment
 ; flake8의 ‘max-line-length = 88’ 를 생략하는 경우,
 ; black은 88자를 통과시키지만 flake8은 기본값인 79자를 기준으로 검사합니다.
