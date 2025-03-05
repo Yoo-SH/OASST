@@ -3,6 +3,7 @@ data/
 api/
 .devcontainer/
 .vscode/
+__pycache__/
 
 #/data
 .ipynb_checkpoints
