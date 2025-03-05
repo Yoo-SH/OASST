@@ -5,6 +5,7 @@ api/
 .vscode/
 __pycache__/
 
+docs/workflow.md
 #/data
 .ipynb_checkpoints
 
