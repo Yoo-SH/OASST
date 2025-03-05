@@ -193,10 +193,10 @@ latest-run
 *.tar.gz
 *.tar.bz2
 *.tar.xz
-.csv
-.parquet
-.feather
-.json
-.yaml
-.yml
-.jsonl
+*.csv
+*.parquet
+*.feather
+*.json
+*.yaml
+*.yml
+*.jsonl
