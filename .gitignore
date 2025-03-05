@@ -1,9 +1,8 @@
 *.pyc
-
 data/
-
 api/
-
+.devcontainer/
+.vscode/
 
 #/data
 .ipynb_checkpoints
@@ -178,7 +177,7 @@ latest-run
 # !*params*.y*ml
 # !*params*.json
 
-
+# files
 *.json
 *.csv
 *.pth
