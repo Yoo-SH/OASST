@@ -180,7 +180,7 @@ latest-run
 
 # files
 *.json
-*.csv
+*.csvta
 *.pth
 *.pt
 *.torch
